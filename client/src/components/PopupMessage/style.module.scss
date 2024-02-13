@@ -1,0 +1,32 @@
+@import '@styles/base';
+
+.dialogWrapper {
+  border-radius: 0.5rem !important;
+  padding: 1rem;
+
+  .title {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .message {
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  .button {
+    width: 100%;
+    margin-top: 1rem;
+    border-radius: 1rem;
+    border: none;
+    font-family: Poppins, Arial, sans-serif;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    background-color: var(--color-button);
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    opacity: 0.8;
+  }
+}

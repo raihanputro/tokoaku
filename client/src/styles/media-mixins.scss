@@ -1,0 +1,57 @@
+$screen-xs-limit: 0;
+$screen-xs2-limit: 375px;
+$screen-height-limit: 700px;
+$screen-sm-limit: 576px;
+$screen-md-limit: 768px;
+$screen-lg-limit: 992px;
+$screen-xl-limit: 1200px;
+$screen-xxl-limit: 1400px;
+$screen-1024-limit: 1024px;
+
+@mixin apply-at-xs-size {
+  @media (min-width: $screen-xs-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-xs2-size {
+  @media (min-width: $screen-xs2-limit) and (min-height: $screen-height-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-sm-size {
+  @media (min-width: $screen-sm-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-md-size {
+  @media (min-width: $screen-md-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-lg-size {
+  @media (min-width: $screen-lg-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-xl-size {
+  @media (min-width: $screen-xl-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-xxl-size {
+  @media (min-width: $screen-xxl-limit) {
+    @content;
+  }
+}
+
+@mixin apply-at-ipad-size {
+  @media (min-device-width: $screen-md-limit) and (max-device-width: $screen-1024-limit) and (orientation: portrait) {
+    @content;
+  }
+}

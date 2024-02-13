@@ -1,0 +1,43 @@
+@import '@styles/base';
+
+@include container {
+
+    .cardContainer{
+        background-color: var(--color-bg);
+        display: flex;
+        height: 100%;
+        padding: 10px;
+
+        .itemInfo {
+            @include directionX;
+            padding-top: 3%;
+
+            .itemTitle {
+                font-size: 40px;
+                padding-top: 1%;
+            }
+    
+            .itemPrice {
+                font-size: 50px;
+                font-weight: 700;
+            }
+    
+            .itemDesc {
+                font-size: 20px;
+            }
+        }
+
+        .addItem {
+           border: 2px solid var(--color-bg-secondary);
+           border-radius: 10px;
+           width: 80%;
+           @include directionY;
+           align-items: center;
+           justify-content: center;
+
+           .addStock {
+            @include directionX;
+           }
+        }
+    }
+}

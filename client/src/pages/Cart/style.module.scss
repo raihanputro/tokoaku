@@ -1,0 +1,112 @@
+@import '@styles/base';
+
+@include container {
+
+    .pageTitle {
+        font-size: 40px;
+        font-weight: 700;
+    }
+
+    .contentContainer {
+        @include directionX;
+        justify-content: space-between;
+        gap: 10px;
+        @include apply-at-xs-size {
+            @include directionY;
+        }
+
+        // @include apply-at-xs2-size {
+        //     grid-template-columns: repeat(1, 1fr);
+        // }
+
+        // @include apply-at-sm-size {
+        //     grid-template-columns: repeat(1, 1fr);
+        // }
+
+        // @include apply-at-md-size {
+        //     grid-template-columns: repeat(2, 1fr);
+        // }
+
+        @include apply-at-xl-size {
+            
+        }
+
+        @include apply-at-xxl-size {
+            @include directionX;
+        }
+
+        .cardContainer {
+            background-color: var(--color-bg);
+            padding: 10px; 
+    
+            .contentContainer {
+                @include directionX;
+                align-items: center;
+                justify-content: space-between;
+                @include apply-at-xs-size {
+                    @include directionY;
+                }
+                @include apply-at-xs2-size {
+                    @include directionY;
+                }
+                @include apply-at-sm-size {
+                    @include directionX;
+                }    
+                @include apply-at-xxl-size {
+                    @include directionX;
+                }
+        
+    
+                .contentLeft {
+                    @include directionX;
+                    align-items: center;
+                }
+    
+                .contentRight {
+                    @include directionY;
+                    align-items: center;
+    
+                    .stockContainer {
+                        @include directionX;
+    
+                        .adjustStockContainer {
+                            border: 1px solid var(--color-bg-secondary);
+                            border-radius: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .cardSummaryContainer {
+        background-color: var(--color-bg);
+        padding: 10px;
+        height: 100%;
+        width: 250px;
+        @include directionY;
+        @include apply-at-xs-size {
+            width: 100%;
+        }
+
+        .summaryTitle {
+            font-size: 30px;
+            font-size: 700;
+        }
+
+        .total {
+            @include directionX;
+            justify-content: space-between;
+            margin-top: 20px;
+            @include apply-at-xs-size {
+                justify-content: center;
+                gap: 150px;
+            }
+    
+
+            .totalText {
+                font-size: 20px;
+            }
+        }
+    }
+}

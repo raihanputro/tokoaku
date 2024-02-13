@@ -1,0 +1,44 @@
+@mixin directionY {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin directionX {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin padding-x($value) {
+  box-sizing: border-box;
+  padding-left: $value;
+  padding-right: $value;
+}
+
+@mixin padding-y($value) {
+  box-sizing: border-box;
+  padding-top: $value;
+  padding-bottom: $value;
+}
+
+@mixin margin-x($value) {
+  margin-left: $value;
+  margin-right: $value;
+}
+
+@mixin margin-y($value) {
+  margin-top: $value;
+  margin-bottom: $value;
+}
+
+@mixin container {
+  .container {
+    @include padding-x(2rem);
+    @include directionY;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    width: 100%;
+    height: 100%;
+
+    @content;
+  }
+}

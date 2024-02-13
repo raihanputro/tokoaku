@@ -1,0 +1,32 @@
+@import './base.scss';
+:root {
+  font-family: Poppins, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  @include apply-at-md-size {
+    font-size: 120%;
+  }
+
+  @include apply-at-lg-size {
+    font-size: 125%;
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+html[data-theme='light'] {
+  @include light-theme;
+}
+
+html[data-theme='dark'] {
+  @include dark-theme;
+}

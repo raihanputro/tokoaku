@@ -1,0 +1,30 @@
+@import '@styles/base';
+
+.modalContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text);
+    box-shadow: 24px;
+    padding: 40px;
+
+    .uploaderContainer {
+        @include directionY;
+        align-items: center;
+    
+        .textUploader {
+            @include directionX;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+
+            .label {
+                width: 140px;
+                color: var(--color-text);
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+@import '@styles/base';
+
+@keyframes image-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loaderComponent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: $color-white-fade;
+  z-index: 9990;
+
+  @media (prefers-reduced-motion: no-preference) {
+    img {
+      width: 3.75rem;
+      height: 60px;
+      border-radius: 100%;
+      padding: 0.75rem;
+      animation: image-spin infinite 0.8s linear;
+    }
+  }
+
+  &.showLoader {
+    display: flex;
+  }
+}

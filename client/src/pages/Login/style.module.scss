@@ -1,0 +1,100 @@
+@import '@styles/base';
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @include apply-at-xs-size {
+        margin-top: 15%;
+    }
+    @include apply-at-xs2-size {
+        margin-top:20%;
+    }
+    @include apply-at-lg-size {
+        margin-top: 20%;
+    }
+    @include apply-at-xl-size  {
+        margin-top: 5%;
+    }
+    
+    .cardContainer {
+        width: 60%;
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        border-radius: 10px;
+        max-width: 416px;
+        min-height: 516px;
+        box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        @include apply-at-xs2-size {
+            width: 80%;
+        }
+
+        .pageTitle {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            line-height: 54px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .formContainer {
+            display: flex;
+            flex-direction: column;
+            margin-top: 15%;
+            gap: 40px;
+
+            .inputLabelContainer {
+                display: flex;
+                flex-direction: column;
+                
+                .label {
+                    color: var(--color-text);
+                    font-size: 24px;
+                    font-weight: 900;
+                    line-height: 28.13px;
+                    letter-spacing: 2px;
+                    font-style: normal;
+                }
+
+                .input {
+                    background-color: rgba(210, 210, 210, 0.25);
+                    border-radius: 5px;
+                    border: 2px solid rgba(210, 210, 210, 0.25);
+
+                    input {
+                        color: var(--color-text);
+                    }
+                }
+            }
+        }  
+
+        .loginButton {
+            margin-top: 7%;
+            width: 100%;
+            color: var(--color-text);
+            font-weight: 700;
+            font-size: 24px;
+            line-height: normal;
+            background-color: var(--color-bg-secondary);
+        }
+
+        .linkRegister {
+            font-size: 18px;
+            font-weight: 100;
+            font-style: italic;
+            line-height: 21.09px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 4%;
+            color: var(--color-text);
+
+            .here {
+                font-style: normal;
+                font-weight: 900;
+                cursor: pointer;
+            }
+        }
+    }
+}

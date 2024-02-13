@@ -1,0 +1,122 @@
+@import '@styles/base';
+
+.headerWrapper {
+  background-color: var(--color-bg) !important;
+  padding-left: 30px;
+  padding-right: 30px;
+  box-shadow: 0 0.25rem 0.75rem rgba(25, 49, 83, 0.2) !important;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+
+  .contentWrapper {
+    @include directionX;
+    color: var(--color-text);
+    padding: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+
+    .logoImage {
+      @include directionX;
+      cursor: pointer;
+      align-items: center;
+
+      .logo {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0.5rem;
+      }
+      .title {
+        font-weight: 700;
+
+        @include apply-at-xs-size {
+          display: none;
+        }
+
+        @include apply-at-md-size {
+          display: block
+        }
+      }
+    }
+
+    .toolbar {
+      @include directionX;
+      gap: 20px;
+      .theme {
+        @include directionX;
+        align-items: center;
+        margin-right: 0.5rem;
+        cursor: pointer;
+      }
+      .buttonContainer {
+        @include directionX;
+        gap: 15px;
+        padding-top: 8px;
+
+        .buttonLogin {
+          color: var(--color-text);
+          font-size: 14px;
+          font-weight: 700;
+          width: 100px;
+          height: 30px;
+          flex-shrink: 0;
+          background-color: transparent;
+          border: 1px solid #FFF;
+          border-radius: 5px;
+        }
+
+        .buttonRegister {
+          color: var(--color-text);
+          background-color: var(--color-bg-secondary);
+          font-size: 14px;
+          font-weight: 700;
+          width: 100px;
+          height: 30px;
+          flex-shrink: 0;
+          border-radius: 5px;
+        }
+      }
+      .toggle {
+        @include directionX;
+        align-items: center;
+        cursor: pointer;
+
+        .avatar {
+          width: 1.2rem;
+          height: 1.2rem;
+          box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+          margin-right: 0.5rem;
+        }
+
+        .lang {
+          font-family: Poppins, Arial, Helvetica, sans-serif;
+          font-weight: 700;
+          font-size: 1rem;
+          text-transform: uppercase;
+        }
+
+        .arrow {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.menu {
+  @include directionX;
+  align-items: center;
+
+  .menuAvatar {
+    width: 1rem;
+    height: 1rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    margin-right: 0.5rem;
+  }
+
+  .menuLang {
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    font-size: 0.8rem;
+  }
+}
