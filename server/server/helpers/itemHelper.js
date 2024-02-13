@@ -35,7 +35,7 @@ const getItemListByAuthor = async (id, res) => {
         });
 
         if(_.isEmpty(isAdmin)) {
-            return Promise.reject(responseError(res, 400, 'this user id is not admin!'))
+            return Promise.reject(Boom.badRequest('this user are not admin!'));
         } else {
             const itemsByAuthor = await tb_item.findAll({
                 where: {
@@ -48,11 +48,11 @@ const getItemListByAuthor = async (id, res) => {
                     required: false
                 }
             });
-            return Promise.resolve(responseSuccess(res, 200, `Success get item list by author id ${id}`, itemsByAuthor));
+            return Promise.resolve(itemsByAuthor);    
         }
     } catch (error) {
         console.log([fileName, 'postDataItem', 'ERROR'], { info: `${error}` });
-        return Promise.reject(responseError(res, 404, `Cannot get item list by author id ${id}!`)); 
+        return Promise.reject(errorResponse(error));    
     }
 };
 

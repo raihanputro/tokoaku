@@ -23,9 +23,9 @@ const listByAuthor = async ( req, res ) => {
     const id = parseInt(req.params['id']);
 
     try {
-        const response = await itemHelper.getItemListByAuthor(id, res);
+        const response = await itemHelper.getItemListByAuthor(id);
 
-        return response;   
+        return responseSuccess(res, 200, `Success get item list by author  id ${id}!`, response);
     } catch (error) {
         return responseError(res, 404, `Cannot get item list by author  id ${id}!`);
     }
@@ -100,7 +100,7 @@ const update = async ( req, res ) => {
 
 const remove = async ( req, res ) => {
 
-    // idValidation(req.params);
+    idValidation(req.params);
 
     const id = parseInt(req.params['id']);
 

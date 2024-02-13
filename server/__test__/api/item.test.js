@@ -1,6 +1,6 @@
 const Request = require('supertest');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
+const QS = require('qs');
 
 const db = require('../../models');
 const GeneralHelper = require('../../server/helpers/generalHelper');
@@ -40,11 +40,11 @@ describe('Item', () => {
                 .get(apiUrl)
                 .expect(200);
 
-            console.log('Response Body:', response.body); // Log the response body
-            console.log('Response length:', response.body.result.length); // Log the response body
+            // console.log('Response Body:', response.body); 
+            // console.log('Response length:', response.body.result.length); 
 
-            expect(!_.isEmpty(response.body)).toBeTruthy(); // Check if response body is empty
-            expect(response.body.result.length).toBeGreaterThan(0); // Check the 
+            expect(!_.isEmpty(response.body)).toBeTruthy(); 
+            expect(response.body.result.length).toBeGreaterThan(0); 
         });
     })
 })
