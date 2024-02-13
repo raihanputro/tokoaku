@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "kategori_id": 1,
+        "name": "Indomie Goreng",
+        "desc": "Bawa pengalaman kuliner yang autentik dan lezat ke rumah Anda dengan Indomie Goreng, hidangan favorit yang telah mencuri hati jutaan orang di seluruh dunia. Nikmati sensasi rasa gurih dan pedas yang khas, dengan mie goreng yang lembut.",
+        "price": 5000,
+        "stock": 10,
+        "img": "http://localhost:3001/indomie-goreng.png",
+        "author_id": 1,
+        "createdAt": "2024-02-06T07:10:42.000Z",
+        "updatedAt": "2024-02-06T07:10:42.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 2,
+        "kategori_id": 1,
+        "name": "Indomie Soto Mie",
+        "desc": "Kali ini Indofood menghadirkan varian rasa Indomie soto. Salah satu karakteristik mie instan soto adalah kemasannya berwarna hijau cerah.",
+        "price": 2900,
+        "stock": 10,
+        "img": "http://localhost:3001/3-removebg-preview.png",
+        "author_id": 1,
+        "createdAt": "2024-02-12T02:06:28.000Z",
+        "updatedAt": "2024-02-12T02:06:28.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 3,
+        "kategori_id": 1,
+        "name": "Indomie Kari Ayam",
+        "desc": "Indomie hadir dalam banyak variasi dari rasa sup klasik seperti ayam, sayuran dan Indomie Kari Ayam Mie Instan.",
+        "price": 2900,
+        "stock": 2,
+        "img": "http://localhost:3001/4-removebg-preview.png",
+        "author_id": 1,
+        "createdAt": "2024-02-12T02:07:59.000Z",
+        "updatedAt": "2024-02-12T02:07:59.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 4,
+        "kategori_id": 1,
+        "name": "Indomie Ayam Bawang",
+        "desc": "Indomie hadir dalam banyak variasi dari rasa sup klasik seperti ayam, sayuran dan Indomie Kari Ayam Mie Instan.",
+        "price": 3000,
+        "stock": 11,
+        "img": "http://localhost:3001/6-removebg-preview_(1).png",
+        "author_id": 1,
+        "createdAt": "2024-02-12T02:08:39.000Z",
+        "updatedAt": "2024-02-12T02:11:43.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    }
+]

@@ -9,7 +9,14 @@ const fileName = 'server/api/itemHelper.js';
 
 const getItemList = async () => {
     try {
-        const items = await tb_item.findAll();
+        const items = await tb_item.findAll({
+            include: {
+                model: tb_user,
+                as: 'author',
+                attributes: ['username'],
+                required: false
+            }
+        });
 
         return Promise.resolve(items);    
     } catch (error) {
