@@ -18,6 +18,10 @@ const getItemList = async () => {
             }
         });
 
+        if(_.isEmpty(items)) {
+            return Promise.reject(Boom.notFound(`Item list is empty!`));
+        }
+
         return Promise.resolve(items);    
     } catch (error) {
         console.log([fileName, 'getItemList', 'ERROR'], { info: `${error}` });
@@ -25,31 +29,25 @@ const getItemList = async () => {
     }
 };
 
-const getItemListByAuthor = async (id, res) => {
+const getItemListByAuthor = async (id) => {
     try {
-        const isAdmin = await tb_user.findOne({
+        const itemsByAuthor = await tb_item.findAll({
             where: {
-                id: id,
-                role: 'admin'
+                author_id: id
+            },
+            include: {
+                model: tb_user,
+                as: 'author',
+                attributes: ['username'],
+                required: false
             }
         });
 
-        if(_.isEmpty(isAdmin)) {
-            return Promise.reject(Boom.badRequest('this user are not admin!'));
-        } else {
-            const itemsByAuthor = await tb_item.findAll({
-                where: {
-                    author_id: id
-                },
-                include: {
-                    model: tb_user,
-                    as: 'author',
-                    attributes: ['username'],
-                    required: false
-                }
-            });
-            return Promise.resolve(itemsByAuthor);    
+        if(_.isEmpty(itemsByAuthor)) {
+            return Promise.reject(Boom.notFound(`Cannot find item list by this author!`));
         }
+
+        return Promise.resolve(itemsByAuthor);    
     } catch (error) {
         console.log([fileName, 'postDataItem', 'ERROR'], { info: `${error}` });
         return Promise.reject(errorResponse(error));    
@@ -63,6 +61,10 @@ const getItemDetail = async (id) => {
                 id: id
             }
         });
+
+        if(_.isEmpty(itemDetail)) {
+            return Promise.reject(Boom.notFound(`Cannot find item detail with id ${id}!`));
+        }
 
         return Promise.resolve(itemDetail);    
     } catch (error) {

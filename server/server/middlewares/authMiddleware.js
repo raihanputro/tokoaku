@@ -2,10 +2,10 @@ const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const Moment = require('moment');
 
-const { responseSuccess, responseError } = require('../helpers/responseHelper');
+const { responseError } = require('../helpers/responseHelper');
 
 const fileName = 'server/middlewares/authMiddleware.js';
-const jwtSecretKey = process.env.JWT_SECRET_KEY;
+const jwtSecretKey = process.env.JWT_SECRET_KEY || "JWT_KEY";
 
 const validateToken = ( req, res, next ) => {
     const { authorization } = req.headers;

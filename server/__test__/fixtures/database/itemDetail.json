@@ -1,0 +1,18 @@
+[
+    {
+        "isSucsess": true,
+        "status": "Success get item detail!",
+        "result": {
+            "id": 1,
+            "kategori_id": 1,
+            "name": "Indomie Goreng",
+            "desc": "Bawa pengalaman kuliner yang autentik dan lezat ke rumah Anda dengan Indomie Goreng, hidangan favorit yang telah mencuri hati jutaan orang di seluruh dunia. Nikmati sensasi rasa gurih dan pedas yang khas, dengan mie goreng yang lembut.",
+            "price": 5000,
+            "stock": 10,
+            "img": "http://localhost:3001/indomie-goreng.png",
+            "author_id": 1,
+            "createdAt": "2024-02-06T07:10:42.000Z",
+            "updatedAt": "2024-02-06T07:10:42.000Z"
+        }
+    }
+]

@@ -28,10 +28,12 @@ const userDataValidation = ( data ) => {
 
 const itemDataValidation = ( data ) => {
     const schema = Joi.object({
+        kategori_id: Joi.number().required(),
         name: Joi.string().required(),
+        desc: Joi.string().required(),
         price: Joi.number().required(),
         stock: Joi.number().required(),
-        authorid: Joi.number().required(),
+        author_id: Joi.number().required(),
       });
     
       if (schema.validate(data).error) {
