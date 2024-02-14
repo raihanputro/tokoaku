@@ -67,6 +67,7 @@
     background-color: var(--color-bg) !important;
     color: var(--color-text) !important;
     min-height: 100vh;
+    height: 100%;
 
     .listContainer {
       @include directionY;
