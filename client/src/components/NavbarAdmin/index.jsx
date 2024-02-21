@@ -26,6 +26,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import PeopleIcon from '@mui/icons-material/People';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 import { setLogin, setToken, setUser } from '@containers/Client/actions';
 import { setLocale, setTheme } from '@containers/App/actions';
@@ -214,19 +215,25 @@ const NavbarAdmin = ({ title, locale, theme, children }) => {
               </IconButton>
             </Toolbar>
             <List component="nav" sx={{ mt: 4 }} className={classes.listContainer}>
-              <ListItemButton onClick={() => navigate('/admin/data-user')}>
+              <ListItemButton onClick={() => navigate('/admin/user-data')}>
                 <ListItemIcon>
                   <PeopleIcon />
                 </ListItemIcon>
                 <FormattedMessage id="drawer_user_data" />
               </ListItemButton>
-              <ListItemButton onClick={() => navigate('/admin/data-item')}>
+              <ListItemButton onClick={() => navigate('/admin/item-data')}>
                 <ListItemIcon>
                   <ShoppingBagIcon />
                 </ListItemIcon>
                 <FormattedMessage id="drawer_item_data" />
               </ListItemButton>
-            </List>
+              <ListItemButton onClick={() => navigate('/admin/category-data')}>
+                <ListItemIcon>
+                  <FormatListBulletedIcon />
+                </ListItemIcon>
+                <FormattedMessage id="drawer_category_data" />
+              </ListItemButton>
+            </List> 
           </Box>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, overflow: 'auto' }}> 

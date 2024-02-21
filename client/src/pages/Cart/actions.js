@@ -5,20 +5,17 @@ export const setDataCart = (cart) => ({
     cart
 });
 
-export const getDataCart = (id) => ({
+export const getDataCart = () => ({
     type: GET_DATA_CART,
-    id, 
 });
 
-export const updateDataCart = (id, dataCart, userId) => ({
+export const updateDataCart = (id, dataCart) => ({
     type: UPDATE_DATA_CART,
     id,
     dataCart,
-    userId
 });
 
-export const deleteDataCart = (id, userId) => ({
+export const deleteDataCart = (id) => ({
     type: DELETE_DATA_CART,
     id,
-    userId
 });

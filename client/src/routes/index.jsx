@@ -5,11 +5,13 @@ import Home from '@pages/Home';
 import Register from '@pages/Register';
 import Login from '@pages/Login';
 import Profile from '@pages/Profile';
-import DetailItem from '@pages/Detail Item';
+import Wishlist from '@pages/Wishlist';
 import Cart from '@pages/Cart';
-import DashboardAdmin from '@pages/Dashboard Admin';
-import DataUser from '@pages/UserData';
-import ItemData from '@pages/ItemData';
+import DetailItem from '@pages/Detail Item';
+import DashboardAdmin from '@pages/Admin/Dashboard Admin';
+import UserData from '@pages/Admin/User Data';
+import ItemData from '@pages/Admin/Item Data';
+import CategoryData from '@pages/Admin/Category Data';
 import NotFound from '@pages/NotFound';
 
 const routes = [
@@ -49,6 +51,13 @@ const routes = [
     layout: MainLayout
   },
   {
+    path: '/wishlist',
+    name: 'Wishlist',
+    protected: true,
+    component: Wishlist,
+    layout: MainLayout
+  },
+  {
     path: '/cart',
     name: 'Cart',
     protected: true,
@@ -63,17 +72,24 @@ const routes = [
     layout: AdminLayout
   },
   {
-    path: '/admin/data-user',
+    path: '/admin/user-data',
     name: 'User Data Admin',
     protected: true,
-    component: DataUser,
+    component: UserData,
     layout: AdminLayout
   },
   {
-    path: '/admin/data-item',
+    path: '/admin/item-data',
     name: 'Item Data Admin',
     protected: true,
     component: ItemData,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/category-data',
+    name: 'Category Data Admin',
+    protected: true,
+    component: CategoryData,
     layout: AdminLayout
   },
   { 

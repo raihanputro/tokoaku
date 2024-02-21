@@ -15,18 +15,6 @@
             @include directionY;
         }
 
-        // @include apply-at-xs2-size {
-        //     grid-template-columns: repeat(1, 1fr);
-        // }
-
-        // @include apply-at-sm-size {
-        //     grid-template-columns: repeat(1, 1fr);
-        // }
-
-        // @include apply-at-md-size {
-        //     grid-template-columns: repeat(2, 1fr);
-        // }
-
         @include apply-at-xl-size {
             
         }
@@ -37,12 +25,14 @@
 
         .cardContainer {
             background-color: var(--color-bg);
-            padding: 10px; 
+            height: 100%;
     
             .contentContainer {
                 @include directionX;
                 align-items: center;
                 justify-content: space-between;
+                padding: 10px;
+                
                 @include apply-at-xs-size {
                     @include directionY;
                 }
@@ -75,6 +65,14 @@
                         }
                     }
                 }
+            }
+
+            .cartEmpty {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                font-size: 30px;
             }
         }
     }

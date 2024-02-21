@@ -15,7 +15,7 @@ import classes from './style.module.scss';
 
 const Home = (items) => {
   const dispatch = useDispatch();
-  const itemsData = items?.items?.result;
+  const itemsData = items?.items;
 
   useEffect(() => {
     dispatch(getItemList());

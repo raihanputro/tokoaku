@@ -3,4 +3,11 @@
 .cardContainer {
     background-color: var(--color-bg);
     height: 100%;
+
+    .bottomContent {
+        margin-top: 2%;
+        @include directionX;
+        align-items: center;
+        gap: 10px;
+    }
 }

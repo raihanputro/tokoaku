@@ -5,10 +5,9 @@ export const setItemDetail = (item) => ({
     item
 })
 
-export const setCartitem = (cartData, userID) => ({
+export const setCartitem = (cartData) => ({
     type: SET_CART_ITEM,
     cartData,
-    userID
 }) 
 
 export const getItemDetail = (id, cb) => ({

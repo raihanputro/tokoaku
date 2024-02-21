@@ -7,8 +7,9 @@ import homeSaga from '@pages/Home/saga';
 import profileSaga from '@pages/Profile/saga';
 import itemDetailSaga from '@pages/Detail Item/saga';
 import cartSaga from '@pages/Cart/saga';
-import userDataSaga from '@pages/UserData/saga';
-import itemDataSaga from '@pages/ItemData/saga';
+import userDataSaga from '@pages/Admin/User Data/saga';
+import itemDataSaga from '@pages/Admin/Item Data/saga';
+import categoryDataSaga from '@pages/Admin/Category Data/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -20,6 +21,7 @@ export default function* rootSaga() {
     itemDetailSaga(),
     cartSaga(),
     userDataSaga(),
-    itemDataSaga()
+    itemDataSaga(),
+    categoryDataSaga()
   ]);
 }

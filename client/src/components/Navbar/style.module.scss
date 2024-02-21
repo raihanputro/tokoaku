@@ -2,17 +2,18 @@
 
 .headerWrapper {
   background-color: var(--color-bg) !important;
-  padding-left: 30px;
-  padding-right: 30px;
   box-shadow: 0 0.25rem 0.75rem rgba(25, 49, 83, 0.2) !important;
   position: sticky;
   top: 0;
   z-index: 40;
-
+  width: 100%;
+  
   .contentWrapper {
     @include directionX;
     color: var(--color-text);
-    padding: 1rem;
+    padding-left: 30px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     align-items: center;
     justify-content: space-between;
     font-size: 1rem;
@@ -43,6 +44,7 @@
     .toolbar {
       @include directionX;
       gap: 20px;
+      padding-right: 30px;
       .theme {
         @include directionX;
         align-items: center;

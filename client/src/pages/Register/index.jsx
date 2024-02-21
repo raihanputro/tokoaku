@@ -24,6 +24,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const isValidEmail = (email) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,6 +46,8 @@ const Register = () => {
         dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_password_required'})));
     } else if(password.length < 6) {
         dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_password_min'})));
+    } else if (password !== confirmPassword ) {
+        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_Confirmpassword_notsame'})));
     } else {
         dispatch(setUserRegister({ email: email, username: username, password: password, role: 'customer' }, () => {
           navigate('/login');
@@ -77,6 +80,12 @@ const Register = () => {
                           <FormattedMessage id="register_label_password" />
                       </FormLabel>
                       <TextField className={classes.input} variant="outlined" type='password' value={password} onChange={(e) => setPassword(e.target.value)} required={true}/>
+                  </Box>
+                  <Box className={classes.inputLabelContainer}>
+                      <FormLabel className={classes.label}>
+                          <FormattedMessage id="register_label_confirmPassword" />
+                      </FormLabel>
+                      <TextField className={classes.input} variant="outlined" type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required={true}/>
                   </Box>
               </FormControl>
               <Button className={classes.registerButton} onClick={onSubmit}><FormattedMessage id="register_title" /></Button>

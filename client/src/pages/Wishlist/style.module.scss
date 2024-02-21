@@ -1,0 +1,9 @@
+@import '@styles/base';
+
+@include container {
+
+    .pageTitle {
+        font-size: 40px;
+        font-weight: 700;
+    }
+}

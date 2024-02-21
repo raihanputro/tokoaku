@@ -12,6 +12,7 @@ export default {
   register_label_email: 'Email',
   register_label_username: 'Username',
   register_label_password: 'Password',
+  register_label_confirmPassword: 'Confirm Password',
 
   register_validation: 'Register Validation',
   register_validation_required: 'Please enter your full name, email and password!',
@@ -21,6 +22,7 @@ export default {
   register_validation_email_pattern: 'Email not valid!',
   register_validation_password_min: 'Minimum password is 6 characters',
   register_validation_has_registered: 'this email has been registered!',
+  register_validation_Confirmpassword_notsame: 'Confirm password not match!',
 
   login_title: 'Login',
   login_label_email: 'Email',
@@ -49,6 +51,7 @@ export default {
 
   drawer_user_data: 'User Data',
   drawer_item_data: 'Item Data',
+  drawer_category_data: 'Category Data',
 
   add_button: 'Add',
 
@@ -56,15 +59,17 @@ export default {
   name_table_row: 'Name',
   username_table_row: 'Username',
   price_table_row: 'Price',
+  discount_table_row: 'Discount',
   stock_table_row: 'Stock',
   action_table_row: 'Action',
   role_table_row: 'Role',
-
+  table_empty: 'Table Empty',
 
   name_modal_input: 'Name',
   desc_modal_input: 'Description',
   price_modal_input: 'Price',
   stock_modal_input: 'Stock',
+  discount_modal_input: 'Discount',
 
   add_modal_title: 'Add new item!',
   add_modal_button: 'Add Item',
@@ -89,4 +94,12 @@ export default {
   dialog_delete_confirm: 'You are sure you will delete user data with ID ',
   dialog_delete_button_agree: 'Agree',
   dialog_delete_button_disagree: 'Cancel',
+
+  card_sold: ' Sold',
+  item_data_title: 'Item Data',
+  category_data_title: 'Category Data',
+  search_item_data: 'Search Item',
+  search_category_data: 'Search Category',
+
+  wishlist_title: 'Wishlist',
 };

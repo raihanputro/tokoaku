@@ -10,6 +10,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LogoutIcon from '@mui/icons-material/Logout';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { setLocale, setTheme } from '@containers/App/actions';
 import { selectLogin } from '@containers/Client/selectors';
@@ -62,12 +65,11 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect }) => {
   };
 
   useEffect(() => {
-    setCartData(cartDataSelect?.result);
-}, [cartDataSelect]);
-
+    setCartData(cartDataSelect);
+  }, [cartDataSelect]);
 
   useEffect(() => {
-    const totalQuantities = cartData?.reduce((accumulator, currentValue) => accumulator + currentValue.qty, 0);
+    const totalQuantities = cartData && Array.isArray(cartData) ? cartData.reduce((accumulator, currentValue) => accumulator + currentValue.qty, 0) : 0;
     setQty(totalQuantities);
   }, [cartData]);
 
@@ -79,29 +81,43 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect }) => {
   );
 
   const sideNavbarLogin = (
-    <Box sx={{ flexGrow: 0, marginRight: '0.5rem', display: 'flex', flexDirection: 'row', gap: '30px' }}>
+    <Box sx={{ flexGrow: 0, display: 'flex', flexDirection: 'row', gap: '30px' }}>
       <Tooltip title="Menu">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar  />
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: '45px' }}
+        sx={{ 
+          marginTop: '60px',
+          '& .MuiPaper-root': {
+            backgroundColor: theme === 'light' ? '#fff' : '#4f4557',
+          },
+        }}
         anchorEl={anchorElUser}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: 'bottom',  
+          horizontal: 'center',
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: 'bottom', 
+          horizontal: 'center', 
         }}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
           <MenuItem onClick={() => {handleCloseUserMenu, navigate('/profile')}}>
-            <Typography textAlign="center">Profile</Typography>
+            <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'space-between' }}>
+              <AccountBoxIcon sx={{ color: 'blue' }} />
+              <Typography textAlign="center">Profile</Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem onClick={() => {handleCloseUserMenu, navigate('/wishlist')}}>
+            <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'space-between' }}>
+              <FavoriteIcon sx={{ color: '#FF407D' }} />
+              <Typography textAlign="center">Wishlist</Typography>
+            </Box>
           </MenuItem>
           <MenuItem 
             onClick={
@@ -114,7 +130,10 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect }) => {
                 navigate('/')
               }
             }>
-            <Typography textAlign="center">Logout</Typography>
+              <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'space-between' }}>
+                <LogoutIcon sx={{ color: 'red' }} />
+                <Typography textAlign="center">Logout</Typography>
+              </Box>
           </MenuItem>
       </Menu>
     </Box>
@@ -171,7 +190,7 @@ Navbar.propTypes = {
   locale: PropTypes.string.isRequired,
   theme: PropTypes.string,
   isLogin: PropTypes.bool,
-  cartDataSelect: PropTypes.object
+  cartDataSelect: PropTypes.array
 };
 
 const mapStateToProps = createStructuredSelector({

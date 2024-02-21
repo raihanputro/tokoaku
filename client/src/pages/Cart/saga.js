@@ -4,10 +4,10 @@ import { getCartApi, updateCartApi, deleteCartApi } from "@domain/api";
 import { setDataCart } from "./actions";
 import { setLoading, showPopup } from "@containers/App/actions";
 
-function* doGetCart ({id}) {
+function* doGetCart () {
     yield put(setLoading(true));
     try {
-        const resCart = yield call(getCartApi, id);
+        const resCart = yield call(getCartApi);
         yield put(setDataCart(resCart));
     } catch (error) {
         yield put(showPopup(error));
@@ -15,21 +15,21 @@ function* doGetCart ({id}) {
     yield put(setLoading(false));
 };
 
-function* doUpdateCart ({id, dataCart, userId}) {
+function* doUpdateCart ({id, dataCart}) {
     try {
         yield call(updateCartApi, id, dataCart);
-        const resCart = yield call(getCartApi, userId);
-        yield put(setDataCart(resCart));
+        const resCart = yield call(getCartApi);
+        yield put(setDataCart(resCart.data));
     } catch (error) {
         yield put(showPopup(error));
     }
 }
 
-function* doDeleteCart ({id, userId}) {
+function* doDeleteCart ({id}) {
     try {
         yield call(deleteCartApi, id);
-        const resCart = yield call(getCartApi, userId);
-        yield put(setDataCart(resCart));
+        const resCart = yield call(getCartApi);
+        yield put(setDataCart(resCart.data));
     } catch (error) {
         yield put(showPopup(error));
     }

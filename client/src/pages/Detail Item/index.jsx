@@ -37,7 +37,7 @@ const DetailItem = ({itemDataSelect, userDataSelect}) => {
   }, [id]);
 
   useEffect(() => {
-    setItemData(itemDataSelect.result)
+    setItemData(itemDataSelect)
   }, [itemDataSelect]);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const DetailItem = ({itemDataSelect, userDataSelect}) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(setCartitem({item_id: itemData?.id, user_id: userDataSelect.id, qty: count}, userDataSelect.id));
+    dispatch(setCartitem({item_id: itemData?.id, user_id: userDataSelect.id, qty: count}));
     setCount(1);
   };
 

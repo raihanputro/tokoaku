@@ -7,7 +7,7 @@ import { setLoading, showPopup } from "@containers/App/actions";
 function* doGetItem () {
     try {
         const res = yield call(itemListApi);
-        yield put(setItemList(res));
+        yield put(setItemList(res.data));
     } catch (error) {
         yield put(showPopup(error));
     }

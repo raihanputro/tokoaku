@@ -12,6 +12,7 @@ export default {
   register_label_email: 'Email',
   register_label_username: 'Username',
   register_label_password: 'Sandi',
+  register_label_confirmPassword: 'Konfirmasi Password',
 
   register_validation: 'Validasi Daftar',
   register_validation_required: 'Masukkan email, username dan password!',
@@ -21,6 +22,7 @@ export default {
   register_validation_email_pattern: 'Email tidak valid!',
   register_validation_password_min: 'Password minimal 6 karakter!',
   register_validation_has_registered: 'Email ini telah terdaftar!',
+  register_validation_Confirmpassword_notsame: 'Konfirmasi password salah!',
 
   login_title: 'Masuk',
   login_label_email: 'Email',
@@ -48,6 +50,7 @@ export default {
 
   drawer_user_data: 'Data Pengguna',
   drawer_item_data: 'Data Barang',
+  drawer_category_data: 'Data Kategori',
 
   add_button: 'Tambah',
 
@@ -55,14 +58,17 @@ export default {
   name_table_row: 'Nama',
   username_table_row: 'Username',
   price_table_row: 'Harga',
+  discount_table_row: 'Diskon',
   stock_table_row: 'Stok',
   action_table_row: 'Aksi',
   role_table_row: 'Peran',
+  table_empty: 'Tabel Kosong',
 
   name_modal_input: 'Nama',
   desc_modal_input: 'Deskripsi',
   price_modal_input: 'Harga',
   stock_modal_input: 'Stock',
+  discount_modal_input: 'Diskon',
 
   add_modal_title: 'Tambah barang baru!',
   add_modal_button: 'Tambah Barang',
@@ -87,4 +93,12 @@ export default {
   dialog_delete_confirm: 'Kamu yakin akan menghapus data user dengan id ',
   dialog_delete_button_agree: 'Setuju',
   dialog_delete_button_disagree: 'Batal',
+
+  card_sold: ' Terjual',
+  item_data_title: 'Data Barang',
+  category_data_title: 'Data Kategori',
+  search_item_data: 'Cari Barang',
+  search_category_data: 'Cari Kategori',
+
+  wishlist_title: 'Daftar Keinginan',
 };

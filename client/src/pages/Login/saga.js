@@ -11,10 +11,10 @@ function* doLogin ({ userData, cb}) {
     try {
         const res = yield call(loginUserApi, userData);
         yield put(setLogin(true));
-        yield put(setToken(res.result));
-        const decodedJwt = jwtDecode(res.result);
-        const resCart = yield call(getCartApi, decodedJwt.id);
-        yield put(setDataCart(resCart));
+        yield put(setToken(res.token));
+        const decodedJwt = jwtDecode(res.token);
+        const resCart = yield call(getCartApi);
+        yield put(setDataCart(resCart.data));
         yield put(setUser(decodedJwt));
         cb && cb();
     } catch (error) {

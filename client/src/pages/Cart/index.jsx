@@ -27,30 +27,32 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
   const [subTotal, setSubTotal] = useState(0);
 
   useEffect(() => {
-    setCartData(cartDataSelect?.result);
+    setCartData(cartDataSelect);
   }, [cartDataSelect]); 
 
   useEffect(() => {
     let total = 0;
     cartData.forEach(item => {
-      total += (item.item.price * item.qty);
+      total += (item?.item?.price * item?.qty);
     });
     setSubTotal(total)
   }, [cartData]);
 
   const increment = (itemId, qty) => {
     const newQty = qty + 1;
-    dispatch(updateDataCart(itemId, {qty: newQty}, userDataSelect?.id))
+    dispatch(updateDataCart(itemId, {qty: newQty}))
   };
 
   const decrement = (cartId, qty) => {
     const newQty = qty - 1;
     if (newQty >= 1) {
-      dispatch(updateDataCart(cartId, {qty: newQty}, userDataSelect?.id))
+      dispatch(updateDataCart(cartId, {qty: newQty}))
     } else {
-      dispatch(deleteDataCart(cartId, userDataSelect?.id));
+      dispatch(deleteDataCart(cartId));
     }
   };
+
+  console.log(cartData)
   
   return (
     <Box className={classes.container}>
@@ -58,9 +60,9 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
         <FormattedMessage id="cart_title" />
       </Typography>
       <Box className={classes.contentContainer}>
-        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '100%' }}>
+        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '100%', height: '160px',  }}>
           <Box className={classes.cardContainer}>
-            {cartData?.map((cart, index) => (
+            {cartData.length >= 1 ? cartData && Array.isArray(cartData) && cartData?.map((cart, index) => (
               <Box key={index} className={classes.contentContainer}>
                 <Box className={classes.contentLeft}>
                   <CardMedia 
@@ -92,34 +94,40 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
                   </Box>
                 </Box>
               </Box>
-            ))}
+            )) : 
+              <Typography variant='p' component='div' className={classes.cartEmpty}>
+                Keranjang kosong
+              </Typography>
+            }
           </Box>
         </Card>
-        <Card sx={{  marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '300px' }}>
-          <Box className={classes.cardSummaryContainer}>
-            <Typography variant='h1' component='div' className={classes.summaryTitle} sx={{ textAlign: 'center' }}>
-              <FormattedMessage id="summary_cart_title" />
-            </Typography>
-            <Box className={classes.total}>
-              <Typography variant='h1' component='div' className={classes.totalText}>
-                <FormattedMessage id="total_title" />
+        {cartData.length >= 1 && 
+          <Card sx={{  marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '300px' }}>
+            <Box className={classes.cardSummaryContainer}>
+              <Typography variant='h1' component='div' className={classes.summaryTitle} sx={{ textAlign: 'center' }}>
+                <FormattedMessage id="summary_cart_title" />
               </Typography>
-              <Typography variant='h1' component='div' className={classes.totalText}>
-                Rp{subTotal}
-              </Typography>
+              <Box className={classes.total}>
+                <Typography variant='h1' component='div' className={classes.totalText}>
+                  <FormattedMessage id="total_title" />
+                </Typography>
+                <Typography variant='h1' component='div' className={classes.totalText}>
+                  Rp{subTotal}
+                </Typography>
+              </Box>
+              <Button sx={{ marginTop: '20px' }}>
+                <FormattedMessage id="buy_title" />
+              </Button>
             </Box>
-            <Button sx={{ marginTop: '20px' }}>
-              <FormattedMessage id="buy_title" />
-            </Button>
-          </Box>
-        </Card>
+          </Card>
+        }   
       </Box>
     </Box>
   )
 }
 
 Cart.propTypes = {
-  cartDataSelect: PropTypes.object,
+  cartDataSelect: PropTypes.array,
   userDataSelect: PropTypes.object
 }
 

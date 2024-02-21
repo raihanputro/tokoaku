@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { useNavigate } from 'react-router-dom';
@@ -35,9 +35,9 @@ const Login = ({userSelect}) => {
 
   useEffect(() => {
     if (userSelect) {
-      if (userSelect.role === 'customer') {
+      if (userSelect.role === 'Customer') {
         navigate('/');
-      } else if (userSelect.role === 'admin') {
+      } else if (userSelect.role === 'Admin') {
         navigate('/admin');
       }
     }
@@ -102,4 +102,4 @@ const mapStateToProps = createStructuredSelector({
   userSelect: selectUser,
 })
 
-export default connect(mapStateToProps)(Login);
+  export default connect(mapStateToProps)(Login);
