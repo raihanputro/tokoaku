@@ -1,0 +1,220 @@
+{
+    "statusCode": 200,
+    "message": "Get carts list successfully!",
+    "data": [
+        {
+            "id": 1,
+            "item_id": 1,
+            "user_id": 4,
+            "qty": 2,
+            "createdAt": "2024-02-07T14:35:56.000Z",
+            "updatedAt": "2024-02-07T14:35:56.000Z",
+            "customer": null,
+            "item": {
+                "id": 1,
+                "category_id": 1,
+                "name": "Indomie Goreng",
+                "desc": "anjay",
+                "price": 5000,
+                "discount": null,
+                "stock": 10,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/indomie-goreng.png",
+                "author_id": 1,
+                "createdAt": "2024-02-06T07:10:42.000Z",
+                "updatedAt": "2024-02-20T06:49:00.000Z"
+            }
+        },
+        {
+            "id": 2,
+            "item_id": 2,
+            "user_id": 4,
+            "qty": 1,
+            "createdAt": "2024-02-07T14:36:22.000Z",
+            "updatedAt": "2024-02-07T14:36:22.000Z",
+            "customer": null,
+            "item": {
+                "id": 2,
+                "category_id": 1,
+                "name": "Indomie Soto Mie",
+                "desc": "Kali ini Indofood menghadirkan varian rasa Indomie soto. Salah satu karakteristik mie instan soto adalah kemasannya berwarna hijau cerah.",
+                "price": 2900,
+                "discount": null,
+                "stock": 10,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/3-removebg-preview.png",
+                "author_id": 1,
+                "createdAt": "2024-02-12T02:06:28.000Z",
+                "updatedAt": "2024-02-12T02:06:28.000Z"
+            }
+        },
+        {
+            "id": 5,
+            "item_id": 2,
+            "user_id": 3,
+            "qty": 2,
+            "createdAt": "2024-02-07T18:51:50.000Z",
+            "updatedAt": "2024-02-07T18:51:50.000Z",
+            "customer": null,
+            "item": {
+                "id": 2,
+                "category_id": 1,
+                "name": "Indomie Soto Mie",
+                "desc": "Kali ini Indofood menghadirkan varian rasa Indomie soto. Salah satu karakteristik mie instan soto adalah kemasannya berwarna hijau cerah.",
+                "price": 2900,
+                "discount": null,
+                "stock": 10,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/3-removebg-preview.png",
+                "author_id": 1,
+                "createdAt": "2024-02-12T02:06:28.000Z",
+                "updatedAt": "2024-02-12T02:06:28.000Z"
+            }
+        },
+        {
+            "id": 8,
+            "item_id": 12,
+            "user_id": 3,
+            "qty": 3,
+            "createdAt": "2024-02-07T09:26:33.000Z",
+            "updatedAt": "2024-02-07T09:31:34.000Z",
+            "customer": null,
+            "item": null
+        },
+        {
+            "id": 9,
+            "item_id": 12,
+            "user_id": 6,
+            "qty": 1,
+            "createdAt": "2024-02-08T03:32:04.000Z",
+            "updatedAt": "2024-02-09T11:59:17.000Z",
+            "customer": null,
+            "item": null
+        },
+        {
+            "id": 14,
+            "item_id": 4,
+            "user_id": 2,
+            "qty": 1,
+            "createdAt": "2024-02-12T03:27:09.000Z",
+            "updatedAt": "2024-02-12T08:07:04.000Z",
+            "customer": {
+                "id": 2,
+                "email": "test@gmail.com",
+                "password": "$2a$10$kbc/UaWEoFy/oawIAwQ0v.vlwdy/OfpeORc95484lW42YqNKzXLD2",
+                "username": "test",
+                "address": null,
+                "phone": null,
+                "role": "Customer",
+                "createdAt": "2024-02-20T02:02:50.000Z",
+                "updatedAt": "2024-02-20T02:02:50.000Z"
+            },
+            "item": null
+        },
+        {
+            "id": 17,
+            "item_id": 3,
+            "user_id": 2,
+            "qty": 1,
+            "createdAt": "2024-02-12T08:06:10.000Z",
+            "updatedAt": "2024-02-12T08:07:05.000Z",
+            "customer": {
+                "id": 2,
+                "email": "test@gmail.com",
+                "password": "$2a$10$kbc/UaWEoFy/oawIAwQ0v.vlwdy/OfpeORc95484lW42YqNKzXLD2",
+                "username": "test",
+                "address": null,
+                "phone": null,
+                "role": "Customer",
+                "createdAt": "2024-02-20T02:02:50.000Z",
+                "updatedAt": "2024-02-20T02:02:50.000Z"
+            },
+            "item": {
+                "id": 3,
+                "category_id": 1,
+                "name": "Indomie Kari Ayam",
+                "desc": "Indomie hadir dalam banyak variasi dari rasa sup klasik seperti ayam, sayuran dan Indomie Kari Ayam Mie Instan.",
+                "price": 2900,
+                "discount": null,
+                "stock": 2,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/4-removebg-preview.png",
+                "author_id": 1,
+                "createdAt": "2024-02-12T02:07:59.000Z",
+                "updatedAt": "2024-02-12T02:07:59.000Z"
+            }
+        },
+        {
+            "id": 18,
+            "item_id": 1,
+            "user_id": 2,
+            "qty": 1,
+            "createdAt": "2024-02-12T08:06:53.000Z",
+            "updatedAt": "2024-02-12T08:06:53.000Z",
+            "customer": {
+                "id": 2,
+                "email": "test@gmail.com",
+                "password": "$2a$10$kbc/UaWEoFy/oawIAwQ0v.vlwdy/OfpeORc95484lW42YqNKzXLD2",
+                "username": "test",
+                "address": null,
+                "phone": null,
+                "role": "Customer",
+                "createdAt": "2024-02-20T02:02:50.000Z",
+                "updatedAt": "2024-02-20T02:02:50.000Z"
+            },
+            "item": {
+                "id": 1,
+                "category_id": 1,
+                "name": "Indomie Goreng",
+                "desc": "anjay",
+                "price": 5000,
+                "discount": null,
+                "stock": 10,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/indomie-goreng.png",
+                "author_id": 1,
+                "createdAt": "2024-02-06T07:10:42.000Z",
+                "updatedAt": "2024-02-20T06:49:00.000Z"
+            }
+        },
+        {
+            "id": 19,
+            "item_id": 2,
+            "user_id": 2,
+            "qty": 1,
+            "createdAt": "2024-02-12T08:07:36.000Z",
+            "updatedAt": "2024-02-12T08:07:36.000Z",
+            "customer": {
+                "id": 2,
+                "email": "test@gmail.com",
+                "password": "$2a$10$kbc/UaWEoFy/oawIAwQ0v.vlwdy/OfpeORc95484lW42YqNKzXLD2",
+                "username": "test",
+                "address": null,
+                "phone": null,
+                "role": "Customer",
+                "createdAt": "2024-02-20T02:02:50.000Z",
+                "updatedAt": "2024-02-20T02:02:50.000Z"
+            },
+            "item": {
+                "id": 2,
+                "category_id": 1,
+                "name": "Indomie Soto Mie",
+                "desc": "Kali ini Indofood menghadirkan varian rasa Indomie soto. Salah satu karakteristik mie instan soto adalah kemasannya berwarna hijau cerah.",
+                "price": 2900,
+                "discount": null,
+                "stock": 10,
+                "sold": null,
+                "rating": null,
+                "img": "http://localhost:3001/3-removebg-preview.png",
+                "author_id": 1,
+                "createdAt": "2024-02-12T02:06:28.000Z",
+                "updatedAt": "2024-02-12T02:06:28.000Z"
+            }
+        }
+    ]
+}

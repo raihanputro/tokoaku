@@ -43,31 +43,6 @@ const detail = async ( req, res ) => {
     }
 };
 
-const register = async ( req, res ) => {
-    try {
-        userDataValidation(req.body);
-
-        const { email, username, password, role } = req.body;
-
-        const response = await authHelper.registerUser({ email, username, password, role });
-
-        return responseSuccess(res, 200, `${email} are registered!`, response);
-    } catch (error) {
-        return responseError(res, 404, 'Cannot register user!', error);
-    }
-};
-
-const login = async ( req, res ) => {
-    try {
-        const { email, password } = req.body;
-
-        const response = await authHelper.loginUser({ email, password });
-
-        return responseSuccess(res, 200, `${email} are login!`, response);
-    } catch (error) {
-        return responseError(res, 404, 'Cannot login!');
-    }
-};
 
 const profile = async ( req, res ) => {
     try {
@@ -149,8 +124,6 @@ const remove = async ( req, res ) => {
     }
 };
 
-Router.post('/register', register);
-Router.post('/login', login);
 Router.get('/profile', AuthMiddleware.validateToken, profile);
 Router.patch('/change-password', AuthMiddleware.validateToken, changePassword);
 Router.post('/forgot-password', forgotPassword);

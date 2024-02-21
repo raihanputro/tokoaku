@@ -5,21 +5,23 @@ const QS = require('qs');
 const db = require('../../models');
 const GeneralHelper = require('../../server/helpers/generalHelper');
 const ItemPlugin = require('../../server/api/item');
-const MockItemsWithAssocList = require('../fixtures/database/itemsWithAssoc.json');
-const MockitemDetail = require('../fixtures/database/itemDetail.json');
+const MockItemList = require('../fixtures/database/item/itemList.json');
+const MockitemDetail = require('../fixtures/database/item/itemDetail.json');
 
 let apiUrl;
 let server;
 let mockItem;
 let getItem;
 let postItem;
+let updateItem;
+let deleteItem;
 
-let bearerTokenAdmin = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyYWloYW53b3JrczQ2MUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQxMCQ2WVdPY1plaVRSYmZxLmFqWXRpZE9PRGxXZHpFL1RZNVpNRkNTWDVZTEFQVjMwc0VVMlNOVyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwNzgzMTcxNSwiZXhwIjoxNzA3OTE4MTE1fQ.WOHq95WteXIxiREU5QpfQv5lf8RpdC7V6nk9mTJflEM';
-let bearerTokenCustomer = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJmYXJyYXNAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkOUo1eEp6dEgxY3NvNng2VC9MSDAvZWN4Yk9GR09qTXJpMjVxbXBLLmZjY1FnRlZpVWhXbXUiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MDc4MzE4MDgsImV4cCI6MTcwODE5MTgwOH0._bTQGO_191ok8xJ3a5heHEYQA2NmRmX0VX1ugaLODfE';
+let bearerTokenAdmin = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJyYWloYW5wdHJvIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzA4MzQ1Njg3LCJleHAiOjE3MDg0MzIwODd9.nYMY2vwsrCx-71ZGtm058HCEmA2HzsYQteyo8vDGHA8';
+let bearerTokenCustomer = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidXNlcm5hbWUiOiJ0ZXN0Iiwicm9sZSI6IkN1c3RvbWVyIiwiaWF0IjoxNzA4Mzk1MjY5LCJleHAiOjE3MDg0ODE2Njl9.0IZAMtg6AC1az_dYCyqMbsSf06IIBur5PjRT4FOEqtA';
 
 describe('Item', () => {
     beforeAll(() => {
-        server = GeneralHelper.createTestServer('/item', ItemPlugin);
+        server = GeneralHelper.createTestServer('/api/item', ItemPlugin);
     });
 
     afterAll(async () => {
@@ -28,8 +30,8 @@ describe('Item', () => {
 
     describe('List', () => {
         beforeEach(() => {
-            apiUrl = '/item/list';
-            mockItem = _.cloneDeep(MockItemsWithAssocList);
+            apiUrl = '/api/item/list';
+            mockItem = _.cloneDeep(MockItemList);
             getItem = jest.spyOn(db.item, 'findAll');
         });
 
@@ -39,9 +41,9 @@ describe('Item', () => {
             const response = await Request(server)
                 .get(apiUrl)
                 .expect(200)
-            
+
             expect(!_.isEmpty(response.body)).toBeTruthy(); 
-            expect(response.body.result.length).toBeGreaterThan(0); 
+            expect(response.body.data.length).toBeGreaterThan(0); 
         });
 
         test('Should Return 404: Get Item List Success but Empty', async () => {
@@ -51,14 +53,14 @@ describe('Item', () => {
                 .get(apiUrl)
                 .expect(404)
 
-            expect(_.isEmpty(response.body.result)).toBeTruthy(); 
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
     });
 
     describe('List By Author', () => {
         beforeEach(() => {
-            apiUrl = '/item/author/1';
-            mockItem = _.cloneDeep(MockItemsWithAssocList);
+            apiUrl = '/api/item/author/1';
+            mockItem = _.cloneDeep(MockItemList);
             getItem = jest.spyOn(db.item, 'findAll');
         });
 
@@ -68,9 +70,10 @@ describe('Item', () => {
             const response = await Request(server)  
                 .get(apiUrl)
                 .set('Authorization', bearerTokenAdmin)
+                .expect(200)
 
             expect(!_.isEmpty(response.body)).toBeTruthy(); 
-            expect(response.body.result.length).toBeGreaterThan(0);
+            expect(response.body.data.length).toBeGreaterThan(0);
         });
 
         test('Should Return 404: Get Item List By Author Not Found', async () => {
@@ -80,8 +83,8 @@ describe('Item', () => {
                 .get(apiUrl)
                 .set('Authorization', bearerTokenAdmin)
                 .expect(404)
-
-                expect(_.isEmpty(response.body.result)).toBeTruthy(); 
+            
+                expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
 
         test('Should Return 401: Unauthorized', async () => {
@@ -91,13 +94,13 @@ describe('Item', () => {
                 .get(apiUrl)
                 .expect(401)
 
-            expect(_.isEmpty(response.body.result)).toBeTruthy(); 
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
     });
 
     describe('Item Detail', () => {
         beforeEach(() => {
-            apiUrl = '/item/detail/1';
+            apiUrl = '/api/item/detail/1';
             mockItem = _.cloneDeep(MockitemDetail);
             getItem = jest.spyOn(db.item, 'findOne');
         });
@@ -111,7 +114,7 @@ describe('Item', () => {
                 .expect(200)
 
             expect(!_.isEmpty(response.body)).toBeTruthy(); 
-            expect(response.body.result.length).toBeGreaterThan(0);
+            expect(response.body.data.length).toBeGreaterThan(0);
         });
 
         test('Should Return 404: Get Item Detail Not Found', async ()  => {
@@ -122,7 +125,7 @@ describe('Item', () => {
                 .set('Authorization', bearerTokenAdmin)
                 .expect(404)
             
-                expect(_.isEmpty(response.body.result)).toBeTruthy(); 
+                expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
 
         test('Should Return 401: Unauthorized', async () => {
@@ -132,13 +135,13 @@ describe('Item', () => {
                 .get(apiUrl)
                 .expect(401)
 
-            expect(_.isEmpty(response.body.result)).toBeTruthy(); 
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
     });
 
     describe('Add Item', () => {
         beforeEach(() => {
-            apiUrl = '/item/add';
+            apiUrl = '/api/item/add';
             mockItem = _.cloneDeep(MockitemDetail);
             postItem = jest.spyOn(db.item, 'create');
         });
@@ -153,13 +156,175 @@ describe('Item', () => {
                 .field('name', 'Indomie Goreng')
                 .field('desc', 'Indomie Goreng sangat lezat')
                 .field('price', '3000')
+                .field('discount', '0')
                 .field('stock', '10')
                 .attach('img', './public/indomie-goreng.png')
                 .expect(200)
 
-            console.log('response:', response.body)
+            expect(!_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 400: Send Empty Payload', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .post(apiUrl)
+                .set('Authorization', bearerTokenAdmin)
+                .expect(400)
+            
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Not Admin', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .post(apiUrl)
+                .set('Authorization', bearerTokenCustomer)
+                .field('kategori_id', '1')
+                .field('name', 'Indomie Goreng')
+                .field('desc', 'Indomie Goreng sangat lezat')
+                .field('price', '3000')
+                .field('stock', '10')
+                .attach('img', './public/indomie-goreng.png')
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Unauthorized', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .post(apiUrl)
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+    });
+
+    describe('Update Item', () => {
+        beforeEach(() => {
+            apiUrl = '/api/item/update/1';
+            mockItem = _.cloneDeep(MockitemDetail);
+            updateItem = jest.spyOn(db.item, 'update');
+        });
+
+        test('Should Return 200: Update Item Successfully', async () => {
+            updateItem.mockResolvedValue("Success");
+
+            const response = await Request(server)
+                .patch(apiUrl)
+                .set('Authorization', bearerTokenAdmin)
+                .field('kategori_id', '1')
+                .field('name', 'Indomie Goreng')
+                .field('desc', 'Indomie Goreng sangat lezat')
+                .field('price', '3000')
+                .field('stock', '10')
+                .attach('img', './public/indomie-goreng.png')
+                .expect(200)
+
+            expect(!_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 404: Item Not Found', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)
+                .patch('/api/item/update/10000')
+                .set('Authorization', bearerTokenAdmin)
+                .field('kategori_id', '1')
+                .field('name', 'Indomie Goreng')
+                .field('desc', 'Indomie Goreng sangat lezat')
+                .field('price', '3000')
+                .field('stock', '10')
+                .attach('img', './public/indomie-goreng.png')
+                .expect(404)
+            
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Not Admin', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .patch(apiUrl)
+                .set('Authorization', bearerTokenCustomer)
+                .field('kategori_id', '1')
+                .field('name', 'Indomie Goreng')
+                .field('desc', 'Indomie Goreng sangat lezat')
+                .field('price', '3000')
+                .field('stock', '10')
+                .attach('img', './public/indomie-goreng.png')
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Unauthorized', async () => {
+            postItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .patch(apiUrl)
+                .field('kategori_id', '1')
+                .field('name', 'Indomie Goreng')
+                .field('desc', 'Indomie Goreng sangat lezat')
+                .field('price', '3000')
+                .field('stock', '10')
+                .attach('img', './public/indomie-goreng.png')
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+    });
+
+    describe('Delete Item', () => {
+        beforeEach(() => {
+            apiUrl = '/api/item/remove/1';
+            deleteItem = jest.spyOn(db.item, 'destroy');
+        });
+
+        test('Should Return 200: Delete Item Successfully', async () => {
+            deleteItem.mockResolvedValue("Success");
+
+            const response = await Request(server)
+                .delete(apiUrl)
+                .set('Authorization', bearerTokenAdmin)
+                .expect(200)
 
             expect(!_.isEmpty(response.body)).toBeTruthy(); 
+        });
+
+        test('Should Return 404: Item Not Found', async () => {
+            deleteItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)
+                .delete('/api/item/remove/10000')
+                .set('Authorization', bearerTokenAdmin)
+                .expect(404)
+            
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Not Admin', async () => {
+            deleteItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .delete(apiUrl)
+                .set('Authorization', bearerTokenCustomer)
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
+        });
+
+        test('Should Return 401: Unauthorized', async () => {
+            deleteItem.mockResolvedValue("Failed");
+
+            const response = await Request(server)  
+                .delete(apiUrl)
+                .expect(401)
+
+            expect(_.isEmpty(response.body.data)).toBeTruthy(); 
         });
     });
 })

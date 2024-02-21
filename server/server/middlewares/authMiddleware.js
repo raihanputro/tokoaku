@@ -29,7 +29,7 @@ const validateToken = ( req, res, next ) => {
             return responseError(res, 401, `Unauthorized!`); 
         }
 
-        req.user = verifiedUser;
+        req.body.user = verifiedUser;
 
         return next();
     } catch (error) {
@@ -38,19 +38,13 @@ const validateToken = ( req, res, next ) => {
     }
 };  
 
-
 const roleAdmin = ( req, res, next ) => {
-    const { authorization } = req.headers;
-
     try {
-        const token = authorization.split(' ')[1];
+        const user = req.body.user;
 
-        const verifiedUser = jwt.verify(token, jwtSecretKey);
-
-        if(verifiedUser.role !== 'admin') {
+        if(user.role !== 'Admin') {
             return responseError(res, 401, `You are not admin!`); 
         }
-
         return next();
     } catch (error) {
         console.log([fileName, 'roleAdmin', 'ERROR'], { info: `${error}` });
@@ -59,14 +53,10 @@ const roleAdmin = ( req, res, next ) => {
 };  
 
 const roleCustomer = ( req, res, next ) => {
-    const { authorization } = req.headers;
-
     try {
-        const token = authorization.split(' ')[1];
+        const user = req.body.user;
 
-        const verifiedUser = jwt.verify(token, jwtSecretKey);
-
-        if(verifiedUser.role !== 'customer') {
+        if(user.role !== 'Customer') {
             return responseError(res, 401, `You are not customer!`); 
         }
 

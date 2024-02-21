@@ -1,98 +1,104 @@
 const Router = require('express').Router();
 
-const cartHelper = require('../helpers/cartHelper');
+const CartHelper = require('../helpers/cartHelper');
+const GeneralHelper = require('../helpers/generalHelper');
 const { responseSuccess, responseError } = require('../helpers/responseHelper');
 const { idValidation, cartDataValidation } = require('../helpers/validationHelper');
 const { validateToken, roleCustomer } = require('../middlewares/authMiddleware')
 
-const list = async ( req, res ) => {
-    try {
-        const response = await cartHelper.getCartList();
+const fileName = 'server/api/cart.js';
 
-        return responseSuccess(res, 200, `Success get all cart!`, response);
+const list = async ( req, rep ) => {
+    try {
+        const response = await CartHelper.getCartList();
+
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, 'Cannot get cart list!', error);
+        console.log([fileName, 'list', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };  
 
-const listByUser = async ( req, res ) => {
+const listByUser = async ( req, rep ) => {
     try {
-        const id = parseInt(req.params['id']);
+        const id = req.body.user.id;
 
-        const response = await cartHelper.getCartListByUser(id);
+        const response = await CartHelper.getCartListByUser(id);
 
-        return responseSuccess(res, 200, `Success get cart list by user!`, response);
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, 'Cannot get cart list by user!', error);
+        console.log([fileName, 'listByUser', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 }
 
-const detail = async ( req, res ) => {
+const detail = async ( req, rep ) => {
 
     idValidation(req.params);
 
     const id = parseInt(req.params['id']);
 
     try {
-        const response = await cartHelper.getCartDetail(id, res);
+        const response = await CartHelper.getCartDetail(id);
 
-        return response;   
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, `Cannot get cart detail with id ${id}!`);
+        console.log([fileName, 'detail', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };
 
-const add = async ( req, res ) => {
+const add = async ( req, rep ) => {
     try {
-        cartDataValidation(req.body);
+        // cartDataValidation(req.body);
         
         const { item_id, user_id, qty } = req.body;
 
-        console.log(req.body)
+        const response = await CartHelper.postDataCart({ item_id, user_id, qty });
 
-        const response = await cartHelper.postDataCart({ item_id, user_id, qty });
-
-        return responseSuccess(res, 200, `Success add cart!`, response);
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, `Cannot add cart!`, error);
+        console.log([fileName, 'add', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };
 
-const update = async ( req, res ) => {
-
-    idValidation(req.params);
-
-    const id = parseInt(req.params['id']);
-
+const update = async ( req, rep ) => {
     try {
+        idValidation(req.params);
+    
+        const id = parseInt(req.params['id']);
+
         const { qty } = req.body;
 
-        const response = await cartHelper.updateDataCart({ id, qty });  
+        const response = await CartHelper.updateDataCart({ id, qty });  
 
-        return responseSuccess(res, 200, `Success update cart with id${id}!`, response);
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, `Cannot find cart with id ${id}!`);
+        console.log([fileName, 'update', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };
 
-const remove = async ( req, res ) => {
+const remove = async ( req, rep ) => {
 
     idValidation(req.params);
 
     const id = parseInt(req.params['id']);
 
     try {
-        const response = await cartHelper.deleteDataCart(id);
+        const response = await CartHelper.deleteDataCart(id);
 
-        return responseSuccess(res, 200, `Success delete cart with id${id}!`, response);
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, `Cannot find cart with id ${id}!`);
+        console.log([fileName, 'remove', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 }
 
 
 Router.get('/list', validateToken, list);
-Router.get('/user/:id', validateToken, listByUser);
+Router.get('/user-list', validateToken, listByUser);
 Router.get('/detail/:id', validateToken, detail);
 Router.post('/add', validateToken, add);
 Router.put('/update/:id', validateToken, update);

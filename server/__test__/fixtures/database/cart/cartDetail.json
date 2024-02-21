@@ -1,0 +1,28 @@
+{
+    "statusCode": 200,
+    "message": "Get card detail successfully!",
+    "data": {
+        "id": 1,
+        "item_id": 1,
+        "user_id": 4,
+        "qty": 2,
+        "createdAt": "2024-02-07T14:35:56.000Z",
+        "updatedAt": "2024-02-07T14:35:56.000Z",
+        "customer": null,
+        "item": {
+            "id": 1,
+            "category_id": 1,
+            "name": "Indomie Goreng",
+            "desc": "anjay",
+            "price": 5000,
+            "discount": null,
+            "stock": 10,
+            "sold": null,
+            "rating": null,
+            "img": "http://localhost:3001/indomie-goreng.png",
+            "author_id": 1,
+            "createdAt": "2024-02-06T07:10:42.000Z",
+            "updatedAt": "2024-02-20T06:49:00.000Z"
+        }
+    }
+}

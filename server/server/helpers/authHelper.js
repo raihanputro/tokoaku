@@ -1,60 +1,38 @@
 const Boom = require('boom');
-const bcrypt = require('bcryptjs');
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 
-const { errorResponse } = require('../helpers/responseHelper');
 const db = require('../../models');
-const tb_user = db.user;
-const tb_codeOtp = db.codeOtp;
+const GeneralHelper = require('../helpers/generalHelper');
+const bcrPass = require('../utils/bcryptPass');
+const jwtUtils = require('../utils/jwt');
 
-dotenv.config();
 const fileName = 'server/helpers/authHelper.js';
-const jwtSecretKey = process.env.JWT_SECRET_KEY;
-const jwtExpiresIn = process.env.JWT_EXPIRES;
-const salt = bcrypt.genSaltSync(10);
-
-
-const hashPass = (password) => {
-    return bcrypt.hashSync(password, salt);
-};
-
-const comparePass = (password, passwordDb) => {
-    return bcrypt.compareSync(password, passwordDb);
-};
-
-const generateToken = (data) => {
-    return jwt.sign(data, jwtSecretKey, { expiresIn: jwtExpiresIn });
-};
-
-const generateOtpCode = () => {
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    return otp.toString();
-}
 
 const registerUser = async (dataObject) => {
     const { email, username, password, role } = dataObject;
 
     try {
-        const checkUser = await tb_user.findOne({
+        const isRegistered = await db.user.findOne({
             where: {
                 email: email
             }
         });
 
-        if (!_.isEmpty(checkUser)) {
-            return Promise.reject(Boom.badRequest('this email has been registered!'));
+        if (!_.isEmpty(isRegistered)) {
+            return Promise.reject(Boom.badRequest('Email has been registered!'));
         };
 
-        const hashedPass = hashPass(password);
+        const hashedPass = bcrPass.hashPass(password);
 
-        await tb_user.create({ email, username, password: hashedPass, role });
+        await db.user.create({ email, username, password: hashedPass, role });
 
-        return Promise.resolve(true);    
+        return Promise.resolve({
+            statusCode: 201,
+            message: "User registration successfully!"
+        });   
     } catch (error) {
         console.log([fileName, 'registerUser', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     };
 };
 
@@ -62,33 +40,36 @@ const loginUser = async (dataObject) => {
     const { email, password } = dataObject;
 
     try {
-        const checkUser = await tb_user.findOne({
+        const isUser = await db.user.findOne({
             where: {
                 email: email
             },
         });
 
-        if (_.isEmpty(checkUser)) {
-            return Promise.reject(Boom.notFound('This email not registered!'));
+        if (_.isEmpty(isUser)) {
+            return Promise.reject(Boom.badRequest('Email not registered!'));
         };
 
-        const checkPassword = comparePass(password, checkUser.password);
+        const checkPassword = bcrPass.comparePass(password, isUser.password);
 
-        if (!_.isEmpty(checkPassword)) {
+        if (!checkPassword) {
             return Promise.reject(Boom.badRequest('Wrong password!'));
         };
 
-        const token = generateToken({
-            id: checkUser.id,
-            email: checkUser.email,
-            password: checkUser.password,
-            role: checkUser.role
+        const token = jwtUtils.generateToken({
+            id: isUser.id,
+            username: isUser.username,
+            role: isUser.role
         });
 
-        return Promise.resolve(token);    
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Login successfully!",
+            token 
+        });    
     } catch (error) {
         console.log([fileName, 'loginUser', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     };
 };
 

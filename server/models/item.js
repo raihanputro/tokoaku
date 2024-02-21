@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      item.belongsTo(models.category, {
+        as: 'category',
+        foreignKey: 'category_id'
+      })
       item.belongsTo(models.user, {
         as: 'author',
         foreignKey: 'author_id'
@@ -18,11 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   item.init({
-    kategori_id: DataTypes.INTEGER,
+    category_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     desc: DataTypes.STRING,
     price: DataTypes.INTEGER,
+    discount: DataTypes.INTEGER,
     stock: DataTypes.INTEGER,
+    sold: DataTypes.INTEGER,
+    rating: DataTypes.INTEGER,
     img: DataTypes.TEXT,
     author_id: DataTypes.INTEGER
   }, {

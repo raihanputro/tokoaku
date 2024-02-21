@@ -1,55 +1,88 @@
 const Boom = require('boom');
 const _ = require('lodash');
+
 const db = require('../../models');
-const tb_cart = db.cart;
-const tb_user = db.user;
-const { responseSuccess, responseError, errorResponse } = require('../helpers/responseHelper');
+const GeneralHelper = require('../helpers/generalHelper');
 
 const fileName = 'server/api/cartHelper.js';
 
 const getCartList = async () => {
     try {
-        const carts = await tb_cart.findAll({
+        const carts = await db.cart.findAll({
             include: ['customer', 'item'],
         });
 
-        return Promise.resolve(carts);    
+        if(_.isEmpty(carts)) {
+            return Promise.reject(Boom.notFound(`Cart list is empty!`));
+        };
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Get carts list successfully!",
+            data: carts 
+        });    
     } catch (error) {
         console.log([fileName, 'getCartList', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
 const getCartListByUser = async (id) => {
 
     try {
-        const cartsByUser = await tb_cart.findAll({
+        const checkUser = await db.user.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (_.isEmpty(checkUser)) {
+            return Promise.reject(Boom.unauthorized(`Your not authorized to see this cart!`));
+        }
+
+        const cartsByUser = await db.cart.findAll({
             where: {
                 user_id: id
             },
             include: ['customer', 'item'],
         });
 
-        return Promise.resolve(cartsByUser);
+            // if(_.isEmpty(cartsByUser)) {
+            //     return Promise.reject(Boom.notFound(`Cart list by this user is empty!`));
+            // };
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Get carts by user list successfully!",
+            data: cartsByUser 
+        });  
     } catch (error) {
         console.log([fileName, 'getCartListByUser', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 }
 
-const getCartDetail = async (id, res) => {
+const getCartDetail = async (id) => {
     try {
-        const cartDetail = await tb_cart.findOne({
+        const cartDetail = await db.cart.findOne({
             where: {
                 id: id
             },
             include: ['customer', 'item'],
         });
 
-        return Promise.resolve(responseSuccess(res, 200, `Success get cart detail by id ${id}`, cartDetail));
+        // if (_.isEmpty(cartDetail)) {
+        //     return Promise.reject(Boom.notFound(`Cart detail is empty!`));
+        // };
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Get cart detail successfully!",
+            data: cartDetail 
+        });    
     } catch (error) {
         console.log([fileName, 'getItemDetail', 'ERROR'], { info: `${error}` });
-        return Promise.reject(responseError(res, 404, `Cannot get cart detail by id ${id}!`)); 
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
@@ -57,8 +90,7 @@ const postDataCart = async (dataObject) => {
     const { item_id, user_id, qty } = dataObject;
 
     try {
-
-        const checkCart = await tb_cart.findOne({
+        const checkCart = await db.cart.findOne({
             where: {
                 item_id: item_id,
                 user_id: user_id
@@ -66,7 +98,7 @@ const postDataCart = async (dataObject) => {
         });
 
         if(!_.isEmpty(checkCart)) {
-            await tb_cart.update({
+            await db.cart.update({
                 qty: checkCart.qty+qty
             }, {
                 where: {
@@ -75,12 +107,16 @@ const postDataCart = async (dataObject) => {
                 }
             })
         } else {
-            await tb_cart.create({ item_id, user_id, qty });
-        }
-        return Promise.resolve(true);    
+            await db.cart.create({ item_id, user_id, qty });
+        };
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Post cart successfully!",
+        });    
     } catch (error) {
         console.log([fileName, 'postDataCart', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
@@ -89,17 +125,16 @@ const updateDataCart = async (dataObject) => {
 
     try {
 
-        const checkCart = await tb_cart.findOne({
+        const checkCart = await db.cart.findOne({
             where: {
                 id: id
             }
         });
 
-
         if(_.isEmpty(checkCart)) {
             return Promise.reject(Boom.notFound(`Cannot find cart withb id ${id}!`));
         } else {
-            await tb_cart.update({
+            await db.cart.update({
                 qty: qty,
             }, {
                 where: {
@@ -107,24 +142,28 @@ const updateDataCart = async (dataObject) => {
                 }
             });
 
-            const updatedCart = await tb_cart.findOne({
+            const updatedCart = await db.cart.findOne({
                 where: {
-                    id: id
+                    id: id  
                 },
                 include: ['customer', 'item'],
             });
 
-            return Promise.resolve(updatedCart);    
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Update cart successfully!",
+                data: updatedCart 
+            });      
         };
     } catch (error) {
         console.log([fileName, 'updateDataCart', 'ERROR'], { info: `${error}` });
-        return Promise.reject(errorResponse(error));    
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
-const deleteDataCart = async (id, res) => {
+const deleteDataCart = async (id) => {
     try {
-        const checkCart = await tb_cart.findOne({
+        const checkCart = await db.cart.findOne({
             where: {
                 id: id
             }
@@ -132,22 +171,25 @@ const deleteDataCart = async (id, res) => {
 
         if(_.isEmpty(checkCart)) {
             return Promise.reject(Boom.notFound(`Cannot find cart with id ${id}!`));
-
         } else {
-            await tb_cart.destroy({
+            await db.cart.destroy({
                 where: {
                     id: id
                 }
             });
         };
 
-        const carts = await tb_cart.findAll({
+        const carts = await db.cart.findAll({
             include: ['customer', 'item'],
         });
-        return Promise.resolve(carts);    
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "delete item successfully!",
+        });    
     } catch (error) {
         console.log([fileName, 'deleteDataItem', 'ERROR'], { info: `${error}` });
-        return Promise.reject(responseError(res, 400, `Cannot delete cart by id ${id}!`)); 
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 

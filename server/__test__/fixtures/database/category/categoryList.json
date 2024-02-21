@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "icon": "http://localhost:5000/code.png",
+        "name": "Makanan",
+        "author_id": 1,
+        "createdAt": "2024-02-20T03:42:09.000Z",
+        "updatedAt": "2024-02-20T03:42:09.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 2,
+        "icon": "http://localhost:5000/code.png",
+        "name": "Minuman",
+        "author_id": 1,
+        "createdAt": "2024-02-20T03:42:14.000Z",
+        "updatedAt": "2024-02-20T03:42:14.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 3,
+        "icon": "http://localhost:5000/code.png",
+        "name": "Mainan",
+        "author_id": 1,
+        "createdAt": "2024-02-20T03:42:21.000Z",
+        "updatedAt": "2024-02-20T03:42:21.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    },
+    {
+        "id": 4,
+        "icon": "http://localhost:5000/code.png",
+        "name": "Obat",
+        "author_id": 1,
+        "createdAt": "2024-02-20T03:42:27.000Z",
+        "updatedAt": "2024-02-20T03:42:27.000Z",
+        "author": {
+            "username": "raihanptro"
+        }
+    }
+]
