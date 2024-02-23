@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       user.hasMany(models.item, {
-        as: 'articleItems',
+        as: 'item',
         foreignKey: 'author_id'
       });
     }
@@ -21,9 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     username: DataTypes.STRING,
+    fullName: DataTypes.STRING,
     address: DataTypes.STRING,
+    province_id: DataTypes.STRING,
+    city_id: DataTypes.STRING,
     phone: DataTypes.STRING,
-    role: DataTypes.STRING
+    role: DataTypes.STRING,
+    photo: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'user',

@@ -30,7 +30,7 @@ const listByUser = async ( req, rep ) => {
         console.log([fileName, 'listByUser', 'ERROR'], { info: `${error}` });
         return rep.send(GeneralHelper.errorResponse(error));    
     }
-}
+};
 
 const detail = async ( req, rep ) => {
 

@@ -15,7 +15,7 @@ function* doGetItemDetail ({ id, cb}) {
     }
 };
 
-function* doPostCartItem ({ cartData}) {
+function* doPostCartItem ({ cartData }) {
     try {
         yield call(addCartApi, cartData);
         const resCart = yield call(getCartApi);
@@ -23,7 +23,7 @@ function* doPostCartItem ({ cartData}) {
     } catch (error) {
         yield put(showPopup(error));
     }
-}
+};
 
 export default function* itemDetailSaga() {
     yield takeLatest(GET_DETAIL_ITEM, doGetItemDetail);

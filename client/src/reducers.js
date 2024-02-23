@@ -7,6 +7,8 @@ import homeReducer, { storedKey as storedHomeState } from '@pages/Home/reducer';
 import profileReducer, { storedKey as storedProfileState } from '@pages/Profile/reducer';
 import itemDetailReducer, { storedKey as storedItemDetailState } from '@pages/Detail Item/reducer';
 import cartReducer, { storedKey as storedCartState} from '@pages/Cart/reducer';
+import checkoutReducer, { storedKey as storedCheckoutState} from '@pages/Checkout/reducer';
+import wishlistReducer, { storedKey as storedWishlistState} from '@pages/Wishlist/reducer';
 import userDataReducer, { storedKey  as storedUserDataState } from '@pages/Admin/User Data/reducer';
 import itemDataReducer, { storedKey  as storedItemDataState } from '@pages/Admin/Item Data/reducer';
 import categoryDataReducer, { storedKey  as storedCategoryDataState } from '@pages/Admin/Category Data/reducer';
@@ -19,7 +21,9 @@ const storedReducers = {
   home: { reducer: homeReducer, whitelist: storedHomeState },
   profile: { reducer: profileReducer, whitelist: storedProfileState },
   itemDetail: { reducer: itemDetailReducer, whitelist: storedItemDetailState },
+  wishlist: { reducer: wishlistReducer, whitelist: storedWishlistState },
   cart: { reducer: cartReducer, whitelist: storedCartState },
+  checkout: { reducer: checkoutReducer, whitelist: storedCheckoutState },
   userData: { reducer: userDataReducer, whitelist: storedUserDataState },
   itemData: { reducer: itemDataReducer, whitelist: storedItemDataState},
   categoryData: { reducer: categoryDataReducer, whitelist: storedCategoryDataState},

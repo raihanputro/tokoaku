@@ -101,4 +101,16 @@ export default {
   search_category_data: 'Cari Kategori',
 
   wishlist_title: 'Daftar Keinginan',
+
+  shipping_address: 'Alamat Pengiriman',
+  review_your_order: 'Cek Pesanan',
+
+  fullName_checkout: 'Nama Lengkap',
+  address_checkout: 'Alamat',
+  province_checkout: 'Provinsi',
+  selectProvince_checkout: 'Pilih Provinsi',
+  city_checkout: 'Kota',
+  selectCity_checkout: 'Pilih Kota',
+  next_button: 'Berikutnya',
+  back_button: 'Kembali',
 };

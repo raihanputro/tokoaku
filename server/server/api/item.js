@@ -83,7 +83,7 @@ const update = async ( req, rep ) => {
 
         const author_id = req.body.user.id;
 
-        const { kategori_id, name, desc, price, stock  } = req.body;
+        const { kategori_id, name, desc, price, discount, stock  } = req.body;
 
         const imgFile = req.files?.img?.[0];
 
@@ -91,7 +91,7 @@ const update = async ( req, rep ) => {
 
         const img = fileName ? url + '/' + fileName : null;   
 
-        const response = await itemHelper.updateDataItem({ id, kategori_id, name, desc, price, stock, img, author_id });
+        const response = await itemHelper.updateDataItem({ id, kategori_id, name, desc, price, discount, stock, img, author_id });
 
         return rep.send(response);    
     } catch (error) {

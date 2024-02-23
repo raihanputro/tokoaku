@@ -7,6 +7,7 @@ import Login from '@pages/Login';
 import Profile from '@pages/Profile';
 import Wishlist from '@pages/Wishlist';
 import Cart from '@pages/Cart';
+import Checkout from '@pages/Checkout';
 import DetailItem from '@pages/Detail Item';
 import DashboardAdmin from '@pages/Admin/Dashboard Admin';
 import UserData from '@pages/Admin/User Data';
@@ -62,6 +63,13 @@ const routes = [
     name: 'Cart',
     protected: true,
     component: Cart,
+    layout: MainLayout
+  },
+  {
+    path: '/checkout',
+    name: 'Checkout',
+    protected: true,
+    component: Checkout,
     layout: MainLayout
   },
   {

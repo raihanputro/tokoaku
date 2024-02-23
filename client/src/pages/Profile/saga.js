@@ -7,7 +7,8 @@ import { setLoading, showPopup } from "@containers/App/actions";
 function* doGetProfile() {
     try {
         const res = yield call(profileUserApi);
-        yield put(setUserProfile(res.result));
+        console.log(res, 'profile mang')
+        yield put(setUserProfile(res.data));
     } catch (error) {
         yield put(showPopup());
     }

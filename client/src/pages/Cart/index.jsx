@@ -30,6 +30,8 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
     setCartData(cartDataSelect);
   }, [cartDataSelect]); 
 
+  console.log(cartData, 'amj');
+
   useEffect(() => {
     let total = 0;
     cartData.forEach(item => {
@@ -52,17 +54,15 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
     }
   };
 
-  console.log(cartData)
-  
   return (
     <Box className={classes.container}>
       <Typography variant='h1' component='div' className={classes.pageTitle}>
         <FormattedMessage id="cart_title" />
       </Typography>
       <Box className={classes.contentContainer}>
-        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '100%', height: '160px',  }}>
+        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '100%', minHeight: '160px',  }}>
           <Box className={classes.cardContainer}>
-            {cartData.length >= 1 ? cartData && Array.isArray(cartData) && cartData?.map((cart, index) => (
+            { cartData.length >= 1 ? cartData && Array.isArray(cartData) && cartData?.map((cart, index) => (
               <Box key={index} className={classes.contentContainer}>
                 <Box className={classes.contentLeft}>
                   <CardMedia 
@@ -102,7 +102,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
           </Box>
         </Card>
         {cartData.length >= 1 && 
-          <Card sx={{  marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '300px' }}>
+          <Card sx={{ marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '280px'}}>
             <Box className={classes.cardSummaryContainer}>
               <Typography variant='h1' component='div' className={classes.summaryTitle} sx={{ textAlign: 'center' }}>
                 <FormattedMessage id="summary_cart_title" />
@@ -115,7 +115,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
                   Rp{subTotal}
                 </Typography>
               </Box>
-              <Button sx={{ marginTop: '20px' }}>
+              <Button variant='contained' sx={{ marginTop: '20px', width: '100%' }} onClick={() => navigate('/checkout')}>
                 <FormattedMessage id="buy_title" />
               </Button>
             </Box>

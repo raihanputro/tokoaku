@@ -23,7 +23,7 @@ function* doUpdateCart ({id, dataCart}) {
     } catch (error) {
         yield put(showPopup(error));
     }
-}
+};
 
 function* doDeleteCart ({id}) {
     try {
@@ -33,7 +33,7 @@ function* doDeleteCart ({id}) {
     } catch (error) {
         yield put(showPopup(error));
     }
-}
+};
 
 export default function* cartSaga() {
     yield takeLatest(GET_DATA_CART, doGetCart);

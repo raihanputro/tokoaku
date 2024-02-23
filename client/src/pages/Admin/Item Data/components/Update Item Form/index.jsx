@@ -27,13 +27,13 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
   const { handleSubmit, control, reset, setValue } = useForm();
 
   useEffect(() => {
-    if(isOpen === true && id) {
-      dispatch(getItemDetail(id), () => {});
+    if(id) {
+      dispatch(getItemDetail(id));
     }
   }, [id]);
 
   useEffect(() => {
-    if (isOpen === false ) {
+    if (isOpen === false) {
       dispatch(setItemDetail({}));
     };
   }, [isOpen]);
@@ -60,6 +60,7 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
       name: data.name || itemDataSelect?.data?.name, 
       desc: data.desc || itemDataSelect?.data?.desc, 
       price: data.price || itemDataSelect?.data?.price, 
+      discount: data.discount || itemDataSelect?.data?.discount, 
       stock: data.stock || itemDataSelect?.data?.stock,   
       img: image || itemDataSelect?.data?.img,
     };
@@ -137,6 +138,27 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                 name="price"
                 control={control}
                 rules={{ required: 'Item Price is required' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    type='number'
+                    value={field.value}
+                    margin="normal"
+                    error={!!field.error}
+                    helperText={field.error ? field.error.message : null}
+                  />
+                )}
+              />
+            </Box>
+            <Box className={classes.textUploader}>
+              <Typography variant="body1" color="initial" className={classes.label}>
+                <FormattedMessage id="discount_modal_input" />
+              </Typography>
+              <Controller
+                name="discount"
+                control={control}
+                rules={{ required: 'Item discount is required' }}
                 render={({ field }) => (
                   <TextField
                     {...field}

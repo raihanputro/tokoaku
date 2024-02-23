@@ -179,10 +179,6 @@ const deleteDataCart = async (id) => {
             });
         };
 
-        const carts = await db.cart.findAll({
-            include: ['customer', 'item'],
-        });
-
         return Promise.resolve({ 
             statusCode: 200,
             message: "delete item successfully!",

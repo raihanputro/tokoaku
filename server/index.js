@@ -15,7 +15,9 @@ const Auth = require('./server/api/auth');
 const Item = require('./server/api/item');
 const User = require('./server/api/user');
 const Category = require('./server/api/category');
+const Wishlist = require('./server/api/wishlist');
 const Cart =  require('./server/api/cart');
+const Transaction = require('./server/api/transaction');
 
 app.use(cors());
 app.use(express.json());
@@ -78,7 +80,9 @@ app.use('/api/auth', Auth);
 app.use('/api/item', Item);            
 app.use('/api/user', User);            
 app.use('/api/category', Category);
+app.use('/api/wishlist', Wishlist);
 app.use('/api/cart', Cart);
+app.use('/api/transaction', Transaction);
 
 app.listen(Port, () => {
   console.log(['Info'], `Server started on port ${Port}`);

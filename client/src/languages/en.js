@@ -102,4 +102,17 @@ export default {
   search_category_data: 'Search Category',
 
   wishlist_title: 'Wishlist',
+
+  shipping_address: 'Shipping Address',
+  review_your_order: 'Review Your Order',
+
+  fullName_checkout: 'Full Name',
+  address_checkout: 'Address',
+  province_checkout: 'Province',
+  selectProvince_checkout: 'Select Province',
+  city_checkout: 'City',
+  selectCity_checkout: 'Select City',
+  next_button: 'Next',
+  back_button: 'Back',
+
 };

@@ -21,7 +21,13 @@ const urls = {
   addCart: 'cart/add',
   getCartByUser: 'cart/user-list',
   updateCart: 'cart/update',
-  deleteCart: 'cart/remove'
+  deleteCart: 'cart/remove',
+  getWishlistByUser: 'wishlist/user',
+  addWishlist: 'wishlist/add',
+  deleteWishlist: 'wishlist/remove',
+  getProvince: 'transaction/province',
+  getCity: 'transaction/city',
+  getShippingCost: 'transaction/shipping-cost',
 };
 
 export const callAPI = async (endpoint, method, header = {}, params = {}, data = {}) => {
@@ -62,3 +68,9 @@ export const addCartApi = (cartData) => callAPI(urls.addCart, 'POST', {}, {}, ca
 export const getCartApi = () => callAPI(urls.getCartByUser, 'GET');
 export const updateCartApi = (id, dataCart) => callAPI(`${urls.updateCart}/${id}`, 'PUT', {}, {}, dataCart);
 export const deleteCartApi = (id) => callAPI(`${urls.deleteCart}/${id}`, 'DELETE');
+export const getWishlistByUserApi = () => callAPI(urls.getWishlistByUser, 'GET');
+export const addWishlistApi = (wishlistData) => callAPI(urls.addWishlist, 'POST', {}, {}, wishlistData);
+export const deleteWishlistApi = (id) => callAPI(`${urls.deleteWishlist}/${id}`, 'DELETE');
+export const getProvinceApi = () => callAPI(urls.getProvince, 'GET');
+export const getCityApi = (provinceId) => callAPI(`${urls.getCity}/${provinceId}`, 'GET');
+export const getShippingCostApi = (shippingData) => callAPI(urls.getShippingCost, 'POST', {}, {}, shippingData);

@@ -119,7 +119,7 @@ const postDataItem = async (dataObject) => {
 };
 
 const updateDataItem = async (dataObject) => {
-    const { id, kategori_id, name, desc, price, stock, img, author_id } = dataObject;
+    const { id, kategori_id, name, desc, price, discount, stock, img, author_id } = dataObject;
 
     try {
         const checkItem = await db.item.findOne({
@@ -136,6 +136,7 @@ const updateDataItem = async (dataObject) => {
                 name: name ? name : checkItem.dataValues.name,
                 desc: desc ? desc : checkItem.dataValues.desc,
                 price: price ? price : checkItem.dataValues.price,
+                discount: discount ? discount : checkItem.dataValues.discount,
                 stock: stock ? stock : checkItem.dataValues.stock,
                 img: img ? img : checkItem.dataValues.img,
                 author_id: author_id

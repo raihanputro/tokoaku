@@ -5,5 +5,39 @@
     .pageTitle {
         font-size: 40px;
         font-weight: 700;
+        padding-left: 20px;
+    }
+
+    .cardContainer {
+        margin-top: 2%;
+        display: inline-grid;
+        width: 100%;
+        justify-items: center;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+
+        @include apply-at-xs-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-xs2-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-sm-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-md-size {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include apply-at-xl-size {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @include apply-at-xxl-size {
+            grid-template-columns: repeat(4, 1fr);
+        }
     }
 }

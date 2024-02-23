@@ -11,6 +11,7 @@
         @include directionX;
         justify-content: space-between;
         gap: 10px;
+
         @include apply-at-xs-size {
             @include directionY;
         }
@@ -79,9 +80,9 @@
 
     .cardSummaryContainer {
         background-color: var(--color-bg);
-        padding: 10px;
         height: 100%;
-        width: 250px;
+        padding-left: 10px;
+        padding-right: 10px;
         @include directionY;
         @include apply-at-xs-size {
             width: 100%;
@@ -90,18 +91,18 @@
         .summaryTitle {
             font-size: 30px;
             font-size: 700;
+            padding-top: 5px;
         }
 
         .total {
             @include directionX;
-            justify-content: space-between;
+            justify-content: space-around;
             margin-top: 20px;
             @include apply-at-xs-size {
                 justify-content: center;
                 gap: 150px;
             }
     
-
             .totalText {
                 font-size: 20px;
             }

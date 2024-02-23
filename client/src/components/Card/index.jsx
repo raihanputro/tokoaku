@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from 'prop-types';
+import { createStructuredSelector } from 'reselect';
+import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage } from 'react-intl';
 import Card from "@mui/material/Card";
@@ -8,28 +11,56 @@ import Typography from "@mui/material/Typography";
 import { Box, CardActionArea, IconButton  } from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
+import { getWishlistData, postWishlistData, deleteWishlistData } from "@pages/Wishlist/actions";
+import { selectLogin } from "@containers/Client/selectors";
+import { selectWishlist } from "@pages/Wishlist/selectors";
+
 import Rating from "./components/Rating";
 
 import classes from './style.module.scss';
 
-const CardItem = ({itemData}) => {
-
+const CardItem = ({ itemData, wishlistData, login }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isWishlist, setIsWishlist] = useState(false);
 
   const { id, name, price, discount, img, rating, sold } = itemData;
 
   const discountedPrice = discount > 0 ? price - (price * (discount / 100)) : price;
 
-  const handleAddToWishlist = (event) => {
-    // Handle adding to wishlist here
-    event.stopPropagation(); // Prevent card click event from triggering
+  useEffect(() => {
+    if(Array.isArray(wishlistData)) {
+      const isInWishlist = wishlistData.some(wishlist => wishlist?.item_id === id);
+      setIsWishlist(isInWishlist);
+    }
+  }, [wishlistData, id]);
+
+  useEffect(() => {
+    if(login) {
+      dispatch(getWishlistData());
+    }
+  }, [dispatch, login]);
+
+  const handleWishlist = (event) => {
+    event.stopPropagation();
+    if(login) {
+      if (isWishlist === false) {
+        dispatch(postWishlistData({item_id: id}));
+        setIsWishlist(true);
+      } else {
+        dispatch(deleteWishlistData(id));
+        setIsWishlist(false);
+      }
+    } else {
+      navigate('/login');
+    }
   };
   
   return (
     <Card sx={{ minWidth: 300, minHeight: 300, position: 'relative' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={(() => {
-        navigate(`../item/${id}`)
+       login ? navigate(`../item/${id}`) : navigate('/login')
       })}>  
         <Box className={classes.cardContainer}>
           <CardActionArea className={classes.cardContainer}>
@@ -66,9 +97,9 @@ const CardItem = ({itemData}) => {
               </Box>
               {isHovered && 
                 <Box sx={{ position: 'absolute', top: '10px', right: '10px' }}>
-                  <IconButton onClick={handleAddToWishlist}>
-                    <FavoriteIcon />
-                  </IconButton>
+                  <IconButton onClick={handleWishlist}>
+                    <FavoriteIcon sx={{ color: isWishlist ? 'red' : 'inherit' }}/>
+                  </IconButton> 
                 </Box>
               }
             </CardContent>
@@ -78,4 +109,15 @@ const CardItem = ({itemData}) => {
   )
 }
 
-export default CardItem
+CardItem.propTypes = {
+  itemData: PropTypes.object,
+  wishlistData: PropTypes.array,
+  login: PropTypes.bool,
+};
+
+const mapStateToProps = createStructuredSelector({
+  wishlistData: selectWishlist,
+  login: selectLogin
+})
+
+export default connect(mapStateToProps)(CardItem);
