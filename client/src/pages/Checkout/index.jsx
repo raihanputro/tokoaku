@@ -35,9 +35,9 @@ const Checkout = () => {
 
   return (
     <>
-      <Container component="main" >
-        <Paper variant="outlined" className={classes.contentContainer} sx={{ borderRadius: '20px', my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-          <Typography component="h1" variant="h4" align="center">
+      <Box className={classes.container} >
+        <Paper variant="outlined" className={classes.contentContainer} sx={{ borderRadius: '20px', my: { xs: 2, md: 2  }, p: { xs: 2, md: 3 } }}>
+          <Typography component="h1" variant="h4" align="center" sx={{ fontWeight: 'bolder' }}>
             Checkout
           </Typography>
           <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
@@ -60,7 +60,7 @@ const Checkout = () => {
             </>
           )}
         </Paper>
-      </Container>
+      </Box>
     </>
   )
 }

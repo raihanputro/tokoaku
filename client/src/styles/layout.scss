@@ -32,7 +32,7 @@
 
 @mixin container {
   .container {
-    @include padding-x(2rem);
+    @include padding-x(6rem);
     @include directionY;
     padding-top: 2rem;
     padding-bottom: 2rem;

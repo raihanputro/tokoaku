@@ -15,12 +15,14 @@ function* doLogin ({ userData, cb}) {
         yield put(setLogin(true));
         yield put(setToken(res.token));
         const decodedJwt = jwtDecode(res.token);
-        const resCart = yield call(getCartApi);
-        const resWishlist = yield call(getWishlistByUserApi);
+        if (decodedJwt.role !== 'Admin') {
+            const resCart = yield call(getCartApi);
+            const resWishlist = yield call(getWishlistByUserApi);
+            yield put(setDataCart(resCart.data));
+            yield put(setWishlistData(resWishlist.data));
+        }
         const resProfile = yield call(profileUserApi);
         yield put(setUserProfile(resProfile.data));
-        yield put(setDataCart(resCart.data));
-        yield put(setWishlistData(resWishlist.data));
         yield put(setUser(decodedJwt));
         cb && cb();
     } catch (error) {

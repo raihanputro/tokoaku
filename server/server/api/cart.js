@@ -52,9 +52,9 @@ const add = async ( req, rep ) => {
     try {
         // cartDataValidation(req.body);
         
-        const { item_id, user_id, qty } = req.body;
+        const { item_id, user_id, price, qty } = req.body;
 
-        const response = await CartHelper.postDataCart({ item_id, user_id, qty });
+        const response = await CartHelper.postDataCart({ item_id, user_id, price, qty });
 
         return rep.send(response);    
     } catch (error) {
@@ -69,9 +69,9 @@ const update = async ( req, rep ) => {
     
         const id = parseInt(req.params['id']);
 
-        const { qty } = req.body;
+        const { price, qty } = req.body;
 
-        const response = await CartHelper.updateDataCart({ id, qty });  
+        const response = await CartHelper.updateDataCart({ id, price, qty });  
 
         return rep.send(response);    
     } catch (error) {

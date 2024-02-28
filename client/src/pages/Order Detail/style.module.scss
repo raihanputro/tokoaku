@@ -1,0 +1,71 @@
+@import '@styles/base';
+
+@include container {
+    .pageTitle {
+        font-size: 40px !important;
+        font-weight: 700 !important ;
+        color: var(--color-text) !important; 
+        margin-bottom: 1% !important;   
+    }
+
+    .cardContainer {
+        background-color: var(--color-bg);
+        padding: 20px;
+
+        .cardOrdererContainer {
+            background-color: var(--color-bg-secondary);
+            padding: 20px;
+            margin-bottom: 4%;
+
+            .statusPending {
+                background-color: orange;
+                padding: 5px;
+                width: 80px;
+                text-align: center;
+                color: white;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: bold;
+            }
+
+            .statusSucess {
+                background-color: green;
+                padding: 5px;
+                color: white;
+                width: 80px;
+                text-align: center;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: bold;
+            }
+
+            .statusProcess {
+                background-color: blue;
+                padding: 5px;
+                color: white;
+                width: 80px;
+                text-align: center;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: bold;
+            }
+
+            .statusFail {
+                background-color: red;
+                padding: 5px;
+                color: white;
+                width: 80px;
+                text-align: center;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: bold;
+            }
+        }
+
+        .buyButton {
+            color: var(--color-text) !important;
+            background-color: var(--color-bg) !important;
+            border-radius: 20px;
+        }
+    }
+}

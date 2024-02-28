@@ -3,7 +3,7 @@ const Boom = require("boom");
 
 const registerValidation = (data) => {
   const schema = Joi.object({
-    email: Joi.string().required().description("Active email"),
+    email: Joi.string().required().email().description("Active email"),
     username: Joi.string().required().description("Person's username"),
     password: Joi.string()
       .min(6)
@@ -45,7 +45,7 @@ const idValidation = ( data ) => {
 
 const itemDataValidation = ( data ) => {
     const schema = Joi.object({
-        kategori_id: Joi.number().required(),
+        category_id: Joi.number().required(),
         name: Joi.string().required(),
         desc: Joi.string().required(),
         price: Joi.number().required(),

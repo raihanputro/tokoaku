@@ -2,42 +2,66 @@
 
 @include container {
 
-    .cardContainer{
+    .allContent {
         background-color: var(--color-bg);
-        display: flex;
-        height: 100%;
-        padding: 10px;
+        padding-left: 40px;
+        padding-right: 40px;
 
-        .itemInfo {
-            @include directionX;
-            padding-top: 3%;
-
-            .itemTitle {
-                font-size: 40px;
-                padding-top: 1%;
+        .cardContainer{
+            align-items: center;
+            display: flex;
+            height: 100%;
+           
+    
+            .itemInfo {
+                @include directionX;
+                padding-top: 3%;
+                width: 100%;
+    
+                .itemTitle {
+                    font-size: 40px;
+                    font-weight: bolder;
+                    padding-top: 1%;
+                }
+        
+                .itemPrice {
+                    font-size: 50px;
+                    font-weight: 700;
+                }
+        
+                .itemDesc {
+                    font-size: 20px;
+                }
             }
     
-            .itemPrice {
-                font-size: 50px;
-                font-weight: 700;
-            }
+            .addItem {
+               background-color: 2px solid var(--color-bg-secondary);
+               border-radius: 20px;
+               width: 600px;
+               height: fit-content;
+               padding: 2%;
+               @include directionY;
+               align-items: center;
+               justify-content: center;
     
-            .itemDesc {
-                font-size: 20px;
+               .itemAddTitle {
+                font-weight: bolder;
+                margin-bottom: 2%;
+               }
+    
+               .cartButton {
+                    color: var(--color-text) !important;
+                    background-color: var(--color-bg) !important;
+                    border-radius: 20px;
+                    margin-top: 1%; 
+                    
+                }
             }
+            
         }
-
-        .addItem {
-           border: 2px solid var(--color-bg-secondary);
-           border-radius: 10px;
-           width: 80%;
-           @include directionY;
-           align-items: center;
-           justify-content: center;
-
-           .addStock {
-            @include directionX;
-           }
+        
+        .cardUlasan {
+            background-color: var(--color-bg) !important;
         }
     }
 }

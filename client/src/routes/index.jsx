@@ -8,6 +8,8 @@ import Profile from '@pages/Profile';
 import Wishlist from '@pages/Wishlist';
 import Cart from '@pages/Cart';
 import Checkout from '@pages/Checkout';
+import Order from '@pages/Order';
+import OrderDetail from '@pages/Order Detail';
 import DetailItem from '@pages/Detail Item';
 import DashboardAdmin from '@pages/Admin/Dashboard Admin';
 import UserData from '@pages/Admin/User Data';
@@ -70,6 +72,20 @@ const routes = [
     name: 'Checkout',
     protected: true,
     component: Checkout,
+    layout: MainLayout
+  },
+  {
+    path: '/order',
+    name: 'Order',
+    protected: true,
+    component: Order,
+    layout: MainLayout
+  },
+  {
+    path: '/order/:id',
+    name: 'Order Detail',
+    protected: true,
+    component: OrderDetail,
     layout: MainLayout
   },
   {

@@ -1,0 +1,97 @@
+@import '@styles/base';
+
+@include container {
+    .pageTitle {
+        font-size: 40px !important;
+        font-weight: 700 !important ;
+        color: var(--color-text) !important; 
+        margin-bottom: 1% !important;   
+    }
+
+    .cardContainer {
+        background-color: var(--color-bg);
+        padding: 20px;
+
+        .filterContainer {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1%;
+
+            .search {
+                width: 100%;
+            }
+
+            .status {
+                width: 20%;
+            }
+        }
+
+        .contentContainer {
+            @include directionY;
+            gap: 10px;
+
+
+            .cardTransactionContainer {
+                background-color: var(--color-bg-secondary);
+                padding: 10px;
+    
+                .contentTop {
+                    @include directionX;
+                    gap: 20px;
+                    padding-left: 2%;
+
+                    .statusPending {
+                        background-color: orange;
+                        padding: 5px;
+                        width: 80px;
+                        text-align: center;
+                        color: white;
+                        border-radius: 10px;
+                        font-size: 10px;
+                        font-weight: bold;
+                    }
+
+                    .statusSucess {
+                        background-color: green;
+                        padding: 5px;
+                        color: white;
+                        width: 80px;
+                        text-align: center;
+                        border-radius: 10px;
+                        font-size: 10px;
+                        font-weight: bold;
+                    }
+
+                    .statusProcess {
+                        background-color: blue;
+                        padding: 5px;
+                        color: white;
+                        width: 80px;
+                        text-align: center;
+                        border-radius: 10px;
+                        font-size: 10px;
+                        font-weight: bold;
+                    }
+
+                    .statusFail {
+                        background-color: red;
+                        padding: 5px;
+                        color: white;
+                        width: 80px;
+                        text-align: center;
+                        border-radius: 10px;
+                        font-size: 10px;
+                        font-weight: bold;
+                    }
+                }
+
+                .seeButton {
+                    color: var(--color-text) !important;
+                    background-color: var(--color-bg) !important;
+                  }
+            }
+        }
+
+    }
+}

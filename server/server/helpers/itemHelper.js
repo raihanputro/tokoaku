@@ -77,7 +77,21 @@ const getItemDetail = async (id) => {
         const itemDetail = await db.item.findOne({
             where: {
                 id: id
-            }
+            },
+            include: [
+                {
+                    model: db.review,
+                    as: 'review',
+                    required: false,
+                    include: [
+                        {
+                            model: db.user,
+                            as: 'user',
+                            required: false
+                        }
+                    ]
+                }
+            ]
         });
 
         if(_.isEmpty(itemDetail)) {
@@ -96,10 +110,10 @@ const getItemDetail = async (id) => {
 };
 
 const postDataItem = async (dataObject) => {
-    const { kategori_id, name, desc, price, stock, discount, img, author_id } = dataObject;
+    const { category_id, name, desc, price, stock, discount, img, author_id } = dataObject;
 
     try {
-        await db.item.create({ kategori_id, name, desc, price, discount, stock, img, author_id });
+        await db.item.create({ category_id, name, desc, price, discount, stock, img, author_id });
 
         const itemPosted = await db.item.findOne({
             where: {

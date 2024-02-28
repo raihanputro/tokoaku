@@ -10,6 +10,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Box, CardActionArea, IconButton  } from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { formattedPrice } from "@utils/price";
 
 import { getWishlistData, postWishlistData, deleteWishlistData } from "@pages/Wishlist/actions";
 import { selectLogin } from "@containers/Client/selectors";
@@ -77,12 +78,12 @@ const CardItem = ({ itemData, wishlistData, login }) => {
                 {name}
               </Typography>
               <Typography variant="body2" sx={{ fontSize: '20px', fontWeight: 'bolder'}}>
-                Rp{discountedPrice}
+                {formattedPrice(discountedPrice)}
               </Typography>
               {discount > 0 &&
                 <Box sx={{ display: 'flex', gap: '2%', mt: '2%' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: '15px', fontWeight: 'bolder', textDecoration: 'line-through'}}>
-                    Rp{price}
+                    {formattedPrice(price)}
                   </Typography>
                   <Typography variant="body2" sx={{ fontSize: '15px', fontWeight: 'bolder', color: 'red'}}>
                     {discount}%

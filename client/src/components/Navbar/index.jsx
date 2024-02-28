@@ -13,6 +13,7 @@ import NightsStayIcon from '@mui/icons-material/NightsStay';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
 import { setLocale, setTheme } from '@containers/App/actions';
 import { selectLogin } from '@containers/Client/selectors';
@@ -119,6 +120,12 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect }) => {
               <Typography textAlign="center">Wishlist</Typography>
             </Box>
           </MenuItem>
+          <MenuItem onClick={() => {handleCloseUserMenu, navigate('/order')}}>
+            <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'space-between' }}>
+              <ShoppingBagIcon sx={{ color: '#78A083' }} />
+              <Typography textAlign="center">Order</Typography>
+            </Box>
+          </MenuItem> 
           <MenuItem 
             onClick={
               () => { 
@@ -190,7 +197,7 @@ Navbar.propTypes = {
   locale: PropTypes.string.isRequired,
   theme: PropTypes.string,
   isLogin: PropTypes.bool,
-  cartDataSelect: PropTypes.array
+  cartDataSelect: PropTypes.any
 };
 
 const mapStateToProps = createStructuredSelector({

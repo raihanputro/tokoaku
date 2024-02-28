@@ -70,6 +70,8 @@ export default {
   price_modal_input: 'Price',
   stock_modal_input: 'Stock',
   discount_modal_input: 'Discount',
+  category_modal_input: 'Category',
+
 
   add_modal_title: 'Add new item!',
   add_modal_button: 'Add Item',
@@ -115,4 +117,24 @@ export default {
   next_button: 'Next',
   back_button: 'Back',
 
+  order_summary_title: 'Order Summary',
+  shippingCost_title: 'Shipping Cost',
+  address_title: 'Shipping Address',
+  input_fullName_checkout: 'Input Your Full Name',
+
+  selectService_checkout: 'Select Service',
+  takeInStore_checkout: 'Pick Up at Store',
+
+  order_title: 'Order',
+  pay_button: 'Pay',
+  review_button: 'Review',
+  shipping_cost_checkout: 'Shipping Cost',
+  item_table_order: 'Item',
+  qty_table_order: 'Quantity',
+  price_table_order: 'Price',
+  subTotal_table_order: 'Sub Total',
+  expiryOn_order: 'Expiry On',
+  orderOn_order: 'Order On',
+  bill_order: 'Billed To:',
+  phone_checkout: 'Phone',
 };

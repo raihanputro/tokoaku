@@ -56,7 +56,7 @@ const add = async ( req, rep ) => {
 
         const url = req.protocol + '://' + req.get('host');
 
-        const { kategori_id, name, desc, price, stock, discount } = req.body;
+        const { category_id, name, desc, price, stock, discount } = req.body;
 
         const imgFile = req.files.img[0];
 
@@ -64,7 +64,7 @@ const add = async ( req, rep ) => {
         
         const img = url + '/' + fileName;
 
-        const response = await itemHelper.postDataItem({ kategori_id, name, desc, price, discount, stock, img, author_id });
+        const response = await itemHelper.postDataItem({ category_id, name, desc, price, discount, stock, img, author_id });
 
         return rep.send(response);    
     } catch (error) {

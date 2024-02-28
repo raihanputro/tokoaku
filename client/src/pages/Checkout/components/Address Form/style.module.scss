@@ -1,0 +1,12 @@
+@import '@styles/base';
+
+.label {
+    width: 140px;
+    color: var(--color-text);
+}
+
+.nextButton {
+    color: var(--color-text) !important;
+    background-color: var(--color-bg) !important;
+    border-radius: 20px !important;
+}

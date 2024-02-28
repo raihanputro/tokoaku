@@ -1,6 +1,9 @@
 @import '@styles/base';
 
-.contentContainer {
-    background-color: var(--color-bg);
-    border-radius: 20px;
+@include container {
+    .contentContainer {
+        background-color: var(--color-bg);
+        border-radius: 20px;
+        color: var(--color-text);
+    }
 }

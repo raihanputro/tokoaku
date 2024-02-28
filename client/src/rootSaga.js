@@ -9,6 +9,8 @@ import itemDetailSaga from '@pages/Detail Item/saga';
 import wishlistSaga from '@pages/Wishlist/saga';
 import cartSaga from '@pages/Cart/saga';
 import checkoutSaga from '@pages/Checkout/saga';
+import orderSaga from '@pages/Order/saga';
+import transactionDetailSaga from '@pages/Order Detail/saga';
 import userDataSaga from '@pages/Admin/User Data/saga';
 import itemDataSaga from '@pages/Admin/Item Data/saga';
 import categoryDataSaga from '@pages/Admin/Category Data/saga';
@@ -24,6 +26,8 @@ export default function* rootSaga() {
     wishlistSaga(),
     cartSaga(),
     checkoutSaga(),
+    orderSaga(),
+    transactionDetailSaga(),
     userDataSaga(),
     itemDataSaga(),
     categoryDataSaga()

@@ -22,7 +22,7 @@ function* doUpdateItem ({id, itemData}) {
     } catch (error) {
         yield put(showPopup(error));
     }
-}
+};
 
 function* doDeleteItem ({id}) {
     try {

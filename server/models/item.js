@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'author',
         foreignKey: 'author_id'
       });
+      item.hasMany(models.review, {
+        as: 'review',
+        foreignKey: 'item_id'
+      });
     }
   }
   item.init({

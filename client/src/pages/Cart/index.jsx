@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
+import { formattedPrice } from '@utils/price';
 
 import { updateDataCart, deleteDataCart } from './actions';
 import { selectCart } from './selectors';
@@ -30,14 +31,14 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
     setCartData(cartDataSelect);
   }, [cartDataSelect]); 
 
-  console.log(cartData, 'amj');
-
   useEffect(() => {
-    let total = 0;
-    cartData.forEach(item => {
-      total += (item?.item?.price * item?.qty);
-    });
-    setSubTotal(total)
+    if (Array.isArray(cartData)) {
+      let total = 0;
+      cartData?.forEach(item => {
+        total += (item?.price * item?.qty);
+      });
+      setSubTotal(total);
+    }
   }, [cartData]);
 
   const increment = (itemId, qty) => {
@@ -75,22 +76,36 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
                   </Typography>
                 </Box>
                 <Box className={classes.contentRight}>
-                  <Typography variant='h6' component='div' sx={{ paddingLeft: '50px' }}>
-                    Rp{cart?.item?.price}  
-                  </Typography>
-                  <Box className={classes.stockContainer}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', width: '100%', marginBottom: '5%' }}>
+                    <Typography variant='h6' component='div'>
+                      {formattedPrice(cart?.price)}  
+                    </Typography>
+                    {cart?.item?.discount > 0 &&
+                      <Box sx={{ display: 'flex', gap: '5%' }}>
+                        <Typography variant="body2" sx={{ fontSize: '15px', fontWeight: 'bolder', color: '#B80000', backgroundColor: '#FF8989', width: 'fit-content', padding: '5px', borderRadius: '20px'}}>
+                          {cart?.item?.discount}%
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '20px', fontWeight: 'bolder', textDecoration: 'line-through'}}>
+                          {formattedPrice(cart?.item?.price)}
+                        </Typography>
+                      </Box>
+                    }
+                  </Box>
+                  <Box sx={{ display: 'flex' }}>
                     <Button onClick={() => dispatch(deleteDataCart(cart?.id, userDataSelect?.id))}>
                         <DeleteIcon sx={{ color: 'red' }} />
                     </Button>
-                    <Box className={classes.adjustStockContainer}>
-                      <Button onClick={() =>  decrement(cart?.id, cart?.qty)}>
-                        <RemoveIcon />
-                      </Button>
-                      {cart?.qty}
-                      <Button onClick={() => increment(cart?.id, cart?.qty)}>
-                        <AddIcon />
-                      </Button>
-                    </Box>
+                    <Card className={classes.stockContainer}>
+                      <Box className={classes.adjustStockContainer}>
+                        <Button onClick={() =>  decrement(cart?.id, cart?.qty)}>
+                          <RemoveIcon sx={{ color: 'red' }} />
+                        </Button>
+                        {cart?.qty}
+                        <Button onClick={() => increment(cart?.id, cart?.qty)}>
+                          <AddIcon sx={{ color: 'green' }} />
+                        </Button>
+                      </Box>
+                    </Card>
                   </Box>
                 </Box>
               </Box>
@@ -102,8 +117,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
           </Box>
         </Card>
         {cartData.length >= 1 && 
-          <Card sx={{ marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '280px'}}>
-            <Box className={classes.cardSummaryContainer}>
+          <Card className={classes.cardSummaryContainer} sx={{ marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '280px', padding: '1%'}}>
               <Typography variant='h1' component='div' className={classes.summaryTitle} sx={{ textAlign: 'center' }}>
                 <FormattedMessage id="summary_cart_title" />
               </Typography>
@@ -112,13 +126,12 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
                   <FormattedMessage id="total_title" />
                 </Typography>
                 <Typography variant='h1' component='div' className={classes.totalText}>
-                  Rp{subTotal}
+                  {formattedPrice(subTotal)}
                 </Typography>
               </Box>
-              <Button variant='contained' sx={{ marginTop: '20px', width: '100%' }} onClick={() => navigate('/checkout')}>
+              <Button variant='contained' className={classes.buyButton} sx={{ marginTop: '20px', width: '100%' }} onClick={() => navigate('/checkout')}>
                 <FormattedMessage id="buy_title" />
               </Button>
-            </Box>
           </Card>
         }   
       </Box>

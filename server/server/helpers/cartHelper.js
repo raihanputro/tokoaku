@@ -87,7 +87,7 @@ const getCartDetail = async (id) => {
 };
 
 const postDataCart = async (dataObject) => {
-    const { item_id, user_id, qty } = dataObject;
+    const { item_id, price, user_id, qty } = dataObject;
 
     try {
         const checkCart = await db.cart.findOne({
@@ -107,7 +107,7 @@ const postDataCart = async (dataObject) => {
                 }
             })
         } else {
-            await db.cart.create({ item_id, user_id, qty });
+            await db.cart.create({ item_id, user_id, price, qty });
         };
 
         return Promise.resolve({ 
@@ -121,7 +121,7 @@ const postDataCart = async (dataObject) => {
 };
 
 const updateDataCart = async (dataObject) => {
-    const { id, qty } = dataObject;
+    const { id, price, qty } = dataObject;
 
     try {
 
@@ -135,7 +135,8 @@ const updateDataCart = async (dataObject) => {
             return Promise.reject(Boom.notFound(`Cannot find cart withb id ${id}!`));
         } else {
             await db.cart.update({
-                qty: qty,
+                price: price,
+                qty: qty
             }, {
                 where: {
                     id: id

@@ -53,7 +53,7 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
 
     const [itemData, setItemData] = useState([]);
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState(null);
+    const [category, setCategory] = useState('');
     const [isModalAddOpen, setIsModalAddOpen] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -71,7 +71,7 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
     }, [itemDataSelect]);
 
     const filteredItem = itemData?.filter(item => {
-      if(item.name.toLowerCase().includes(search.toLocaleLowerCase()) && (category == null || item.category_id === category)) {
+      if(item.name.toLowerCase().includes(search.toLocaleLowerCase()) && (category == '' || item.category_id === category)) {
         return true;
       }
       return false;
@@ -129,7 +129,7 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
               },
             }}
           >
-            <MenuItem value={null}>All</MenuItem>
+            <MenuItem value={''}>All</MenuItem>
             <MenuItem value={1}>Makanan</MenuItem>
             <MenuItem value={2}>Minuman</MenuItem>
             <MenuItem value={3}>Obat</MenuItem>
@@ -153,14 +153,14 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
                     { filteredItem ? filteredItem && Array.isArray(filteredItem) && filteredItem?.map((item, index) => (
                             <StyledTableRow key={index}>
                                 <StyledTableCell align="center">
-                                <CardMedia
-                                  component="img"
-                                  height="80"
-                                  width="50"
-                                  image={item?.img}
-                                  alt={item?.name}
-                                  sx={{ objectFit: "contain" }}
-                                />
+                                  <CardMedia
+                                    component="img"
+                                    height="80"
+                                    width="50"
+                                    image={item?.img}
+                                    alt={item?.name}
+                                    sx={{ objectFit: "contain" }}
+                                  />
                                 </StyledTableCell>
                                 <StyledTableCell align="center">{item?.id}</StyledTableCell>
                                 <StyledTableCell align="center">{item?.name}</StyledTableCell>

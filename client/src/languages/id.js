@@ -87,6 +87,7 @@ export default {
   address_modal_input: 'Alamat',
   phone_modal_input: 'Telepon',
   role_modal_input: 'Peran',
+  category_modal_input: 'Kategori',
   add_user_modal_button: 'Tambah Pengguna',
 
   dialog_delete_title: 'Hapus Pengguna',
@@ -113,4 +114,25 @@ export default {
   selectCity_checkout: 'Pilih Kota',
   next_button: 'Berikutnya',
   back_button: 'Kembali',
+
+  order_summary_title: 'Ringkasan Pesanan',
+  shippingCost_title: 'Biaya Ongkir',
+  address_title: 'Alamat Pengantaran',
+  input_fullName_checkout: 'Masukkan Nama Lengkap',
+
+  selectService_checkout: 'Pilih Layanan',
+  takeInStore_checkout: 'Ambil di Toko',
+
+  order_title: 'Pesanan',
+  pay_button: 'Bayar',
+  review_button: 'Ulas',
+  shipping_cost_checkout: 'Ongkos Kirim',
+  item_table_order: 'Barang',
+  qty_table_order: 'Kuantitas',
+  price_table_order: 'Harga',
+  subTotal_table_order: 'Sub Total',
+  expiryOn_order: 'Batas Bayar',
+  orderOn_order: 'Di Pesan',
+  bill_order: 'Ditagih Kepada:',
+  phone_checkout: 'Telepon',
 };

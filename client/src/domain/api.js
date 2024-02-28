@@ -28,6 +28,13 @@ const urls = {
   getProvince: 'transaction/province',
   getCity: 'transaction/city',
   getShippingCost: 'transaction/shipping-cost',
+  addTransaction: 'transaction/add',
+  getTransactionByUser: 'transaction/user',
+  getTransactionDetail: 'transaction/detail',
+  updateTransactionStatus: 'transaction/notification',
+  getReviewByTr: 'review/tr-list',
+  addReview: 'review/add',
+  updateReview: 'review/update',
 };
 
 export const callAPI = async (endpoint, method, header = {}, params = {}, data = {}) => {
@@ -74,3 +81,10 @@ export const deleteWishlistApi = (id) => callAPI(`${urls.deleteWishlist}/${id}`,
 export const getProvinceApi = () => callAPI(urls.getProvince, 'GET');
 export const getCityApi = (provinceId) => callAPI(`${urls.getCity}/${provinceId}`, 'GET');
 export const getShippingCostApi = (shippingData) => callAPI(urls.getShippingCost, 'POST', {}, {}, shippingData);
+export const addTransactionApi = (transactionData) => callAPI(urls.addTransaction, 'POST', {}, {}, transactionData);
+export const getTransactionByUserApi = () => callAPI(urls.getTransactionByUser, 'GET');
+export const getTransactionDetailApi = (id) => callAPI(`${urls.getTransactionDetail}/${id}`, 'GET');
+export const updateTransactionStatusApi = (transactionData) => callAPI(urls.updateTransactionStatus, 'PUT', {}, {}, transactionData);
+export const getReviewByTrApi = (id) => callAPI(`${urls.getReviewByTr}/${id}`, 'GET');
+export const addReviewApi = (reviewData) => callAPI(urls.addReview, 'POST', {}, {}, reviewData);
+export const updateReviewApi = (reviewData) => callAPI(urls.updateReview, 'PATCH', {}, {}, reviewData);

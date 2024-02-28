@@ -4,10 +4,14 @@ const Boom = require('boom');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const http = require('http');
+const socketIo = require('socket.io');
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 const Port = process.env.PORT;
 const dirname = path.resolve();
 
@@ -18,12 +22,26 @@ const Category = require('./server/api/category');
 const Wishlist = require('./server/api/wishlist');
 const Cart =  require('./server/api/cart');
 const Transaction = require('./server/api/transaction');
+const Review = require('./server/api/review');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+
+  socket.on('disconnect', () => {
+      console.log('Client disconnected');
+  });
+
+  socket.on('chat message', (message) => {
+      console.log('Message received: ', message);
+      io.emit('chat message', message); 
+  });
+});
 
 app.use((error, req, res, next) => {
   if (error) {
@@ -48,7 +66,7 @@ app.use((req, res, next) => {
   const oldSend = res.send;
   res.send = async (data) => {
     res.send = oldSend; 
-    const statusCode = (data.output && data.output.statusCode) || res.statusCode;
+    const statusCode = (data?.output && data?.output?.statusCode) || res?.statusCode;
     let bodyResponse = data;
 
     if (statusCode !== 200 && data.isBoom) {
@@ -83,6 +101,7 @@ app.use('/api/category', Category);
 app.use('/api/wishlist', Wishlist);
 app.use('/api/cart', Cart);
 app.use('/api/transaction', Transaction);
+app.use('/api/review', Review);
 
 app.listen(Port, () => {
   console.log(['Info'], `Server started on port ${Port}`);
