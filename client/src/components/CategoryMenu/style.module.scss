@@ -1,0 +1,43 @@
+@import '@styles/base';
+
+.cardContainer {
+    background-color: var(--color-bg) !important;
+    height: 100%;
+    gap: 1%;
+    border-radius: 20px !important;
+    padding: 20px;
+    @include directionX;
+
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .contentContainer {
+        background-color: var(--color-bg) !important;
+        border-radius: 20px;
+        color: var(--color-text) !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-transform: capitalize  ;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        font-size: 10px !important;
+        font-weight: bold;
+
+        .categoryTitle {
+            font-size: 20px !important;
+            font-weight: bold;
+
+            @media (max-width: 992px) {
+                font-size: 10px !important;
+                font-weight: bold;
+            }
+        }
+        
+    }
+}
