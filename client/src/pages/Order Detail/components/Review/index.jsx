@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { FormattedMessage } from 'react-intl';
@@ -20,32 +21,44 @@ import classes from './style.module.scss';
 
 const ReviewOrder = ({ isOpen, onClose, id, existingReview, review }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { handleSubmit, control, reset, setValue } = useForm();
+  const [ratingValue, setRatingValue] = useState(0);
 
-  console.log(review, 'ttttt');
+  const {
+    handleSubmit, 
+    register,
+    setValue,
+    formState: { errors }
+  } = useForm();
 
   useEffect(() => {
-    if(id && existingReview) {
+    if(isOpen, id, existingReview) {
       dispatch(getReviewDataByTr(id));
     }
-  }, [id, existingReview]);
+  }, [isOpen, id, existingReview]);
 
   useEffect(() => {
     if (isOpen && review) {
-      setValue('rating', review?.rating);
+      setRatingValue(review?.rating);
       setValue('comment', review?.comment);
     }
   }, [isOpen, review]);
 
+  const handleRating= async (rating) => {
+    setRatingValue(rating);
+  };
+
   const onSubmit = (data) => { 
-    if (existingReview) {
-      dispatch(updateReviewData({ transaction_id: id, rating: data.rating || review?.rating, comment: data.comment || review?.comment }))
+    if (!existingReview) {
+      dispatch(createReviewData({ transaction_id: id, rating: ratingValue, comment: data.comment }));
+      navigate(0);
+      reset();
     } else {
-      dispatch(createReviewData({ transaction_id: id, rating: data.rating, comment: data.comment }));
-    };
-    reset();
-    onClose();
+      dispatch(updateReviewData({ transaction_id: id, rating: ratingValue|| review?.rating, comment: data.comment || review?.comment }));
+      navigate(0);
+      reset();
+    }
   };
 
   return (
@@ -60,39 +73,22 @@ const ReviewOrder = ({ isOpen, onClose, id, existingReview, review }) => {
               <Typography variant="body1" color="initial" className={classes.label}>
                 Rating
               </Typography>
-              <Controller
-                name="rating"
-                control={control}
-                defaultValue={0}
-                render={({ field }) => (
-                  <Rating
-                    {...field}
-                    value={field.value}
-                    precision={1}
-                    onChange={(event, newValue) => {
-                      field.onChange(newValue);
-                    }}
-                  />
-                )}
+              <Rating
+                {...register('rating')}
+                value={ratingValue}
+                precision={1}
+                onChange={(e) => {
+                  handleRating(e.target.value);
+                }}
               />
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 Comment
               </Typography>
-              <Controller
-                name="comment"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    margin="normal"
-                    value={field.value}                   
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
-                  />
-                )}
+              <TextField
+                {...register('comment')}
+                focused={false}
               />
             </Box>
             <Button
@@ -103,7 +99,7 @@ const ReviewOrder = ({ isOpen, onClose, id, existingReview, review }) => {
               className={classes.reviewButton}
               sx={{ mt: 2 }}
             >
-                Review
+                Review      
             </Button>
           </Box>
         </form>
