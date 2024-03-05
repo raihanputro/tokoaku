@@ -193,7 +193,7 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect, items, profile 
     <div className={classes.contentWrapper}>
       <Box sx={{ display: 'flex', gap: '3%', width: '100%'}}>
         <div className={classes.logoImage} onClick={goHome}>
-          <img src="/vite.svg" alt="logo" className={classes.logo} />
+          <img src="/logo.png" alt="logo" className={classes.logo} />
           <div className={classes.title}>{title}</div>
         </div>
           <Autocomplete
