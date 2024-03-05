@@ -1,6 +1,20 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
 
     .pageTitle {
         font-size: 40px;
@@ -12,16 +26,9 @@
         justify-content: space-between;
         gap: 10px;
 
-        @include apply-at-xs-size {
+        @media (max-width:1069px) {
             @include directionY;
-        }
-
-        @include apply-at-xl-size {
-            
-        }
-
-        @include apply-at-xxl-size {
-            @include directionX;
+            width: 100%;
         }
 
         .cardContainer {
@@ -30,25 +37,16 @@
             padding-left: 20px;
             padding-right: 20px;
     
-            .contentContainer {
+            .contentCardContainer {
                 @include directionX;
                 align-items: center;
                 justify-content: space-between;
                 padding: 10px;
-                
-                @include apply-at-xs-size {
+
+                @media (max-width:603px) {
                     @include directionY;
+                    width: 100%;
                 }
-                @include apply-at-xs2-size {
-                    @include directionY;
-                }
-                @include apply-at-sm-size {
-                    @include directionX;
-                }    
-                @include apply-at-xxl-size {
-                    @include directionX;
-                }
-        
     
                 .contentLeft {
                     @include directionX;
@@ -58,15 +56,42 @@
                 .contentRight {
                     @include directionY;
                     align-items: center;
+
+                    @media (max-width:603px) {
+                        @include directionX;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    @media (max-width:483px) {
+                        @include directionY;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .contentRightTop {
+                        @include directionY;
+                        align-items: end;
+                        width: 100%;
+
+                        @media (max-width:483px) {
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    }
     
                     .stockContainer {
                         @include directionX;
-                        background-color: var(--color-bg);
+                        background-color: var(--color-button);
                         padding: 5px;
                         border-radius: 20px;
+                        align-items: center;
     
                         .adjustStockContainer {
+                            @include directionX;
                             border-radius: 5px;
+                            align-items: center;
+                            justify-content: center;
                         }
                     }
                 }
@@ -85,9 +110,17 @@
     .cardSummaryContainer {
         background-color: var(--color-bg);
         height: 100%;
+        margin-top: 1%;
+        border-radius: 20px;
+        height: 160px;
+        width: 100%;
+        max-width: 280px;
+        padding: 1%;
         @include directionY;
-        @include apply-at-xs-size {
-            width: 100%;
+
+        @media (max-width:1069px) {
+           width: 100%;
+           max-width: none;
         }
 
         .summaryTitle {
@@ -100,10 +133,6 @@
             @include directionX;
             justify-content: space-around;
             margin-top: 20px;
-            @include apply-at-xs-size {
-                justify-content: center;
-                gap: 150px;
-            }
     
             .totalText {
                 font-size: 20px;
@@ -112,7 +141,7 @@
 
         .buyButton {
             color: var(--color-text) !important;
-            background-color: var(--color-bg) !important;
+            background-color: var(--color-button) !important;
             border-radius: 20px;
         }
     }

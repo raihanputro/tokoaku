@@ -9,10 +9,11 @@ export const getDataCart = () => ({
     type: GET_DATA_CART,
 });
 
-export const updateDataCart = (id, dataCart) => ({
+export const updateDataCart = (id, dataCart, cbFailed) => ({
     type: UPDATE_DATA_CART,
     id,
     dataCart,
+    cbFailed
 });
 
 export const deleteDataCart = (id) => ({

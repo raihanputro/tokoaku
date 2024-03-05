@@ -15,13 +15,15 @@ function* doGetCart () {
     yield put(setLoading(false));
 };
 
-function* doUpdateCart ({id, dataCart}) {
+function* doUpdateCart ({id, dataCart, cbFailed}) {
     try {
         yield call(updateCartApi, id, dataCart);
         const resCart = yield call(getCartApi);
         yield put(setDataCart(resCart.data));
     } catch (error) {
-        yield put(showPopup(error));
+        if (error?.response?.data?.message) {
+            cbFailed && cbFailed(error?.response?.data?.message);
+        }   
     }
 };
 

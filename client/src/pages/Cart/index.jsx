@@ -10,6 +10,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
+import toast, { Toaster } from 'react-hot-toast';
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import { formattedPrice } from '@utils/price';
@@ -43,13 +44,19 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
 
   const increment = (itemId, qty) => {
     const newQty = qty + 1;
-    dispatch(updateDataCart(itemId, {qty: newQty}))
+    dispatch(updateDataCart(itemId, {qty: newQty}, (err) => {
+      toast(err, {
+        style: {
+          marginTop: '2%',
+        }
+      });
+    }))
   };
 
   const decrement = (cartId, qty) => {
     const newQty = qty - 1;
     if (newQty >= 1) {
-      dispatch(updateDataCart(cartId, {qty: newQty}))
+      dispatch(updateDataCart(cartId, {qty: newQty}));
     } else {
       dispatch(deleteDataCart(cartId));
     }
@@ -61,10 +68,10 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
         <FormattedMessage id="cart_title" />
       </Typography>
       <Box className={classes.contentContainer}>
-        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '100%', minHeight: '160px',  }}>
+        <Card sx={{  marginTop: '1%', borderRadius: '20px', width: '102%', minHeight: '160px' }}>
           <Box className={classes.cardContainer}>
             { cartData.length >= 1 ? cartData && Array.isArray(cartData) && cartData?.map((cart, index) => (
-              <Box key={index} className={classes.contentContainer}>
+              <Box key={index} className={classes.contentCardContainer}>
                 <Box className={classes.contentLeft}>
                   <CardMedia 
                     component="img"
@@ -76,7 +83,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
                   </Typography>
                 </Box>
                 <Box className={classes.contentRight}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', width: '100%', marginBottom: '5%' }}>
+                  <Box className={classes.contentRightTop}>
                     <Typography variant='h6' component='div'>
                       {formattedPrice(cart?.price)}  
                     </Typography>
@@ -117,7 +124,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
           </Box>
         </Card>
         {cartData.length >= 1 && 
-          <Card className={classes.cardSummaryContainer} sx={{ marginTop: '1%', borderRadius: '20px', height: '160px', width: '100%', maxWidth: '280px', padding: '1%'}}>
+          <Card className={classes.cardSummaryContainer}>
               <Typography variant='h1' component='div' className={classes.summaryTitle} sx={{ textAlign: 'center' }}>
                 <FormattedMessage id="summary_cart_title" />
               </Typography>
@@ -135,6 +142,7 @@ const Cart = ({cartDataSelect, userDataSelect}) => {
           </Card>
         }   
       </Box>
+      <Toaster />
     </Box>
   )
 }
