@@ -1,18 +1,36 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
 
     .allContent {
         background-color: var(--color-bg);
         padding-left: 40px;
         padding-right: 40px;
+        @include directionY;
 
         .cardContainer{
             align-items: center;
             display: flex;
             height: 100%;
+
+            @media (max-width: 1200px) {
+                @include directionY;
+            }
            
-    
             .itemInfo {
                 @include directionX;
                 padding-top: 3%;
@@ -48,10 +66,23 @@
                 font-weight: bolder;
                 margin-bottom: 2%;
                }
+
+               .adJustItemContainer {
+                @include directionX;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 2%;
+                width: 100%;
+
+                @media (max-width: 1468px) {
+                    @include directionY;
+                }
+
+               }
     
                .cartButton {
                     color: var(--color-text) !important;
-                    background-color: var(--color-bg) !important;
+                    background-color: var(--color-button) !important;
                     border-radius: 20px;
                     margin-top: 1%; 
                     
@@ -61,7 +92,8 @@
         }
         
         .cardUlasan {
-            background-color: var(--color-bg) !important;
+            background-color: var(--color-button) !important;
         }
     }
+
 }

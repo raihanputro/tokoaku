@@ -5,23 +5,24 @@ import { getItemDetailApi, addCartApi, getCartApi } from "@domain/api";
 import { setItemDetail } from "./actions";
 import { setLoading, showPopup } from "@containers/App/actions";
 
-function* doGetItemDetail ({ id, cb}) {
+function* doGetItemDetail ({ id }) {
     try {
         const resItemDetail = yield call(getItemDetailApi, id);
         yield put(setItemDetail(resItemDetail.data));
-        cb && cb();
     } catch (error) {
         yield put(showPopup(error));
     }
 };
 
-function* doPostCartItem ({ cartData }) {
+function* doPostCartItem ({ cartData, cbFailed }) {
     try {
         yield call(addCartApi, cartData);
         const resCart = yield call(getCartApi);
         yield put(setDataCart(resCart.data));
     } catch (error) {
-        yield put(showPopup(error));
+        if (error?.response?.data?.message) {
+            cbFailed && cbFailed(error?.response?.data?.message);
+        }
     }
 };
 

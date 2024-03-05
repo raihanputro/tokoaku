@@ -5,13 +5,13 @@ export const setItemDetail = (item) => ({
     item
 })
 
-export const setCartitem = (cartData) => ({
+export const setCartitem = (cartData, cbFailed) => ({
     type: SET_CART_ITEM,
     cartData,
+    cbFailed
 }) 
 
-export const getItemDetail = (id, cb) => ({
+export const getItemDetail = (id) => ({
     type: GET_DETAIL_ITEM,
     id, 
-    cb
 })
