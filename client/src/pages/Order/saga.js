@@ -7,7 +7,6 @@ import { setLoading, showPopup } from "@containers/App/actions";
 function* doGetTransactionData () {
     try {
         const res = yield call(getTransactionByUserApi);
-        console.log(res, 'test tr list')
         yield put(setTransactionListData(res.data));
     } catch (error) {
         yield put(showPopup(error));

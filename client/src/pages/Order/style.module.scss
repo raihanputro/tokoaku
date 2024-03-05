@@ -1,6 +1,21 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
+
     .pageTitle {
         font-size: 40px !important;
         font-weight: 700 !important ;
@@ -18,13 +33,22 @@
             gap: 10px;
             margin-bottom: 1%;
 
+            @media (max-width: 1200px) {
+                @include directionY;
+            }
+
             .search {
                 width: 100%;
             }
 
             .status {
                 width: 20%;
+
+                @media (max-width: 1200px) {
+                    width: 100%;
+                }
             }
+            
         }
 
         .contentContainer {
@@ -84,6 +108,27 @@
                         font-size: 10px;
                         font-weight: bold;
                     }
+                }
+
+                .contentMain {
+                    @include directionX;
+                    justify-content: space-between;
+
+                    @media (max-width: 523px) {
+                        @include directionY;
+                        width: 100%;
+                    }
+                    
+                    .mainContainer {
+                        @include directionX;
+                        width: 50%;
+                        padding-left: 2%;
+                        
+                        @media (max-width: 523px) {
+                            justify-content: space-between;
+                        }
+                    }
+                    
                 }
 
                 .seeButton {

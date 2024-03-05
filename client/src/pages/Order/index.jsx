@@ -12,6 +12,7 @@ import CardMedia from '@mui/material/CardMedia';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import { formattedPrice } from '@utils/price';
 
 import { getTransactionData } from './actions';
 import { selectTransactionList } from './selectors';
@@ -30,23 +31,12 @@ const Order = ({ transactionList, theme }) => {
     dispatch(getTransactionData());
   }, [dispatch]);
 
-  console.log(transactionList, 'teszst tr order')
-
   const filteredTransaction = transactionList?.filter(tr => {
     if (tr?.order?.some(order => order?.item_name?.toLowerCase().includes(search.toLowerCase())) && (status === null || tr.status === status)) {
       return true;
     }
     return false;
   }) || [];
-
-  const formattedPrice = (price) => {
-    return price?.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
   
   return (
     <Box className={classes.container}>
@@ -96,8 +86,8 @@ const Order = ({ transactionList, theme }) => {
                     {tr?.status === 'PROCESS' && <Typography variant='p' component='div' className={classes.statusProcess}>{tr?.status}</Typography>}
                     {tr?.status === 'FAIL' && <Typography variant='p' component='div' className={classes.statusFail}>{tr?.status}</Typography>}
                 </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex', width: '50%', paddingLeft: '2%'}}>
+                <Box className={classes.contentMain}>
+                  <Box className={classes.mainContainer}>
                     <CardMedia 
                       component="img"
                       image={tr?.order[0]?.item?.img}
@@ -141,7 +131,7 @@ const Order = ({ transactionList, theme }) => {
                 </Box>
             </Card> 
           )) : 
-            <Typography variant='p' component='div' sx={{ fontSize: '30px', marginTop: '2%' }}>
+            <Typography variant='p' component='div' sx={{ fontSize: '30px', marginTop: '2%', marginLeft: '40%' }}>
               Pesanan Kosong
             </Typography>    
           }
