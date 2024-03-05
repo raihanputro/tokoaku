@@ -10,6 +10,9 @@ const config = {
   api: {
     host: env.API_HOST,
   },
+  encryption: {
+    cryptoSecret: env.CRYPTO_SECRET
+  }
 };
 
 export default config;
