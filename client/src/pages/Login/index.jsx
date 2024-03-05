@@ -1,95 +1,155 @@
-  import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { createStructuredSelector } from 'reselect';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, connect } from 'react-redux';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useForm } from 'react-hook-form';
+import { FormattedMessage } from 'react-intl';
 import Box from '@mui/material/Box';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import toast, { Toaster } from 'react-hot-toast';
 
-import { showPopup } from '@containers/App/actions';
-import { selectToken, selectUser } from '@containers/Client/selectors';
+
+import encryptPayload from '@utils/encryption';
+
+import signUpImage from '../../../public/sign-in.svg';
+
+import { selectUser } from '@containers/Client/selectors';
 import { setUserLogin } from './actions';
 
 import classes from './style.module.scss';
 
-const Login = ({userSelect}) => {
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Please enter a valid email!")
+    .required("Email is a required field"),
+  password: yup
+    .string()
+    .required("Password is required!")
+    .min(6, "Password must be longer than 6 characters!"),
+});
+
+const Login = ({ userSelect }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const intl = useIntl();
 
-  const [role, setRole] = useState(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const isEmailValid = (email) => {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(email);
-  };
+  const handleShowPassword = () => setShowPassword(!showPassword);
+  
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(schema) });
 
   useEffect(() => {
     if (userSelect) {
       if (userSelect.role === 'Customer') {
         navigate('/');
       } else if (userSelect.role === 'Admin') {
-        navigate('/admin');
+        navigate('/admin/dashboard');
       }
     }
   }, [userSelect]); 
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    if(email === "" && password === "") {
-      dispatch(showPopup(intl.formatMessage({ id: 'login_validation'}), intl.formatMessage({ id: 'login_validation_required'})));
-    } else if(email === "") {
-      dispatch(showPopup(intl.formatMessage({ id: 'login_validation'}), intl.formatMessage({ id: 'login_validation_email_required'})));
-    } else if(!isEmailValid(email)) {
-      dispatch(showPopup(intl.formatMessage({ id: 'login_validation'}), intl.formatMessage({ id: 'register_validation_email_pattern'})));
-    } else if(password === "") {
-      dispatch(showPopup(intl.formatMessage({ id: 'login_validation'}), intl.formatMessage({ id: 'login_validation_password_required'})));
-    } else if(password.length < 6) {
-      dispatch(showPopup(intl.formatMessage({ id: 'login_validation'}), intl.formatMessage({ id: 'register_validation_password_min'})));
-    } else {
-      dispatch(setUserLogin({ email: email, password: password}, () => { 
-      }));
-    }
-};
+  const onSubmit = (data) => {
+    dispatch(setUserLogin({ 
+      email: encryptPayload(data.email), 
+      password: encryptPayload(data.password), 
+    }, (err) => {
+      toast(err, {
+        style: {
+          marginTop: '2%',
+        }
+      });
+    }));
+  };
 
   return (
     <Box className={classes.container}>
-      <Card component={Box} className={classes.cardContainer}>
-          <CardContent>
-              <Typography variant='h1' component='div' className={classes.pageTitle} >
-                <FormattedMessage id="login_title" />
-              </Typography>
-              <FormControl className={classes.formContainer}>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                        <FormattedMessage id="login_label_email" />
-                      </FormLabel>
-                      <TextField sx={{ input: { color: 'black' } }} className={classes.input} variant="outlined" type='email' value={email} onChange={(e) => setEmail(e.target.value)} required={true}/>
-                  </Box>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                        <FormattedMessage id="login_label_password" />
-                      </FormLabel>
-                      <TextField sx={{ input: { color: 'black' } }} className={classes.input} variant="outlined" type='password' value={password} onChange={(e) => setPassword(e.target.value)} required={true}/>
-                  </Box>
-              </FormControl>
-              <Button className={classes.loginButton} onClick={onSubmit}><FormattedMessage id="login_title" /></Button>
-              <Typography variant='h1' component='div' className={classes.linkRegister} >
-                <FormattedMessage id="login_register_link" />
-                <b className={classes.here} onClick={() => navigate('/register')}><FormattedMessage id="login_register_here" /></b>
-              </Typography>
-          </CardContent>  
-      </Card>
+        <Card className={classes.cardContainer}>
+            <Box className={classes.contentRight}>
+                <Box
+                    className={classes.img}
+                    component="img"
+                    alt="Register Icon"
+                    src={signUpImage}
+                />
+                <Typography variant='p' component='div' sx={{ fontSize: '20px'}}>
+                        You dont have an accout? <Link sx={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 'bolder' }} onClick={() => navigate('/register')}>Register</Link>
+                </Typography>
+            </Box>
+            <Box className={classes.formContainer}>
+                <Typography variant='p' component='div' sx={{ fontSize: '30px', fontWeight: 'bolder', marginBottom: '2%' }}>
+                    Login
+                </Typography>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <TextField 
+                          {...register('email')}
+                          aria-invalid={errors.email ? "true" : "false"}
+                          placeholder='Enter email'
+                          error={errors.email && true} 
+                          focused={false}
+                          className={classes.inputText}
+                          sx={{ 
+                              '& .MuiOutlinedInput-root': {
+                                  borderRadius: '20px',
+                                },
+                          }}
+                      />
+                      { errors.email && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.email?.message}
+                          </Typography>
+                      }
+                      <TextField 
+                          {...register("password")}
+                          aria-invalid={errors.password ? "true" : "false"}
+                          error={errors.email && true} 
+                          placeholder='Enter password' 
+                          type={showPassword ? 'text': 'password'}
+                          focused={false}
+                          className={classes.inputText}
+                          InputProps={{ 
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleShowPassword}>
+                                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                          sx={{ 
+                              marginTop: '5%', 
+                              '& .MuiOutlinedInput-root': {
+                                  borderRadius: '20px',   
+                                },
+                          }}
+                      />
+                      { errors.password && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.password?.message}
+                          </Typography>
+                      }
+                      <Button type='submit' variant='contained' sx={{ marginTop: '5%', borderRadius: '20px' }} className={classes.registerButton}>Login</Button>
+                    </Box>
+                  </form>
+            </Box>
+        </Card>
+        <Toaster />
     </Box>
   )
 }

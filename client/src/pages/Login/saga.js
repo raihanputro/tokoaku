@@ -1,15 +1,14 @@
 import { takeLatest, call, put } from "redux-saga/effects";
 import { jwtDecode } from 'jwt-decode';
-
 import { SET_USER_LOGIN } from "./constants";
 import { loginUserApi, getCartApi, getWishlistByUserApi, profileUserApi } from "@domain/api";
 import { setLogin, setToken, setUser } from "@containers/Client/actions";
 import { setDataCart } from "@pages/Cart/actions";
 import { setUserProfile } from "@pages/Profile/actions";
 import { setWishlistData } from "@pages/Wishlist/actions";
-import { setLoading, showPopup } from "@containers/App/actions";
+import { showPopup } from "@containers/App/actions";
 
-function* doLogin ({ userData, cb}) {
+function* doLogin ({ userData, cbFailed }) {
     try {
         const res = yield call(loginUserApi, userData);
         yield put(setLogin(true));
@@ -24,9 +23,10 @@ function* doLogin ({ userData, cb}) {
         const resProfile = yield call(profileUserApi);
         yield put(setUserProfile(resProfile.data));
         yield put(setUser(decodedJwt));
-        cb && cb();
     } catch (error) {
-        yield put(showPopup(error));
+        if (error?.response?.data?.message) {
+            cbFailed && cbFailed(error?.response?.data?.message);
+        } 
     }
 }
 
