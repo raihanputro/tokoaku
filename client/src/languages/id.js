@@ -135,4 +135,14 @@ export default {
   orderOn_order: 'Di Pesan',
   bill_order: 'Ditagih Kepada:',
   phone_checkout: 'Telepon',
+  categorySelect_modal_input: 'Pilih Kategori Barang',
+
+  drawer_dashboard: 'Dasbor',
+  icon_table_row: 'Ikon',
+  drawer_transaction_data: 'Data Transaksi',
+  dashboard_title: 'Dasbor',
+  transaction_data_title: 'Data Transaksi',
+
+  user_data_title: 'Data Pengguna',
+  email_table_row: 'Email',
 };

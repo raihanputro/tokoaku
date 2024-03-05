@@ -137,4 +137,14 @@ export default {
   orderOn_order: 'Order On',
   bill_order: 'Billed To:',
   phone_checkout: 'Phone',
+  categorySelect_modal_input: 'Select Category Item',
+
+  drawer_dashboard: 'Dashboard',
+  icon_table_row: 'Icon',
+  drawer_transaction_data: 'Transaction Data',
+  dashboard_title: 'Dashboard',
+  transaction_data_title: 'Transaction Data',
+
+  user_data_title: 'User Data',
+  email_table_row: 'Email',
 };
