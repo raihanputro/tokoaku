@@ -22,9 +22,8 @@ const Slider = ({theme}) => {
     <Paper
       sx={{
         position: 'relative',
-        backgroundColor: 'grey.800',
-        color: '#fff',
         mb: 4,
+        borderRadius: '20px',
         backgroundSize: 'cover',  
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -36,9 +35,9 @@ const Slider = ({theme}) => {
         position: 'absolute',
         top: 0,
         bottom: 0,
+        borderRadius: '20px',
         right: 0,   
         left: 0,
-        backgroundColor: 'rgba(0,0,0,.3)',
       }}
     />
     <Grid container>
