@@ -3,67 +3,79 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import { createStructuredSelector } from 'reselect';
 import { connect, useDispatch } from 'react-redux';
 
+import MyProfile from './components/MyProfile';
+import ChangePassword from './components/ChangePassword';
+
+import { setStepProfile } from './actions';
+import { selectStep } from './selectors';
 import { getUserProfile } from './actions';
 import { selectProfile } from './selectors';
 
 import classes from './style.module.scss';
 
-const Profile = ({profile}) => {
+const Profile = ({ step, profile }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUserProfile());
   }, [dispatch]);
 
+  const handleStep = (e) => {
+    dispatch(setStepProfile(e.target.value));
+  };
+
+  const renderComponent = () => {
+    switch (step) {
+      case '1': 
+        return <MyProfile />;
+      case '2':
+        return <ChangePassword />
+    }
+  } 
+
   return (
     <Box className={classes.container}>
-      <Card sx={{ minWidth: 300, minHeight: 400}} className={classes.cardContainer}>
-        <Avatar alt={profile?.username?.toUpperCase()} src="/static/images/avatar/1.jpg" sx={{ width: 100, height: 100 }} />
-        <Typography variant='h6' component='div' className={classes.username}>
-            {profile?.username}
-        </Typography>
-        <Box className={classes.profileContainer}>
-          <Box className={classes.profileUser}>
-            <Typography variant='h6' component='div' className={classes.label}>
-              <FormattedMessage id="profile_email_label" />
-            </Typography>
-            <Typography variant='h6' component='div' className={classes.bio}>
-              {profile?.email}
-            </Typography>
-          </Box>
-          <Box className={classes.profileUser}>
-            <Typography variant='h6' component='div' className={classes.label}>
-              <FormattedMessage id="profile_address_label" />
-            </Typography>
-            <Typography variant='h6' component='div' className={classes.bio}>
-              {profile?.address}
-            </Typography>
-          </Box>
-          <Box className={classes.profileUser}>
-            <Typography variant='h6' component='div' className={classes.label}>
-              <FormattedMessage id="profile_phone_label" />
-            </Typography>
-            <Typography variant='h6' component='div' className={classes.bio}>
-              {profile?.phone}
-            </Typography>
-          </Box>
-        </Box>
+      <Card className={classes.cardContainer}>
+        <Card className={classes.leftNavigation}>
+          {profile.photo !== null ? (
+            <Box
+              component="img"
+              sx={{
+                objectFit: "contain",
+                height: "150px",
+                width: "150px",
+                borderRadius: "50%"
+              }}
+              src={profile?.photo}
+            />
+          ) : (
+            <Avatar sx={{ height: "150px", width: "150px" }} />
+          )}
+          <Button className={classes.stepButton} value={'1'} onClick={handleStep}>My Profile</Button>
+          <Button className={classes.stepButton} value={'2'} onClick={handleStep}>Change Password</Button>
+        </Card>
+        <Box>
+          {renderComponent()} 
+       </Box>
       </Card>
     </Box>
   )
 };
 
 Profile.propTypes = {
+  step: PropTypes.string,
   profile: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
+  step: selectStep,
   profile: selectProfile,
-})
+});
 
 export default connect(mapStateToProps)(Profile);
