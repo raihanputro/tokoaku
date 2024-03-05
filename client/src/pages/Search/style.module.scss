@@ -1,0 +1,69 @@
+@import '@styles/base';
+
+@include container {
+
+    .contentContainer {
+        display: flex;
+        gap: 2%;
+
+        .cardContent {
+            padding: 10px;
+            border-radius: 20px;
+            height: fit-content;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            @include directionY;
+            justify-content: center;
+            align-items: center;
+            
+            .listActive {
+                font-weight: bolder;
+            }
+        }
+    
+    }
+
+    .cardContainer {
+        display: inline-grid;
+        width: 100%;
+        justify-items: center;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 20px;
+
+        @include apply-at-xs-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-xs2-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-sm-size {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        @include apply-at-md-size {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include apply-at-xl-size {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @include apply-at-xxl-size {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .cardNotFound {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        height: 150px;
+        width: 100%;
+    }
+}
