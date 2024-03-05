@@ -43,6 +43,17 @@ const shippingCost = async ( req, rep ) => {
     }
 };  
 
+const list = async ( req, rep ) => {
+    try {
+        const response = await TransactionHelper.getAllTransactionList();
+
+        return rep.send(response);
+    } catch (error) {
+        console.log([fileName, 'list', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));       
+    }
+}
+
 const listByCustomer = async ( req, rep ) => {
     try {
         const id = req.body.user.id;
@@ -89,7 +100,7 @@ const add = async ( req, rep ) => {
             expiryAt
         } = req.body;
     
-        const response = await TransactionHelper.postTransaction({
+        const response = await TransactionHelper.createTransaction({
             user_id,
             fullName,
             address,
@@ -128,6 +139,7 @@ const updateFromMidtrans = async ( req, rep ) => {
 
 Router.get('/province', AuthMiddleware.validateToken, province);
 Router.get('/city/:provinceId', AuthMiddleware.validateToken, city);
+Router.get('/list', AuthMiddleware.validateToken, list);
 Router.get('/user', AuthMiddleware.validateToken, listByCustomer);
 Router.get('/detail/:id', AuthMiddleware.validateToken, detail);
 Router.post('/shipping-cost', AuthMiddleware.validateToken, shippingCost);

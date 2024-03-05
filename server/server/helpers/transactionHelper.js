@@ -6,56 +6,87 @@ const { Op } = require('sequelize');
 
 const db = require('../../models');
 const GeneralHelper = require('../helpers/generalHelper');
+const mailer = require('../utils/mailer');
+const { getKey, setKey } = require('../services/redis');
 
 const fileName = 'server/api/transactionHelper.js';
 
 const getProvince = async () => {
     try {
-        const province = await axios.get(
-            'https://api.rajaongkir.com/starter/province',
-            {
-                headers: {
-                    'key': 'adb5b1f140e3c0623e3e40ce48cdc1ee',
-                }
-            }
-        );
+        const provinceRedis = await getKey({
+            key: 'province-list',
+            isErrorOptional: true
+        });
 
-        return Promise.resolve({ 
-            statusCode: 200,
-            message: "Get province successfully!",
-            data: province.data
-        }); 
-    } catch (error) {
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        } else if (error.request) {
-            console.log(error.request);
+        console.log(_.isEmpty(provinceRedis))
+
+        if (_.isEmpty(provinceRedis)) {
+            const province = await axios.get(
+                'https://api.rajaongkir.com/starter/province',
+                {
+                    headers: {
+                        'key': process.env.RAJAONGKIR_KEY,
+                    }
+                }
+            );
+
+            await setKey({
+                key: 'province-list',
+                value: JSON.stringify(province.data.rajaongkir.results)
+            });
+    
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Get province successfully!",
+                data: province.data.rajaongkir.results
+            }); 
         } else {
-            console.log('Error', error.message);
-        }
-        console.log([fileName, 'getProvince', 'ERROR'], { info: `${error}` });
-        throw GeneralHelper.errorResponse(error);
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Get province successfully!",
+                data: JSON.parse(provinceRedis) 
+            });
+        };
+    } catch (error) {
+        console.log([fileName, 'getCity', 'ERROR'], { info: `${error}` });
+        return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
 const getCity = async (provinceId) => {
     try {
-        const city = await axios.get(
-            `https://api.rajaongkir.com/starter/city?province=${provinceId}`,
-            {
-                headers: {
-                    'key': 'adb5b1f140e3c0623e3e40ce48cdc1ee',
-                }
-            }
-        );
+        const cityRedis = await getKey({
+            key: `city-list-${provinceId}`,
+            isErrorOptional: true
+        });
 
-        return Promise.resolve({ 
-            statusCode: 200,
-            message: "Get city successfully!",
-            data: city.data
-        }); 
+        if (_.isEmpty(cityRedis)) {
+            const city = await axios.get(
+                `https://api.rajaongkir.com/starter/city?province=${provinceId}`,
+                {
+                    headers: {
+                        'key': process.env.RAJAONGKIR_KEY,
+                    }
+                }
+            );
+
+            await setKey({
+                key: `city-list-${provinceId}`,
+                value: JSON.stringify(city.data.rajaongkir.results)
+            });
+    
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Get city successfully!",
+                data: city.data.rajaongkir.results
+            }); 
+        } else {
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Get city successfully!",
+                data: JSON.parse(cityRedis)
+            });
+        }
     } catch (error) {
         console.log([fileName, 'getCity', 'ERROR'], { info: `${error}` });
         return Promise.reject(GeneralHelper.errorResponse(error));
@@ -76,7 +107,7 @@ const getShippingCost = async (dataObject) => {
             },
             {
                 headers: {
-                    'key': 'adb5b1f140e3c0623e3e40ce48cdc1ee',
+                    'key': process.env.RAJAONGKIR_KEY,
                     'content-type': 'application/x-www-form-urlencoded'
                 }
             }
@@ -92,6 +123,39 @@ const getShippingCost = async (dataObject) => {
         return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
+
+const getAllTransactionList = async () => {
+    try {
+        const transactions = await db.transaction.findAll({
+            order: [
+                ['orderAt', 'DESC']
+            ],
+            include: [
+                {
+                    model: db.order,
+                    as: 'order',
+                    required: false
+                }
+            ]
+        });
+
+        if(_.isEmpty(transactions)) {
+            return Promise.resolve({ 
+                statusCode: 404,
+                message: "Transactions list is empty!",
+            });   
+        };
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Get transactions list successfully!",
+            data: transactions 
+        });      
+    } catch (error) {
+        console.log([fileName, 'getAllTransactionList', 'ERROR'], { info: `${error}` });
+        return Promise.reject(GeneralHelper.errorResponse(error));
+    }
+};  
 
 const getTransactionListByUser = async (id) => {
     try {
@@ -112,7 +176,10 @@ const getTransactionListByUser = async (id) => {
             ],
             where: {
                 user_id: id
-            }
+            },
+            order: [
+                ['orderAt', 'DESC']
+            ],
         });
         
         if(_.isEmpty(transactions)) {
@@ -128,7 +195,8 @@ const getTransactionListByUser = async (id) => {
             where: {
                 expiryAt: {
                     [Op.lt]: new Date() 
-                }
+                },
+                status: 'PENDING'
             }
         });
 
@@ -188,7 +256,7 @@ const getTransactionDetail = async (dataObject) => {
     }
 };
 
-const postTransaction = async (dataObject) => {
+const createTransaction = async (dataObject) => {
     const { 
         user_id, 
         fullName,
@@ -206,133 +274,145 @@ const postTransaction = async (dataObject) => {
     } = dataObject;
 
     try {
-        const checkCustomer = await db.user.findOne({
-            where: {
-                id: user_id
-            },
-        });
-
-        if (_.isEmpty(checkCustomer)) {
-            return Promise.reject(Boom.notFound(`Cannot find user with id ${user_id}!`))
-        };
-
-        const cart = await db.cart.findAll({
-            where: {
-                user_id: user_id
-            },
-            include: [
-                {
-                    model: db.item,
-                    as: 'item',
-                    attributes: ['name', 'price', 'stock'],
-                    required: false
-                }
-            ]
-        });
-
-        console.log(cart, 'ee')
-
-        const transaction = await db.transaction.create({
-            user_id, 
-            fullName,
-            address,
-            phone,
-            province,
-            city,
-            service,
-            shippingCost,
-            subtotal,
-            total, 
-            status,
-            orderAt,
-            expiryAt,
-        });
-
-        await Promise.all(cart.map(async (cartItem) => {
-            await db.order.create({
-                transaction_id: transaction.id,
-                item_id: cartItem.item_id,
-                item_name: cartItem.item.name,
-                qty: cartItem.qty,
-                price: cartItem.item.price
+        await db.sequelize.transaction( async t => {
+            const checkCustomer = await db.user.findOne({
+                where: {
+                    id: user_id
+                },
+                transaction: t
             });
-
-            await db.item.update({  
-                stock: cartItem.item.stock - cartItem.qty
+    
+            if (_.isEmpty(checkCustomer)) {
+                return Promise.reject(Boom.notFound(`Cannot find user with id ${user_id}!`))
+            };
+    
+            const cart = await db.cart.findAll({
+                where: {
+                    user_id: user_id
+                },
+                include: [
+                    {
+                        model: db.item,
+                        as: 'item',
+                        attributes: ['name', 'price', 'stock'],
+                        required: false
+                    }
+                ],
+                transaction: t
+            });
+    
+            const transaction = await db.transaction.create({
+                user_id, 
+                fullName,
+                address,
+                phone,
+                province,
+                city,
+                service,
+                shippingCost,
+                subtotal,
+                total, 
+                status,
+                orderAt,
+                expiryAt,
+            }, {
+                transaction: t
+            });
+    
+            await Promise.all(cart.map(async (cartItem) => {
+                await db.order.create({
+                    transaction_id: transaction.id,
+                    item_id: cartItem.item_id,
+                    item_name: cartItem.item.name,
+                    qty: cartItem.qty,
+                    price: cartItem.item.price
+                }, {
+                    transaction: t
+                });
+    
+                await db.item.update({  
+                    stock: cartItem.item.stock - cartItem.qty
+                }, {
+                    where: {
+                        id: cartItem.item_id
+                    },
+                    transaction: t
+                })
+            }));
+    
+            const shippingItem = {
+                item_id: 0,     
+                item: { name: 'Shipping Cost', price: shippingCost },
+                qty: 1,
+            };
+    
+            cart.push(shippingItem);
+    
+            const payload = {
+                transaction_details: {
+                    order_id: transaction.id,
+                    gross_amount: total
+                },
+                custom_expiry: {
+                    order_time: transaction.orderAt,
+                    expiry_duration: 24,
+                    unit: "hour"
+                },
+                item_details: cart.map((item) => ({
+                    id: item.item_id,
+                    price: item.item.price,
+                    quantity: item.qty,
+                    name: item.item.name
+                })),
+                customer_details: {
+                    first_name: transaction.fullName,
+                    email: checkCustomer.email,
+                    phone: transaction.phone,
+                    shipping_address: {
+                        first_name: transaction.fullName,
+                        phone: transaction.phone,
+                        address: transaction.address,
+                        city: transaction.city
+                    }
+                }
+            };
+    
+            const authString = btoa(process.env.MIDTRANS_KEY_SERVER);
+    
+            const response = await fetch(`https://app.sandbox.midtrans.com/snap/v1/transactions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Basic ${authString}`
+                },
+                body: JSON.stringify(payload),
+            }); 
+        
+            const data = await response.json();
+    
+            await db.transaction.update({
+                snap_token: data.token,
             }, {
                 where: {
-                    id: cartItem.item_id
-                }
-            })
-        }));
-
-        const shippingItem = {
-            item_id: 0,     
-            item: { name: 'Shipping Cost', price: shippingCost },
-            qty: 1,
-        };
-        cart.push(shippingItem);
-
-        const payload = {
-            transaction_details: {
-                order_id: transaction.id,
-                gross_amount: total
-            },
-            custom_expiry: {
-                order_time: transaction.orderAt,
-                expiry_duration: 24,
-                unit: "hours"
-            },
-            item_details: cart.map((item) => ({
-                id: item.item_id,
-                price: item.item.price,
-                quantity: item.qty,
-                name: item.item.name
-            })),
-            customer_details: {
-                first_name: transaction.fullName,
-                address: transaction.address,
-                phone: transaction.phone
-            },
-            callbacks: {
-                finish: `http://localhost:3000/order/${transaction.id}`,
-                error: `http://localhost:3000/order/${transaction.id}`,
-                pending: `http://localhost:3000/order/${transaction.id}`
-            }
-        };
-
-        const authString = btoa(`SB-Mid-server-vTGvodLgWUJRmUPQcfbYzKpT:`);
-
-        const response = await fetch(`https://app.sandbox.midtrans.com/snap/v1/transactions`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Basic ${authString}`
-            },
-            body: JSON.stringify(payload),
-        }); 
+                    id: transaction.id,
+                },
+                transaction: t
+            });
     
-        const data = await response.json();
-
-        await db.transaction.update({
-            snap_token: data.token,
-        }, {
-            where: {
-                id: transaction.id,
-            }
+            await db.cart.destroy({
+                where: {    
+                    user_id: user_id
+                },
+                transaction: t
+            }); 
+                
+            return Promise.resolve({ 
+                statusCode: 201,
+                message: "Post transaction successfully!",
+            }); 
         });
-
-        await db.cart.destroy({
-            where: {
-                user_id: user_id
-            }
-        }); 
         
-        return Promise.resolve({ 
-            statusCode: 201,
-            message: "Post transaction successfully!",
-        }); 
     } catch (error) {
         console.log([fileName, 'postTransaction', 'ERROR'], { info: `${error}` });
         return Promise.reject(GeneralHelper.errorResponse(error));
@@ -359,19 +439,43 @@ const updateStatusFromMidtrans = async (data) => {
                             required: false,
                         }
                     ]
+                },
+                {
+                    model:  db.user,
+                    as: 'customer',
+                    required: true
                 }
             ]
         });
 
         if (transactionStatus == 'settlement'){
 
-            await db.transaction.update({
-                status: 'SUCCESS',
-            }, {
-                where: {
-                    id: data.order_id,
-                }
-            });
+            const mailOptions = {
+                from: 'tokoaku461@gmail.com',
+                to: findTransaction.customer.email,
+                subject: 'INVOICE tokoaku',
+                text: `test`
+            };
+
+            await mailer.transporter.sendMail(mailOptions);
+
+            if (findTransaction.service === 'cod') {
+                await db.transaction.update({
+                    status: 'SUCCESS',
+                }, {
+                    where: {
+                        id: data.order_id,
+                    }
+                });
+            } else {
+                await db.transaction.update({
+                    status: 'PROCESS',
+                }, {
+                    where: {
+                        id: data.order_id,
+                    }
+                });
+            };
 
             findTransaction.order.map(async(item) => {
                 await db.item.update({
@@ -395,7 +499,7 @@ const updateStatusFromMidtrans = async (data) => {
 
             findTransaction.order.map(async(item) => {
                 await db.item.update({
-                    stock: stock + item.qty
+                    stock: item.item.stock + item.qty
                 }, {
                     where: {
                         id: item.item_id
@@ -429,8 +533,9 @@ module.exports = {
     getProvince,
     getCity,
     getShippingCost,
+    getAllTransactionList,
     getTransactionListByUser,
     getTransactionDetail,
-    postTransaction,
+    createTransaction,
     updateStatusFromMidtrans
 }
