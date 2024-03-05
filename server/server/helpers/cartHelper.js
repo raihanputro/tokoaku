@@ -47,10 +47,6 @@ const getCartListByUser = async (id) => {
             include: ['customer', 'item'],
         });
 
-            // if(_.isEmpty(cartsByUser)) {
-            //     return Promise.reject(Boom.notFound(`Cart list by this user is empty!`));
-            // };
-
         return Promise.resolve({ 
             statusCode: 200,
             message: "Get carts by user list successfully!",
@@ -71,10 +67,6 @@ const getCartDetail = async (id) => {
             include: ['customer', 'item'],
         });
 
-        // if (_.isEmpty(cartDetail)) {
-        //     return Promise.reject(Boom.notFound(`Cart detail is empty!`));
-        // };
-
         return Promise.resolve({ 
             statusCode: 200,
             message: "Get cart detail successfully!",
@@ -86,7 +78,7 @@ const getCartDetail = async (id) => {
     }
 };
 
-const postDataCart = async (dataObject) => {
+const createDataCart = async (dataObject) => {
     const { item_id, price, user_id, qty } = dataObject;
 
     try {
@@ -94,18 +86,28 @@ const postDataCart = async (dataObject) => {
             where: {
                 item_id: item_id,
                 user_id: user_id
-            }
+            },
+            include: ['item']
         });
 
-        if(!_.isEmpty(checkCart)) {
-            await db.cart.update({
-                qty: checkCart.qty+qty
-            }, {
-                where: {
-                    item_id: item_id,
-                    user_id: user_id
-                }
-            })
+        let totalQty;
+
+        if (!_.isEmpty(checkCart)) {
+
+            totalQty = checkCart.qty + qty;
+
+            if (totalQty > checkCart.item.stock) {
+                return Promise.reject(Boom.badRequest(`Cannot add qty more than stock!`));
+            } else {
+                await db.cart.update({
+                    qty: checkCart.qty+qty
+                }, {
+                    where: {
+                        item_id: item_id,
+                        user_id: user_id
+                    }
+                });
+            }
         } else {
             await db.cart.create({ item_id, user_id, price, qty });
         };
@@ -124,37 +126,43 @@ const updateDataCart = async (dataObject) => {
     const { id, price, qty } = dataObject;
 
     try {
-
         const checkCart = await db.cart.findOne({
             where: {
                 id: id
-            }
+            },
+            include: ['item']
         });
 
-        if(_.isEmpty(checkCart)) {
+        let totalQty;
+
+        if (_.isEmpty(checkCart)) {
             return Promise.reject(Boom.notFound(`Cannot find cart withb id ${id}!`));
         } else {
-            await db.cart.update({
-                price: price,
-                qty: qty
-            }, {
-                where: {
-                    id: id
-                }
-            });
-
-            const updatedCart = await db.cart.findOne({
-                where: {
-                    id: id  
-                },
-                include: ['customer', 'item'],
-            });
-
-            return Promise.resolve({ 
-                statusCode: 200,
-                message: "Update cart successfully!",
-                data: updatedCart 
-            });      
+            if (qty  > checkCart.item.stock) {
+                return Promise.reject(Boom.badRequest(`Cannot add qty more than stock!`));
+            } else {
+                await db.cart.update({
+                    price: price,
+                    qty: qty
+                }, {
+                    where: {
+                        id: id
+                    }
+                });
+    
+                const updatedCart = await db.cart.findOne({
+                    where: {
+                        id: id  
+                    },
+                    include: ['customer', 'item'],
+                });
+    
+                return Promise.resolve({ 
+                    statusCode: 200,
+                    message: "Update cart successfully!",
+                    data: updatedCart 
+                });      
+            }
         };
     } catch (error) {
         console.log([fileName, 'updateDataCart', 'ERROR'], { info: `${error}` });
@@ -194,7 +202,7 @@ module.exports = {
     getCartList,
     getCartListByUser,
     getCartDetail,
-    postDataCart,
+    createDataCart,
     updateDataCart,
     deleteDataCart
 }

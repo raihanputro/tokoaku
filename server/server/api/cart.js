@@ -54,7 +54,7 @@ const add = async ( req, rep ) => {
         
         const { item_id, user_id, price, qty } = req.body;
 
-        const response = await CartHelper.postDataCart({ item_id, user_id, price, qty });
+        const response = await CartHelper.createDataCart({ item_id, user_id, price, qty });
 
         return rep.send(response);    
     } catch (error) {
