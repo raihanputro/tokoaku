@@ -38,11 +38,9 @@ const add = async ( req, rep ) => {
 
 const update = async ( req, rep ) => {
     try {
-        const user_id = req.body.user.id;
-
         const { transaction_id, rating, comment  } = req.body;
 
-        const response = await ReviewHelper.updateReviewData({ user_id, transaction_id, rating, comment });
+        const response = await ReviewHelper.updateReviewData({ transaction_id, rating, comment });
 
         return rep.send(response);    
     } catch (error) {

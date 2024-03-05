@@ -36,7 +36,6 @@ const postReviewData = async ( dataObject ) => {
     const { user_id, transaction_id, rating, comment } = dataObject;
 
     try {
-
         const order = await db.order.findAll({
             include: [
                 {
@@ -62,17 +61,27 @@ const postReviewData = async ( dataObject ) => {
             }
         });
 
+        await db.review.create({
+            user_id: user_id,
+            transaction_id: transaction_id,
+            item_id: 0,
+            rating: rating,
+            comment: comment
+        });
+
         order.map(async (item) => {
+            const newRating = (item.item.rating + rating) / (item.item.review.length + 1);
+            
             await db.review.create({
                 user_id,
                 transaction_id,
-                item_id: item.id,
+                item_id: item.item.id,
                 rating,
                 comment
             });
 
             await db.item.update({
-                rating: (item.item.rating + rating) / item.item.review.length,
+                rating: newRating,
             }, {
                 where: {
                     id: item.item.id
@@ -83,7 +92,6 @@ const postReviewData = async ( dataObject ) => {
         return Promise.resolve({ 
             statusCode: 201,
             message: "Create review successfully!",
-            data: order
         });  
     } catch (error) {
         console.log([fileName, 'postReviewData', 'ERROR'], { info: `${error}` });
@@ -92,13 +100,12 @@ const postReviewData = async ( dataObject ) => {
 };
 
 const updateReviewData = async (dataObject) => {
-    const { user_id, transaction_id, rating, comment } = dataObject;
+    const { transaction_id, rating, comment } = dataObject;
 
     try {
         const checkReview = await db.review.findAll({
             where: {
                 transaction_id: transaction_id,
-                user_id: user_id
             }
         });
 
@@ -111,14 +118,12 @@ const updateReviewData = async (dataObject) => {
             }, {
                 where: {
                     transaction_id: transaction_id,
-                    user_id: user_id
                 }
             });
 
             const updatedReview = await db.review.findAll({
                 where: {
                     transaction_id: transaction_id,
-                    user_id: user_id
                 }
             });
 
