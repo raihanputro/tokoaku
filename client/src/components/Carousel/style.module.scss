@@ -3,6 +3,12 @@
 .sliderTextContainer {
     color: var(--color-text);
 
+    @media (max-width: 992px) {
+        background-color: var(--color-bg);
+        opacity: 85%;
+        border-radius: 20px;
+    }
+
     .sliderButton {
         color: var(--color-text);
     }

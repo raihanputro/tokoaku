@@ -3,16 +3,16 @@
 .headerWrapper {
   background-color: var(--color-bg) !important;
   box-shadow: 0 0.25rem 0.75rem rgba(25, 49, 83, 0.2) !important;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 40;
   width: 100%;
-  
+
   .contentWrapper {
     @include directionX;
     color: var(--color-text);
-    padding-left: 30px;
-    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-top: 1rem;  
     padding-bottom: 1rem;
     align-items: center;
     justify-content: space-between;
@@ -28,6 +28,7 @@
         height: 1.5rem;
         margin-right: 0.5rem;
       }
+
       .title {
         font-weight: 700;
 
@@ -36,49 +37,59 @@
         }
 
         @include apply-at-md-size {
-          display: block
+          display: block;
         }
+      }
+    }
+
+    .searchBar {
+      background-color: var(--color-button);
+      border-radius: 20px;
+      width: 500px;
+
+      @include apply-at-xs-size {
+        display: none;
+      }
+
+      @include apply-at-md-size {
+        display: block;
+        width: 100px;
       }
     }
 
     .toolbar {
       @include directionX;
       gap: 20px;
-      padding-right: 30px;
+      padding-right: 1rem;
+
       .theme {
         @include directionX;
         align-items: center;
         margin-right: 0.5rem;
         cursor: pointer;
       }
+
       .buttonContainer {
         @include directionX;
         gap: 15px;
-        padding-top: 8px;
 
         .buttonLogin {
-          color: var(--color-text);
-          font-size: 14px;
-          font-weight: 700;
-          width: 100px;
-          height: 30px;
-          flex-shrink: 0;
-          background-color: transparent;
-          border: 1px solid #FFF;
-          border-radius: 5px;
+          color: var(--color-text) !important;
+          background-color: var(--color-button) !important;
+          border-radius: 20px;
+          text-transform: capitalize;
+          font-weight: bolder;
         }
 
         .buttonRegister {
-          color: var(--color-text);
-          background-color: var(--color-bg-secondary);
-          font-size: 14px;
-          font-weight: 700;
-          width: 100px;
-          height: 30px;
-          flex-shrink: 0;
-          border-radius: 5px;
+          color: var(--color-text) !important;
+          background-color: var(--color-bg) !important;
+          border-radius: 20px;
+          text-transform: capitalize;
+          font-weight: bolder;
         }
       }
+
       .toggle {
         @include directionX;
         align-items: center;
