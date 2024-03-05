@@ -36,7 +36,6 @@ const detail = async ( req, rep ) => {
 
 const add = async ( req, rep ) => {
     try {
-        categoryDataValidation(req.body);
         
         const author_id = req.body.user.id;
 

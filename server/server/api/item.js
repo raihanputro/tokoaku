@@ -2,7 +2,7 @@ const Router = require('express').Router();
 
 const itemHelper = require('../helpers/itemHelper');
 const GeneralHelper = require('../helpers/generalHelper');
-const { idValidation, itemDataValidation } = require('../helpers/validationHelper');
+const ValidationHelper = require('../helpers/validationHelper');
 const { validateToken, roleAdmin } = require('../middlewares/authMiddleware');
 const { uploadImg } = require('../middlewares/uploadImgMiddleware');
 
@@ -21,9 +21,9 @@ const list = async ( req, rep ) => {
 
 const listByAuthor = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-    
         const id = parseInt(req.params['id']);
+
+        ValidationHelper.idValidation(id);
 
         const response = await itemHelper.getItemListByAuthor(id);
 
@@ -35,9 +35,7 @@ const listByAuthor = async ( req, rep ) => {
 
 const detail = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-    
-        const id = parseInt(req.params['id']);
+        const id = parseInt(req.params['id']);  
 
         const response = await itemHelper.getItemDetail(id);
 
@@ -48,15 +46,28 @@ const detail = async ( req, rep ) => {
     }
 };
 
+const search = async ( req, rep ) => {
+    try {
+        const { name, category_id } = req.query;
+
+        const response = await itemHelper.searchItemData({ name, category_id });
+
+        return rep.send(response);    
+    } catch (error) {
+        console.log([fileName, 'search', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));       
+    }
+}
+
 const add = async ( req, rep ) => {
     try {   
-        itemDataValidation(req.body);
-
         const author_id = req.body.user.id;
-
+        
         const url = req.protocol + '://' + req.get('host');
-
+        
         const { category_id, name, desc, price, stock, discount } = req.body;
+
+        ValidationHelper.itemDataValidation({ category_id, name, desc, price, stock, discount, author_id });
 
         const imgFile = req.files.img[0];
 
@@ -75,15 +86,17 @@ const add = async ( req, rep ) => {
 
 const update = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-    
         const id = parseInt(req.params['id']);
+
+        validateToken.idValidation(id);
 
         const url = req.protocol + '://' + req.get('host');
 
         const author_id = req.body.user.id;
 
-        const { kategori_id, name, desc, price, discount, stock  } = req.body;
+        const { name, category_id, desc, price, discount, stock  } = req.body;
+
+        ValidationHelper.itemDataValidation({ category_id, name, desc, price, stock, discount, author_id });
 
         const imgFile = req.files?.img?.[0];
 
@@ -91,7 +104,7 @@ const update = async ( req, rep ) => {
 
         const img = fileName ? url + '/' + fileName : null;   
 
-        const response = await itemHelper.updateDataItem({ id, kategori_id, name, desc, price, discount, stock, img, author_id });
+        const response = await itemHelper.updateDataItem({ id, category_id, name, desc, price, discount, stock, img, author_id });
 
         return rep.send(response);    
     } catch (error) {
@@ -102,9 +115,9 @@ const update = async ( req, rep ) => {
 
 const remove = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-    
         const id = parseInt(req.params['id']);
+
+        validateToken.idValidation(id);
 
         const response = await itemHelper.deleteDataItem(id);
 
@@ -116,8 +129,9 @@ const remove = async ( req, rep ) => {
 };
 
 Router.get('/list', list);
-Router.get('/detail/:id', validateToken, detail);
+Router.get('/detail/:id', detail);
 Router.get('/author/:id', validateToken, roleAdmin, listByAuthor);
+Router.get('/search', search);
 Router.post('/add', uploadImg.fields([{name: 'img', maxCount: 1}]), validateToken, roleAdmin, add);
 Router.patch('/update/:id', uploadImg.fields([{name: 'img', maxCount: 1}]), validateToken, roleAdmin, update);
 Router.delete('/remove/:id', validateToken, roleAdmin, remove);
