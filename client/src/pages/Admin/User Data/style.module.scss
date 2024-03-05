@@ -1,15 +1,40 @@
 @import '@styles/base';
 
+.pageTitle {
+    font-size: 40px !important;
+    font-weight: 700 !important ;
+    color: var(--color-text) !important;
+    margin-top: 140px !important; 
+    margin-bottom: 2% !important;   
+}
+
+.filterContainer {
+    @include directionX;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 1%;
+    
+    .search {
+        width: 100%;
+        color: var(--color-text) !important;
+        background-color: var(--color-bg) !important;
+        border-radius: 20px !important;
+    }
+
+    .role {
+        width: 30%;
+        background-color: var(--color-bg);
+    }
+}
+
 .addButton {
     color: var(--color-text) !important;
     background-color: var(--color-bg) !important;
+    border-radius: 20px !important;
+    border-color: var(--color-bg-secondary) !important;  
 }
 
 .table {
     background-color: var(--color-bg);
     color: var(--color-text);
-
-    .modalContainer {
-        color: var(--color-bg);
-    }
 }

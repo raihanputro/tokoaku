@@ -4,20 +4,25 @@ import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import InfoIcon from '@mui/icons-material/Info';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import CardMedia from "@mui/material/CardMedia";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import InfoIcon from '@mui/icons-material/Info';
 import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -49,139 +54,165 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-const UserData = ({userDataSelect, theme}) => {
+const UserData = ({users, theme}) => {
     const dispatch = useDispatch();
 
-    const [isModalAddOpen, setIsModalAddOpen] = useState(false);
-    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [isModalDetailOpen, setIsModalDetailOpen] = useState(false);
-    const [userData, setUserData] = useState([]);
+    const [search, setSearch] = useState('');
+    const [role, setRole] = useState('select');
+    const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
-    const [open, setOpen] = useState(false);
 
     useEffect(() => {
       dispatch(getuserData());
     }, [dispatch]);
 
-    useEffect(() => {
-        setUserData(userDataSelect?.result)
-    }, [userDataSelect]);
+    console.log(users, 'tst');
 
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
+    const filteredUser = users?.filter(user => {
+      if(user?.username?.toLowerCase().includes(search.toLocaleLowerCase()) && (role == 'select' || user?.role === role)) {
+        return true;
+      }
+      return false;
+    });
 
-    const handleClose = () => {
-      setOpen(false);
-    };
-    
-    const handleCloseAgree = (userId) => {
-      dispatch(deleteUserData(userId));
-      setOpen(false);
-    };
-
-    const handleModalOpen = () => {
-      setIsModalAddOpen(true);
+    const handleAddOpen = () => {
+      setIsAddOpen(true);
     };
   
-    const handleModalClose = () => {
-      setIsModalAddOpen(false);
-    };
-
-    const handleUpdateModalOpen = (userId) => {
-      setSelectedUserId(userId);
-      setIsModalUpdateOpen(true);
-    };
-  
-    const handleUpdateModalClose = () => {
-      setIsModalUpdateOpen(false);
-    };
-
-    const handleDetailModalOpen = (userId) => {
-      setSelectedUserId(userId);
-      setIsModalDetailOpen(true);
-    };
-  
-    const handleDetailModalClose = () => {
-      setIsModalDetailOpen(false);
+    const handleAddClose = () => {
+      setIsAddOpen(false);
     };
 
   return (
     <>
-        <Button sx={{ marginTop: '7%' }} variant="contained" onClick={handleModalOpen} className={classes.addButton}><AddIcon /><FormattedMessage id="add_button" /></Button>
-        <TableContainer component={Paper} sx={{ marginTop: '1%' }}>
+      <Typography variant='h1' component='div' className={classes.pageTitle}>
+        <FormattedMessage id="user_data_title" />
+      </Typography>
+      <Box className={classes.filterContainer}>
+          <TextField
+              InputLabelProps={{shrink: false}}
+              value={search}
+              placeholder='Cari Pengguna'
+              onChange={(e) => setSearch(e.target.value)}
+              className={classes.search}
+              sx={{ 
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  borderRadius: '20px',
+                }
+              }}
+          />
+          <TextField
+            select
+            placeholder='Cari Role'
+            variant="outlined"
+            value={role}
+            InputLabelProps={{shrink: false}}
+            onChange={(e) => setRole(e.target.value)}
+            className={classes.role}
+            sx={{ 
+              borderRadius: '20px',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  borderRadius: '20px',
+                }
+             }}
+            SelectProps={{
+              MenuProps: {
+                PaperProps: {
+                  sx: {
+                    backgroundColor: theme === 'light' ? '#fff' : '#4f4557', 
+                    borderRadius: '20px',
+                    marginTop: '5px'
+                  },
+                },
+              },
+            }}
+          >
+            <MenuItem value={'select'}>Semua</MenuItem>
+            <MenuItem value={'Admin'}>Admin</MenuItem>
+            <MenuItem value={'Customer'}>Customer</MenuItem>
+          </TextField>
+        </Box>
+        <Button variant="contained" onClick={handleAddOpen} className={classes.addButton}><AddIcon /><FormattedMessage id="add_button" /></Button>
+        <AddUserForm isOpen={isAddOpen} onClose={handleAddClose}/>
+        <TableContainer component={Paper} sx={{ marginTop: '1%', borderRadius: '20px' }}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table" className={classes.table}>
-                <TableHead>
+              <TableHead>
                 <TableRow>
-                    <StyledTableCell align="center"><FormattedMessage id="id_table_row" /></StyledTableCell>
-                    <StyledTableCell align="center"><FormattedMessage id="username_table_row" /></StyledTableCell>
-                    <StyledTableCell align="center"><FormattedMessage id="role_table_row" /></StyledTableCell>
-                    <StyledTableCell align="center"><FormattedMessage id="action_table_row" /></StyledTableCell>
+                  <StyledTableCell align="center"></StyledTableCell>
+                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="id_table_row" /></StyledTableCell>
+                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="email_table_row" /></StyledTableCell>
+                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="username_table_row" /></StyledTableCell>
+                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="role_table_row" /></StyledTableCell>
+                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="action_table_row" /></StyledTableCell>
                 </TableRow>
-                </TableHead>
-                <TableBody>
-                    { userData && userData?.map((udt, index) => (
-                            <StyledTableRow key={index}>
-                                <StyledTableCell align="center">{udt?.id}</StyledTableCell>
-                                <StyledTableCell align="center">{udt?.username}</StyledTableCell>
-                                <StyledTableCell align="center">{udt?.role}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <Button onClick={() => handleDetailModalOpen(udt?.id)}><InfoIcon sx={{ color: 'yellow' }}/></Button>
-                                    {udt?.role === 'admin' &&  
-                                      <>
-                                        <Button onClick={() => handleUpdateModalOpen(udt?.id)}><EditIcon /></Button>
-                                        <Button sx={{ color: 'red' }} onClick={handleClickOpen}><DeleteIcon /></Button>
-                                        <Dialog
-                                          open={open}
-                                          onClose={handleClose}
-                                          aria-labelledby="alert-dialog-title"
-                                          aria-describedby="alert-dialog-description"
-                                          className={classes.modalContainer}
-                                          PaperProps={{ 
-                                            sx: {
-                                              backgroundColor: theme == 'light' ? '#fff' : '#474F7A'
-                                            }
-                                           }}
-                                        >
-                                          <DialogTitle id="alert-dialog-title">
-                                            <FormattedMessage id="dialog_delete_title" />
-                                          </DialogTitle>
-                                          <DialogContent>
-                                            <DialogContentText id="alert-dialog-description">
-                                              <FormattedMessage id="dialog_delete_confirm" />{udt?.id}
-                                            </DialogContentText>
-                                          </DialogContent>
-                                          <DialogActions>
-                                            <Button onClick={handleClose}>                                             
-                                              <FormattedMessage id="dialog_delete_button_disagree" />
-                                            </Button>
-                                            <Button onClick={() => handleCloseAgree(udt?.id)} autoFocus>
-                                             <FormattedMessage id="dialog_delete_button_agree" />
-                                            </Button>
-                                          </DialogActions>
-                                        </Dialog>
-                                      </>
-                                    }
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                </TableBody>
+              </TableHead>
+              <TableBody>
+                { filteredUser ? filteredUser && Array.isArray(filteredUser) && filteredUser?.map((user, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center" sx={{ display: 'flex', justifyContent: 'center' }}>
+                      {user.photo !== null ? (
+                        <Box
+                          component="img"
+                          sx={{
+                            objectFit: "contain",
+                            height: "50px",
+                            width: "50px",
+                            borderRadius: "50%"
+                          }}
+                          src={user?.photo}
+                        />
+                      ) : (
+                        <Avatar sx={{ height: "50px", width: "50px" }} />
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">{user?.id}</StyledTableCell>
+                    <StyledTableCell align="center">{user?.email}</StyledTableCell>
+                    <StyledTableCell align="center">{user?.username}</StyledTableCell>
+                    <StyledTableCell align="center">{user?.role}</StyledTableCell>  
+                    <StyledTableCell align="center">
+                      <Button><InfoIcon /></Button>
+                    </StyledTableCell>  
+                  </StyledTableRow>
+
+                )) : <StyledTableCell align="center" colSpan={6}><FormattedMessage id="table_empty" /></StyledTableCell>}
+              </TableBody>
             </Table>
         </TableContainer>
-        <AddUserForm isOpen={isModalAddOpen} onClose={handleModalClose} />
-        <UpdateUserForm isOpen={isModalUpdateOpen} onClose={handleUpdateModalClose} id={selectedUserId} />
-        <DetailUser isOpen={isModalDetailOpen} onClose={handleDetailModalClose} id={selectedUserId}/>
     </>
   )
 }
 
 UserData.propTypes = {
-    userDataSelect: PropTypes.object,
+    users: PropTypes.object,
     theme: PropTypes.string,
   };
   
 const mapStateToProps = createStructuredSelector({
-  userDataSelect: selectUserDataAdmin,
+  users: selectUserDataAdmin,
   theme: selectTheme
 });
   

@@ -1,8 +1,8 @@
-import { SET_USER_DATA, SET_USER_DATA_DETAIL, GET_USER_DATA, GET_DETAIL_USER_DATA, UPDATE_USER_DATA, DELETE_USER_DATA } from "./constants"; 
+import { SET_USERS_DATA, SET_USER_DATA_DETAIL, GET_USERS_DATA, GET_DETAIL_USER_DATA, UPDATE_USER_DATA, DELETE_USER_DATA } from "./constants"; 
 
-export const setUserData = (userData) => ({
-    type: SET_USER_DATA,
-    userData,
+export const setUserData = (usersData) => ({
+    type: SET_USERS_DATA,
+    usersData,
 });
 
 export const setUserDataDetail = (userData) => ({
@@ -11,7 +11,7 @@ export const setUserDataDetail = (userData) => ({
 })
 
 export const getuserData = () => ({
-    type: GET_USER_DATA,
+    type: GET_USERS_DATA,
 });
 
 export const getUserDataDetail = (id) => ({
