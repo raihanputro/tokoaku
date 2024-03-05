@@ -1,9 +1,10 @@
 const Boom = require('boom');
 const _ = require('lodash');
+const { Op } = require('sequelize');
 
 const db = require('../../models');
 const GeneralHelper = require('../helpers/generalHelper');
-
+ 
 const fileName = 'server/api/itemHelper.js';
 
 const getItemList = async () => {
@@ -109,6 +110,77 @@ const getItemDetail = async (id) => {
     }
 };
 
+const searchItemData = async (dataObject) => {
+    const { name, category_id } = dataObject;
+
+    try {
+        const itemBySearch = await db.item.findAll({
+            include: [
+                {
+                    model: db.user,
+                    as: 'author',
+                    attributes: ['username'],
+                    required: false
+                },
+                {
+                    model: db.category,
+                    as: 'category',
+                    attributes: ['name'],
+                    required: false
+                }
+            ],
+            where: {
+                [Op.or]: [
+                    name ? { 
+                        name: { 
+                            [Op.like]: `%${name}%` 
+                        } 
+                    } : {},
+                    category_id ? { 
+                        category_id: { 
+                            [Op.like]: `%${category_id}%` 
+                        } 
+                    } : {}
+                ]
+            }
+        });
+
+        const items = await db.item.findAll({
+            include: [
+                {
+                    model: db.user,
+                    as: 'author',
+                    attributes: ['username'],
+                    required: false
+                },
+                {
+                    model: db.category,
+                    as: 'category',
+                    attributes: ['name'],
+                    required: false
+                }
+            ]
+        });
+
+        if (_.isEmpty(itemBySearch)) {
+            return Promise.resolve({ 
+                statusCode: 404,
+                message: "Cant find with that query!",
+                data: items
+            });     
+        }
+
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Success get items by search!",
+            data: itemBySearch 
+        });   
+    } catch (error) {
+        console.log([fileName, 'searchItemData', 'ERROR'], { info: `${error}` });
+        return Promise.reject(GeneralHelper.errorResponse(error));
+    }
+};
+
 const postDataItem = async (dataObject) => {
     const { category_id, name, desc, price, stock, discount, img, author_id } = dataObject;
 
@@ -133,7 +205,7 @@ const postDataItem = async (dataObject) => {
 };
 
 const updateDataItem = async (dataObject) => {
-    const { id, kategori_id, name, desc, price, discount, stock, img, author_id } = dataObject;
+    const { id, category_id, name, desc, price, discount, stock, img, author_id } = dataObject;
 
     try {
         const checkItem = await db.item.findOne({
@@ -146,7 +218,7 @@ const updateDataItem = async (dataObject) => {
             return Promise.reject(Boom.notFound(`Cannot find item with id ${id}!`));
         } else {
             await db.item.update({
-                kategori_id: kategori_id ? kategori_id : checkItem.dataValues.kategori_id,
+                category_id: category_id ? category_id : checkItem.dataValues.category_id,
                 name: name ? name : checkItem.dataValues.name,
                 desc: desc ? desc : checkItem.dataValues.desc,
                 price: price ? price : checkItem.dataValues.price,
@@ -210,7 +282,8 @@ module.exports = {
     getItemList,
     getItemListByAuthor,
     getItemDetail,
+    searchItemData,
     postDataItem,
     updateDataItem,
-    deleteDataItem
+    deleteDataItem,
 }
