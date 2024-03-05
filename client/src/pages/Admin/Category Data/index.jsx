@@ -20,6 +20,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
+import AddCategoryForm from './components/Add Category Form';
+
 import { getCategoryData } from './actions';
 import { selectCategoryData } from './selectors';
 
@@ -83,24 +85,40 @@ const CategoryData = (categoryDataSelect) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={classes.search}
+              sx={{ 
+                borderRadius: '20px',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  borderRadius: '20px',
+                }
+              }}
             />
         </Box>
         <Button variant="contained" color='primary' onClick={handleAddModalOpen} className={classes.addButton}><AddIcon /><FormattedMessage id="add_button" /></Button>
-        <TableContainer component={Paper} sx={{ marginTop: '1%' }}>
+        <TableContainer component={Paper} sx={{ marginTop: '1%', borderRadius: '20px' }}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow >
+                      <StyledTableCell align="center"></StyledTableCell>
                       <StyledTableCell align="center"><FormattedMessage id="id_table_row" /></StyledTableCell>
                       <StyledTableCell align="center"><FormattedMessage id="name_table_row" /></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="icon_table_row" /></StyledTableCell>
                       <StyledTableCell align="center"><FormattedMessage id="action_table_row" /></StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                     { filteredCategory ? filteredCategory && Array.isArray(filteredCategory) && filteredCategory?.map((category, index) => (
                             <StyledTableRow key={index}>
-                                <StyledTableCell align="center">{category?.id}</StyledTableCell>
-                                <StyledTableCell align="center">{category?.name}</StyledTableCell>
                                 <StyledTableCell align="center">
                                   <CardMedia
                                     component="img"
@@ -111,6 +129,8 @@ const CategoryData = (categoryDataSelect) => {
                                     sx={{ objectFit: "contain" }}
                                   />
                                 </StyledTableCell>  
+                                <StyledTableCell align="center">{category?.id}</StyledTableCell>
+                                <StyledTableCell align="center">{category?.name}</StyledTableCell>
                                 <StyledTableCell align="center">
                                     <Button ><EditIcon /></Button>
                                     <Button  sx={{  color: 'red' }}><DeleteIcon /></Button>
@@ -120,6 +140,7 @@ const CategoryData = (categoryDataSelect) => {
                 </TableBody>
             </Table>
         </TableContainer>
+        <AddCategoryForm isOpen={isModalAddOpen} onClose={handleAddModalClose} />
     </>
   )
 }
