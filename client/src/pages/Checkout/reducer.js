@@ -1,15 +1,16 @@
 import { produce } from "immer";
 
-import { SET_PROVINCE_DATA, SET_CITY_DATA, SET_SHIPPING_COST_DATA, SET_TRANSACTION_DATA } from "./constants";
+import { SET_PROVINCE_DATA, SET_CITY_DATA, SET_SHIPPING_COST_DATA, SET_TRANSACTION_DATA, SET_STEP_CHECKOUT } from "./constants";
 
 export const initialState = {
     province: [],
     city: [],
     shippingCost: null,
+    step: 0,
     transaction: {},
 };
 
-export const storedKey = [''];
+export const storedKey = ['step', 'transaction', 'province', 'city'];
 
 const checkoutReducer = ( state = initialState, action ) => 
     produce(state, (draft) => {
@@ -25,6 +26,8 @@ const checkoutReducer = ( state = initialState, action ) =>
                 break;
             case SET_TRANSACTION_DATA:
                 draft.transaction = action.transactionData;
+            case SET_STEP_CHECKOUT:
+                draft.step = action.step;
         }
     });
 

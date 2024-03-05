@@ -8,7 +8,8 @@ import { setLoading, showPopup } from "@containers/App/actions";
 function* doGetProvince () {
     try {
         const res = yield call(getProvinceApi);
-        yield put(setProvinceData(res.data.rajaongkir.results));
+        console.log(res, 'tst')
+        yield put(setProvinceData(res.data));
     } catch (error) {
         console.log(error)
     }
@@ -17,7 +18,7 @@ function* doGetProvince () {
 function* doGetCity ({ provinceId }) {
     try {
         const res = yield call(getCityApi, provinceId);
-        yield put(setCityData(res.data.rajaongkir.results));
+        yield put(setCityData(res.data));
     } catch (error) {
         console.log(error);
     }

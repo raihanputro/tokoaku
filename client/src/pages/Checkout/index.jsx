@@ -17,21 +17,36 @@ import Review from './components/Review';
 import OrderCreated from './components/Order Created';
 
 import classes from './style.module.scss';
+import { selectStep } from './selectors';
+import { setStepCheckout } from './actions';
 
 const steps = [<FormattedMessage id="shipping_address" />, <FormattedMessage id="review_your_order" />];
 
-const Checkout = () => {
+const Checkout = (step) => {
   const dispatch = useDispatch();
 
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
+    dispatch(setStepCheckout(step.step + 1));
     setActiveStep(activeStep + 1);
   };
 
   const handleBack = () => {
+    dispatch(setStepCheckout(step.step - 1));
     setActiveStep(activeStep - 1);
   };
+
+  const renderComponent = () => {
+    switch (step.step) {
+      case 0: 
+        return <AddressForm onNext={handleNext} />;
+      case 1:
+        return <Review onNext={handleNext} onBack={handleBack} />
+      case 2: 
+      return <OrderCreated />
+    }
+  } 
 
   return (
     <>
@@ -47,18 +62,7 @@ const Checkout = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length ? (
-           <OrderCreated />
-          ) : ( 
-            <>
-              { activeStep === 0 && (
-                <AddressForm onNext={handleNext} />
-              )}
-              { activeStep === 1 && (
-                <Review onNext={handleNext} onBack={handleBack} />
-              )}
-            </>
-          )}
+          {renderComponent()} 
         </Paper>
       </Box>
     </>
@@ -66,9 +70,11 @@ const Checkout = () => {
 }
 
 Checkout.propTypes = {
+  step: PropTypes.number,
 };
 
 const mapStateToProps = createStructuredSelector({
+  step: selectStep
 });
 
 export default connect(mapStateToProps)(Checkout);

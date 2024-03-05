@@ -1,4 +1,4 @@
-import { SET_PROVINCE_DATA, SET_CITY_DATA, SET_SHIPPING_COST_DATA, SET_TRANSACTION_DATA, GET_PROVINCE_DATA, GET_CITY_DATA, GET_SHIPPING_COST_DATA, CREATE_TRANSACTION_DATA } from "./constants";
+import { SET_PROVINCE_DATA, SET_CITY_DATA, SET_SHIPPING_COST_DATA, SET_TRANSACTION_DATA, GET_PROVINCE_DATA, GET_CITY_DATA, GET_SHIPPING_COST_DATA, CREATE_TRANSACTION_DATA, SET_STEP_CHECKOUT } from "./constants";
 
 export const setProvinceData = (provinceData) => ({
     type: SET_PROVINCE_DATA,
@@ -38,3 +38,8 @@ export const createTransactionData = (transactionData) => ({
     type: CREATE_TRANSACTION_DATA,
     transactionData
 });
+
+export const setStepCheckout = (step) => ({
+    type: SET_STEP_CHECKOUT,
+    step
+})

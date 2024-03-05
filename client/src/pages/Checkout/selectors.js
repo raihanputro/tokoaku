@@ -7,3 +7,5 @@ export const selectProvince = createSelector(selectCheckoutState, (state) => sta
 export const selectCity = createSelector(selectCheckoutState, (state) => state.city);
 export const selectShippingCost = createSelector(selectCheckoutState, (state) => state.shippingCost);
 export const selectTransaction = createSelector(selectCheckoutState, (state) => state.transaction);
+export const selectStep = createSelector(selectCheckoutState, (state) => state.step);
+
