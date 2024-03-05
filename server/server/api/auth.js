@@ -3,14 +3,18 @@ const Router = require('express').Router();
 const AuthHelper = require('../helpers/authHelper');
 const GeneralHelper = require('../helpers/generalHelper');
 const ValidationHelper = require('../helpers/validationHelper');
+const { decryptTextPayload } = require('../utils/decrypt');
 
 const fileName = 'server/api/auth.js';
 
 const register = async ( req, rep ) => {
     try {
-        ValidationHelper.registerValidation(req.body);
-
-        const { email, username, password, role } = req.body;
+        const email = decryptTextPayload(req.body?.email);
+        const username = decryptTextPayload(req.body?.username);
+        const password = decryptTextPayload(req.body?.password);
+        const role = decryptTextPayload(req.body?.role);
+       
+        ValidationHelper.registerValidation({ email, username, password, role });
 
         const response = await AuthHelper.registerUser({ email, username, password, role });
 
@@ -23,9 +27,10 @@ const register = async ( req, rep ) => {
 
 const login = async ( req, rep ) => {
     try {
-        ValidationHelper.loginValidation(req.body);
+        const email = decryptTextPayload(req.body?.email);
+        const password = decryptTextPayload(req.body?.password);
 
-        const { email, password } = req.body;
+        ValidationHelper.loginValidation({ email, password });
 
         const response = await AuthHelper.loginUser({ email, password });
 
