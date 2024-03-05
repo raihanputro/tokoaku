@@ -5,13 +5,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const http = require('http');
-const socketIo = require('socket.io');
 
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
 const Port = process.env.PORT;
 const dirname = path.resolve();
 
@@ -30,18 +27,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-io.on('connection', (socket) => {
-  console.log('Client connected');
-
-  socket.on('disconnect', () => {
-      console.log('Client disconnected');
-  });
-
-  socket.on('chat message', (message) => {
-      console.log('Message received: ', message);
-      io.emit('chat message', message); 
-  });
-});
 
 app.use((error, req, res, next) => {
   if (error) {
@@ -102,6 +87,7 @@ app.use('/api/wishlist', Wishlist);
 app.use('/api/cart', Cart);
 app.use('/api/transaction', Transaction);
 app.use('/api/review', Review);
+
 
 app.listen(Port, () => {
   console.log(['Info'], `Server started on port ${Port}`);
