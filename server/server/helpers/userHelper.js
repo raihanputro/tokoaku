@@ -3,16 +3,14 @@ const _ = require('lodash');
 
 const db = require('../../models');
 const GeneralHelper = require('../helpers/generalHelper');
+const bcryptPass = require('../utils/bcryptPass');
 
 const fileName = 'server/helpers/userHelper.js';
 
 const getUserList = async () => {
     try {
         const users = await db.user.findAll({
-            include: {
-                model: db.item,
-                as: 'item'
-            }
+            attributes: ['id', 'email', 'username', 'fullName', 'role', 'photo']
         });
 
         if(_.isEmpty(users)) {
@@ -79,151 +77,89 @@ const getProfileUser = async (id) => {
     }
  };
 
-const updateDataUser = async (dataObject) => {
-    const { id, email, password, username, address, phone, role } = dataObject;
+const updateProfileUser = async (dataObject) => {
+    const { id, username, fullName, address, province_id, city_id, phone, photo } = dataObject;
 
     try {
-        await tb_user.update({
-            email: email,
-            password: password,
-            username: username,
-            address: address,
-            phone: phone,
-            role: role,
-        }, {
+        const checkUser= await db.user.findOne({
             where: {
                 id: id
             }
         });
 
-        const user = await tb_user.findOne({
-            where: {
-                id: id
-            }
-        });
-
-        return Promise.resolve(user);
+        if (_.isEmpty(checkUser)) {
+            return Promise.reject(Boom.notFound(`Cannot find user with id ${id}!`));
+        } else {
+            await db.user.update({
+                username: username || checkUser.dataValues.username,
+                fullName: fullName || checkUser.dataValues.fullName,
+                address: address || checkUser.dataValues.address,
+                province_id: province_id || checkUser.dataValues.province_id,
+                city_id: city_id || checkUser.dataValues.city_id,
+                phone: phone || checkUser.dataValues.phone,
+                photo: photo || checkUser.dataValues.photo
+            }, {
+                where: {
+                    id: id
+                }   
+            });
+    
+            const user = await db.user.findOne({
+                where: {
+                    id: id
+                }
+            });
+    
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Get update data user successfully!",
+                data: user 
+            });     
+        };
     } catch (error) {
         console.log([fileName, 'updateDataUser', 'ERROR'], { info: `${error}` });
         return Promise.reject(GeneralHelper.errorResponse(error));
     }
 };
 
-const changePassword = async ( dataObject, res ) => {
-    const { email, new_password, confirm_password } = dataObject;
+const changePassword = async ( dataObject ) => {
+    const { user_id, oldPassword, newPassword } = dataObject;
 
     try {
-        const checkPassword = comparePass(new_password, confirm_password);
+        const checkUser = await db.user.findOne({
+            where: {
+                id: user_id
+            }
+        });
 
-        if (!_.isEmpty(checkPassword)) {
-            return Promise.reject(Boom.badRequest('Wrong confirm password!'));
+        if (_.isEmpty(checkUser)) {
+            return Promise.reject(Boom.unauthorized('You are unauthorized!'));
         };
 
+        const isPassMatch = bcryptPass.comparePass(oldPassword, checkUser.password);
 
-        const hashedPass = hashPass(new_password);
+        if (!isPassMatch) {
+            return Promise.reject(Boom.badRequest('Wrong Old Password'))
+        };
 
-        await tb_user.update({
+        const hashedPass = bcryptPass.hashPass(newPassword);
+
+        await db.user.update({
             password: hashedPass
         }, {    
             where: {
-                email: email
+                id: user_id
             }
         });
 
-        const updatedUser = await tb_user.findOne({
-            where: {
-                email: email
-            }
-        });
-
-        return Promise.resolve(updatedUser);    
+        return Promise.resolve({ 
+            statusCode: 200,
+            message: "Change password successfully!",
+        });       
     } catch (error) {
         console.log([fileName, 'changePassword', 'ERROR'], { info: `${error}` });
         return Promise.reject(GeneralHelper.errorResponse(error));
     };
-};
-
-const getOtpForgotPassword = async (dataObject) => {
-    const { email } = dataObject;
-
-    try {
-        const checkUser = await tb_user.findOne({
-            where: {
-                email: email
-            },
-        });
-
-        if (_.isEmpty(checkUser)) {
-            return Promise.reject(Boom.notFound('This email not registered!'));
-        };
-
-        const codeOtp = generateOtpCode()
-        console.log(codeOtp)
-
-        await tb_codeOtp.create({
-            email: email,
-            code: codeOtp
-        }, {    
-            where: {
-                email: email
-            }
-        });
-
-        const updatedOtp = await tb_codeOtp.findOne({
-            where: {
-                email: email
-            }
-        });
-
-        return Promise.resolve(updatedOtp);    
-    } catch (error) {
-        console.log([fileName, 'getOtpForgotPassword', 'ERROR'], { info: `${error}` });
-        return Promise.reject(GeneralHelper.errorResponse(error));
-    }
-};
-
-const resetPassword = async (dataObject) => {
-    const { email, code_otp, new_password, confirm_password } = dataObject;
-
-    try {
-        const checkCodeOtp = await tb_codeOtp.findOne({
-            where: {
-                email: email,
-                code: code_otp
-            },
-        });
-
-        if (_.isEmpty(checkCodeOtp)) {
-            return Promise.reject(Boom.notFound('Code otp not found!'));
-        };
-
-        const checkPassword = comparePass(new_password, confirm_password);
-
-        if (new_password !== confirm_password) {
-            return Promise.reject(Boom.badRequest('Wrong confirm password!'));
-        };
-
-        const hashedPassword = hashPass(new_password);
-
-        await tb_user.update({
-            password: hashedPassword
-        }, {
-            where: {
-                email: email
-            }
-        });
-
-        await tb_codeOtp.destroy({
-            where: {
-                code: code_otp
-            }
-        });
-
-        return Promise.resolve(true);    
-    } catch (error) {
-        console.log([fileName, 'resetPassword', 'ERROR'], { info: `${error}` });
-        return Promise.reject(GeneralHelper.errorResponse(error));
-    }
 };
 
 const deleteDataUser = async (id) => {
@@ -258,6 +194,7 @@ module.exports = {
     getUserList,
     getUserDetail,
     getProfileUser,
-    updateDataUser,
+    updateProfileUser,
+    changePassword,
     deleteDataUser
 }

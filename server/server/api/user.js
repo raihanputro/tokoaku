@@ -2,8 +2,10 @@ const Router = require('express').Router();
 
 const UserHelper = require('../helpers/userHelper');
 const GeneralHelper = require('../helpers/generalHelper');
-const { idValidation, userDataValidation } = require('../helpers/validationHelper');
+const ValidationHelper = require('../helpers/validationHelper');
 const AuthMiddleware = require('../middlewares/authMiddleware');
+const { uploadImg } = require('../middlewares/uploadImgMiddleware');
+const { decryptTextPayload } = require('../utils/decrypt');
 
 const fileName = 'server/api/user.js';
 
@@ -20,8 +22,6 @@ const list = async ( req, rep ) => {
 
 const detail = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-
         const id = parseInt(req.params['id']);
 
         const response = await UserHelper.getUserDetail(id);
@@ -46,26 +46,31 @@ const profile = async ( req, rep ) => {
     }
 };
 
-const update = async ( req, res ) => {
+const updateProfile = async ( req, rep ) => {
     try {
-        idValidation(req.params);
+        const id = req.body.user.id;
 
-        const id = parseInt(req.params['id']);
+        const url = req.protocol + '://' + req.get('host');
 
-        const { email, password, username, address, phone, role } = req.body;
+        const imgFile = req.files?.photo?.[0];
 
-        const response = await UserHelper.updateDataUser({id, email, password, username, address, phone, role });
+        const fileName = imgFile?.originalname;
 
-        return responseSuccess(res, 200, 'Success update user!', response);
+        const photo = fileName ? url + '/' + fileName : null;   
+
+        const { username, fullName, address, province_id, city_id, phone  } = req.body;
+
+        const response = await UserHelper.updateProfileUser({ id, username, fullName, address, province_id, city_id, phone, photo });
+
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, 'Cannot update user!');
+        console.log([fileName, 'update', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };
 
 const remove = async ( req, rep ) => {
     try {
-        idValidation(req.params);
-
         const id = parseInt(req.params['id']);
 
         const response = await UserHelper.deleteDataUser(id);
@@ -77,52 +82,29 @@ const remove = async ( req, rep ) => {
     }
 };
 
-const changePassword = async ( req, res ) => {
+const changePassword = async ( req, rep ) => {
     try {
-        const userData = req.user;
+        const user_id = req.body.user.id;
+        
+        const oldPassword = decryptTextPayload(req.body?.oldPassword);
+        const newPassword = decryptTextPayload(req.body?.newPassword);
 
-        const { new_password, confirm_password } = req.body;
+        ValidationHelper.changePasswordValidation({ oldPassword, newPassword, user_id });
 
-        const response = await UserHelper.changePassword({ email: userData.email, new_password, confirm_password });
+        const response = await UserHelper.changePassword({ user_id, oldPassword, newPassword });
 
-        return responseSuccess(res, 200, `${userData.email} password changed!`, response);
+        return rep.send(response);    
     } catch (error) {
-        return responseError(res, 404, 'Cannot change password!');
-    }
-};
-
-const forgotPassword = async ( req, res ) => {
-    try {
-        const { email } = req.body;
-
-        const response = await UserHelper.getOtpForgotPassword({email});
-
-        return responseSuccess(res, 200, `${email} has sended code otp!`, response);
-    } catch (error) {
-        return responseError(res, 404, 'Cannot forgot password!');
-    }
-};
-
-const resetPassword = async ( req, res ) => {
-    try {
-        const { email, code_otp, new_password, confirm_password } = req.body;
-
-        const response = await UserHelper.resetPassword({email, code_otp, new_password, confirm_password});
-
-        return responseSuccess(res, 200, `${email} password changed!`, response);
-    } catch (error) {
-        return responseError(res, 404, 'Cannot reset password!');
+        console.log([fileName, 'changePassword', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));    
     }
 };
 
 Router.get('/list', AuthMiddleware.validateToken, AuthMiddleware.roleAdmin, list);
 Router.get('/detail/:id', AuthMiddleware.validateToken, AuthMiddleware.roleAdmin, detail);
 Router.get('/profile', AuthMiddleware.validateToken, profile);
-Router.delete('/remove/:id', AuthMiddleware.validateToken, AuthMiddleware.roleAdmin, remove);
-
 Router.patch('/change-password', AuthMiddleware.validateToken, changePassword);
-Router.post('/forgot-password', forgotPassword);
-Router.patch('/reset-password', resetPassword);
-Router.put('/update/:id', AuthMiddleware.validateToken, AuthMiddleware.roleAdmin, update);
+Router.put('/update-profile', uploadImg.fields([{name: 'photo', maxCount: 1}]), AuthMiddleware.validateToken, updateProfile);
+Router.delete('/remove/:id', AuthMiddleware.validateToken, AuthMiddleware.roleAdmin, remove);
 
 module.exports = Router;
