@@ -1,13 +1,27 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
 
     .cardContainer {
         margin-top: 2%;
         display: inline-grid;
         width: 100%;
         justify-items: center;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 20px;
 
         @include apply-at-xs-size {
@@ -15,11 +29,11 @@
         }
 
         @include apply-at-xs2-size {
-            grid-template-columns: repeat(1, 1fr);
+            grid-template-columns: repeat(2, 1fr);
         }
 
         @include apply-at-sm-size {
-            grid-template-columns: repeat(1, 1fr);
+            grid-template-columns: repeat(2, 1fr);
         }
 
         @include apply-at-md-size {
@@ -31,7 +45,7 @@
         }
 
         @include apply-at-xxl-size {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
         }
     }
 }

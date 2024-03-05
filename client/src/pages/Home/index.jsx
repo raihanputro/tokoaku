@@ -9,6 +9,7 @@ import { getItemList } from './actions';
 import { selectItem } from './selectors';
 
 import Slider from '@components/Carousel';
+import CategoryMenu from '@components/CategoryMenu';
 import CardItem from '@components/Card';
 
 import classes from './style.module.scss';
@@ -24,9 +25,10 @@ const Home = (items) => {
   return (
     <Box className={classes.container}>
       <Slider />
+      <CategoryMenu />
       <Box className={classes.cardContainer}>
         {itemsData?.map((item, index) => (
-          <CardItem key={index} itemData={item}/>
+          <CardItem key={index}  itemData={item}/>
         ))}
       </Box>
     </Box>
