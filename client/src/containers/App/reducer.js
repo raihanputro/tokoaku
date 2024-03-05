@@ -4,7 +4,7 @@ import { SET_LOCAL, SET_THEME, SET_POPUP, SET_LOADING } from '@containers/App/co
 
 export const initialState = {
   locale: 'id',
-  theme: 'dark',
+  theme: 'light',
   popup: {
     open: false,
     title: '',

@@ -2,6 +2,7 @@ import MainLayout from '@layouts/MainLayout';
 import AdminLayout from '@layouts/AdminLayout';
 
 import Home from '@pages/Home';
+import Search from '@pages/Search';
 import Register from '@pages/Register';
 import Login from '@pages/Login';
 import Profile from '@pages/Profile';
@@ -15,6 +16,7 @@ import DashboardAdmin from '@pages/Admin/Dashboard Admin';
 import UserData from '@pages/Admin/User Data';
 import ItemData from '@pages/Admin/Item Data';
 import CategoryData from '@pages/Admin/Category Data';
+import TransactionData from '@pages/Admin/TransactionData';
 import NotFound from '@pages/NotFound';
 
 const routes = [
@@ -23,6 +25,13 @@ const routes = [
     name: 'Home',
     protected: false,
     component: Home,
+    layout: MainLayout
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    protected: false,
+    component: Search,
     layout: MainLayout
   },
   {
@@ -49,7 +58,7 @@ const routes = [
   {
     path: '/item/:id',
     name: 'Item Detail',
-    protected: true,
+    protected: false,
     component: DetailItem,
     layout: MainLayout
   },
@@ -89,7 +98,7 @@ const routes = [
     layout: MainLayout
   },
   {
-    path: '/admin',
+    path: '/admin/dashboard',
     name: 'Dashboard Admin',
     protected: true,
     component: DashboardAdmin,
@@ -114,6 +123,13 @@ const routes = [
     name: 'Category Data Admin',
     protected: true,
     component: CategoryData,
+    layout: AdminLayout
+  },
+  {
+    path: '/admin/transaction-data',
+    name: 'Transaction Data Admin',
+    protected: true,
+    component: TransactionData,
     layout: AdminLayout
   },
   { 
