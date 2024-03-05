@@ -10,6 +10,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
+import { formattedPrice } from '@utils/price';
 
 import { createTransactionData } from '@pages/Checkout/actions';
 import { selectCity, selectProvince, selectTransaction } from '@pages/Checkout/selectors';
@@ -21,15 +22,6 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
 
-  const formattedPrice = (price) => {
-    return price?.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
-
   useEffect(() => {
     let total = 0;
     cart.forEach(item => {
@@ -39,18 +31,18 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
   }, [cart]);
 
   useEffect(() => {
-    setTotal(subTotal + transaction.shippingCost);
+    setTotal(subTotal + transaction?.shippingCost);
   }, [subTotal, transaction]);
 
   const filteredProvince = province?.filter(province => {
-    if(province.province_id === transaction.province_id) {
+    if(province?.province_id === transaction?.province_id) {
       return true;
     }
     return false;
   });
 
   const filteredCity = city?.filter(city => {
-    if(city.city_id === transaction.city_id) {
+    if(city?.city_id === transaction?.city_id) {
       return true;
     }
     return false;
@@ -66,8 +58,8 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
       fullName: transaction.fullName,
       address: transaction.address,
       phone: transaction.phone,
-      province: filteredProvince[0].province,
-      city: filteredCity[0].city_name,
+      province: filteredProvince[0]?.province,
+      city: filteredCity[0]?.city_name,
       service: transaction.service,
       shippingCost: transaction.shippingCost,
       subtotal: subTotal,
@@ -113,7 +105,7 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
             <FormattedMessage id="address_title" />
           </Typography>
           <Typography gutterBottom>{transaction.fullName}</Typography>
-          <Typography gutterBottom>{transaction.address}, {filteredCity[0].city_name}, {filteredProvince[0].province}</Typography>
+          <Typography gutterBottom>{transaction.address}, {filteredCity[0]?.city_name}, {filteredProvince[0]?.province}</Typography>
           <Typography gutterBottom>{transaction.service}</Typography>
         </Grid>
       </Grid>

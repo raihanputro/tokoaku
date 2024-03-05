@@ -1,6 +1,21 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
+    
     .contentContainer {
         background-color: var(--color-bg);
         border-radius: 20px;
