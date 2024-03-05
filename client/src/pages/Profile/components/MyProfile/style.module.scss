@@ -1,0 +1,51 @@
+@import '@styles/base';
+
+.formContainer {
+    @include directionY;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    .formInputContainer {
+        @include directionY;
+        gap: 20px;
+
+        .inputContainer {
+            @include directionX;
+            justify-content: center;
+            align-items: center;
+            gap: 5%;
+
+            @media (max-width: 548px) {
+                @include directionY;
+            } 
+
+            .inputLabel {
+                font-size: 20px;
+                width: 130px;
+
+                @media (max-width: 548px) {
+                    width: fit-content;
+                } 
+            }
+
+            .inputText {
+                width: 100%;
+                max-width: 350px;
+
+                @media (max-width: 548px) {
+                    max-width: 290px;
+                }
+            }
+        }
+
+        .updateButton {
+            color: var(--color-text) !important;
+            font-weight: bolder;
+            background-color: var(--color-button) !important;
+            border-radius: 20px;
+        }
+    }
+
+}
