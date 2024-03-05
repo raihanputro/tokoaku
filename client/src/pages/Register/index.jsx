@@ -1,96 +1,199 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
+import { useForm } from 'react-hook-form';
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import Button from '@mui/material/Button';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-import { showPopup } from '@containers/App/actions';
+import encryptPayload from '@utils/encryption';
+
+import signUpImage from '../../../public/sign-up.svg';
+
 import { setUserRegister } from './actions';
 
 import classes from './style.module.scss';
 
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Please enter a valid email!")
+    .required("Email is a required field"),
+  username: yup
+    .string()
+    .required("username is required!")
+    .matches(/^(\S+$)/, 'Cant contain blackspace')
+    .matches(/[a-zA-Z]/, 'Must contain alphabet')
+    .matches(/\d/, 'Must contain number'),
+  password: yup
+    .string()
+    .required("Password is required!")
+    .min(6, "Password must be longer than 6 characters!"),
+  confirmPassword: yup
+    .string()
+    .required("Confirm Password is required!")
+    .oneOf([yup.ref("password"), null], "Passwords must match!"),
+});
+
 const Register = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate();   
   const dispatch = useDispatch();
-  const intl = useIntl();
 
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const isValidEmail = (email) => {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(email);
-  };
+  const handleShowPassword = () => setShowPassword(!showPassword);
+  const handleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(schema) });
 
-    if(email === "" && username === "" && password === "") {
-      dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_required'})));
-    } else if (email === "") {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_email_required'})));
-    } else if (username === "") {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_username_required'})));
-    } else if(!isValidEmail(email)) {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_email_pattern'})));
-    }  else if (password === "") {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_password_required'})));
-    } else if(password.length < 6) {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_password_min'})));
-    } else if (password !== confirmPassword ) {
-        dispatch(showPopup(intl.formatMessage({ id: 'register_validation'}), intl.formatMessage({ id: 'register_validation_Confirmpassword_notsame'})));
-    } else {
-        dispatch(setUserRegister({ email: email, username: username, password: password, role: 'customer' }, () => {
-          navigate('/login');
-        }));
-    }
+  const onSubmit = (data) => {
+    dispatch(setUserRegister({ 
+      email: encryptPayload(data.email), 
+      username: encryptPayload(data.username), 
+      password: encryptPayload(data.password), 
+      role: encryptPayload('Customer')
+    }, () => {
+      navigate('/login');
+    }));
   };
 
   return (
     <Box className={classes.container}>
-      <Card component={Box} className={classes.cardContainer}>
-          <CardContent>
-              <Typography variant="h1" component="div" className={classes.pageTitle} >
-                  <FormattedMessage id="register_title" />
-              </Typography>
-              <FormControl className={classes.formContainer}>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                          <FormattedMessage id="register_label_email" />
-                      </FormLabel>
-                      <TextField className={classes.input} variant="outlined" type='email' value={email} onChange={(e) => setEmail(e.target.value)} required={true}/>
-                  </Box>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                          <FormattedMessage id="register_label_username" />
-                      </FormLabel>
-                      <TextField className={classes.input} variant="outlined" type='text' value={username} onChange={(e) => setUsername(e.target.value)} required={true}/>
-                  </Box>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                          <FormattedMessage id="register_label_password" />
-                      </FormLabel>
-                      <TextField className={classes.input} variant="outlined" type='password' value={password} onChange={(e) => setPassword(e.target.value)} required={true}/>
-                  </Box>
-                  <Box className={classes.inputLabelContainer}>
-                      <FormLabel className={classes.label}>
-                          <FormattedMessage id="register_label_confirmPassword" />
-                      </FormLabel>
-                      <TextField className={classes.input} variant="outlined" type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required={true}/>
-                  </Box>
-              </FormControl>
-              <Button className={classes.registerButton} onClick={onSubmit}><FormattedMessage id="register_title" /></Button>
-          </CardContent>  
-      </Card>
+        <Card className={classes.cardContainer}>
+            <Box className={classes.formContainer}>
+                <Typography variant='p' component='div' sx={{ fontSize: '30px', fontWeight: 'bolder', marginBottom: '2%' }}>
+                    Register
+                </Typography>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <TextField 
+                          {...register('email')}
+                          aria-invalid={errors.email ? "true" : "false"}
+                          placeholder='Enter email'
+                          error={errors.email} 
+                          autoComplete={false}
+                          focused={false}
+                          className={classes.inputText}
+                          sx={{ 
+                              '& .MuiOutlinedInput-root': {
+                                  borderRadius: '20px',
+                                },
+                          }}
+                      />
+                      { errors.email && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.email?.message}
+                          </Typography>
+                      }
+                      <TextField 
+                          {...register('username')}
+                          aria-invalid={errors.username ? "true" : "false"}
+                          placeholder='Enter username' 
+                          autoComplete={false}
+                          focused={false}
+                          className={classes.inputText}
+                          sx={{ 
+                            marginTop: '5%', 
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '20px',   
+                              },  
+                          }}
+                      />
+                      { errors.username  && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.username?.message}
+                          </Typography>
+                      }
+                      <TextField 
+                          {...register("password")}
+                          aria-invalid={errors.password ? "true" : "false"}
+                          error={errors.password && true} 
+                          placeholder='Enter password' 
+                          type={showPassword ? 'text': 'password'}
+                          InputProps={{ 
+                            endAdornment: (
+                              <InputAdornment position='end'>
+                                <IconButton onClick={handleShowPassword}>
+                                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                          focused={false}
+                          className={classes.inputText}
+                          sx={{ 
+                              marginTop: '5%', 
+                              '& .MuiOutlinedInput-root': {
+                                  borderRadius: '20px',   
+                                },
+                          }}
+                      />
+                      { errors.password && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.password?.message}
+                          </Typography>
+                      }
+                      <TextField 
+                        {...register("confirmPassword")}
+                        aria-invalid={errors.confirmPassword ? "true" : "false"}
+                        error={errors.confirmPassword && true} 
+                        placeholder='Enter confirmation password' 
+                        type={showConfirmPassword ? 'text': 'password'}                        
+                        autoComplete={false}
+                        focused={false} 
+                        InputProps={{ 
+                          endAdornment: (
+                            <InputAdornment position='end'>
+                              <IconButton onClick={handleShowConfirmPassword}>
+                                {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                        className={classes.inputText}
+                        sx={{ 
+                            marginTop: '5%',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '20px',
+                              },
+                        }}
+                      />
+                      { errors.confirmPassword  && 
+                          <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                              {errors.confirmPassword?.message}
+                          </Typography>
+                      }
+                      <Button type='submit' variant='contained' sx={{ marginTop: '5%', borderRadius: '20px' }} className={classes.registerButton}>Register</Button>
+                    </Box>
+                  </form>
+            </Box>
+            <Box className={classes.contentRight}>
+                <Box
+                    component="img"
+                    alt="Register Icon"
+                    className={classes.img}
+                    src={signUpImage}
+                />
+                <Typography variant='p' component='div' sx={{ fontSize: '20px'}}>
+                        You already have an accout? <Link sx={{ textDecoration: 'none', cursor: 'pointer', fontWeight: 'bolder' }} onClick={() => navigate('/login')}>Login</Link>
+                </Typography>
+            </Box>
+        </Card>
     </Box>
   )
 }
