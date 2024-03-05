@@ -17,15 +17,14 @@ import ImageIcon from '@mui/icons-material/Image';
 import { setItemData } from '../../actions';
 import { getCategoryData } from '@pages/Admin/Category Data/actions';
 import { selectCategoryData } from '@pages/Admin/Category Data/selectors';
+import { selectTheme } from '@containers/App/selectors';
 
 import classes from './style.module.scss';
 
-const AddItemFormModal = ({ isOpen, onClose, category }) => {
+const AddItemFormModal = ({ isOpen, onClose, theme, category }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const imgRef = useRef();
-
-  console.log(category, 'test');
 
   const [image, setImage] = useState(null);
   const [showImage, setShowImage] = useState(false);
@@ -44,6 +43,12 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    if (onClose) {
+      setShowImage(false);
+      reset();
+    }
+  }, [onClose])
 
   const onSubmit = (data) => {
     dispatch(setItemData({ name: data.name, category_id: data.category_id, desc: data.desc, price: data.price, discount: data.discount, stock: data.stock, img: image }));
@@ -88,6 +93,26 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                     margin="normal"
                     error={!!errors.name} 
                     helperText={errors.name ? errors.name.message : null}
+                    InputLabelProps={{shrink: false}}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -102,22 +127,63 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                 defaultValue={0}
                 rules={{ required: 'category is required' }}
                 render={({ field }) => (
-                  <Select
-                  {...field}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Role"
-                  fullWidth
-                >
-                  <MenuItem key={0} value={0}>
-                      Pilih Kategory
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    variant="outlined"
+                    InputLabelProps={{shrink: false}}
+                    className={classes.status}
+                    sx={{ 
+                      borderRadius: '20px',
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '20px',
+                          '& input[type=number]': {
+                            '-moz-appearance': 'textfield', 
+                            '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                              '-webkit-appearance': 'none',
+                              margin: 0,
+                            },
+                            '&::-webkit-outer-spin-button': {
+                              position: 'relative',
+                              float: 'right',
+                              visibility: 'hidden',
+                            },
+                          },
+                          '&:hover fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                          '& fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                        },
+                        '& .MuiInputBase-input': {
+                          borderRadius: '20px',
+                        }
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        PaperProps: {
+                          sx: {
+                            backgroundColor: theme === 'light' ? '#fff' : '#4f4557', 
+                            borderRadius: '20px'
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem key={0} value={0}>
+                      <FormattedMessage id="categorySelect_modal_input" />
                     </MenuItem>
-                  {category && Array.isArray(category) && category?.map(category =>(
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                    {category && Array.isArray(category) && category?.map(category =>(
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))} 
+                </TextField>
                 )}
               />
             </Box>
@@ -136,6 +202,25 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -156,6 +241,37 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -176,6 +292,37 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -196,6 +343,37 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -218,11 +396,13 @@ const AddItemFormModal = ({ isOpen, onClose, category }) => {
 };
 
 AddItemFormModal.propTypes = {
-  category: PropTypes.array
+  category: PropTypes.array,
+  theme: PropTypes.string
 };
 
 const mapStateToProps = createStructuredSelector({
-  category: selectCategoryData
+  category: selectCategoryData,
+  theme: selectTheme
 });
 
 export default connect(mapStateToProps)(AddItemFormModal);

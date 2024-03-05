@@ -23,12 +23,13 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { deleteItemData } from './actions';
 import { selectItem } from '@pages/Home/selectors';
-import { selectCategoryData } from '../Category Data/selectors';
 import { selectTheme } from '@containers/App/selectors';
 import { getItemList } from '@pages/Home/actions';
 import { getCategoryData } from '../Category Data/actions';
+import { selectCategoryData } from '../Category Data/selectors';
 import AddItemFormModal from './components/Add Item Form';
 import UpdateItemFormModal from './components/Update Item Form';
+import { formattedPrice } from '@utils/price';
 
 import classes from './style.module.scss';
 
@@ -42,7 +43,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     '&:last-child td, &:last-child th': {
       border: 0,
     },
@@ -53,7 +53,7 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
 
     const [itemData, setItemData] = useState([]);
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState(0);
     const [isModalAddOpen, setIsModalAddOpen] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -89,7 +89,6 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
       setIsModalAddOpen(false);
     };
 
-    
     const handleUpdateModalOpen = (itemId) => {
       setSelectedItemId(itemId);
       setIsModalUpdateOpen(true);
@@ -106,30 +105,69 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
         </Typography>
         <Box className={classes.filterContainer}>
           <TextField
-              label={<FormattedMessage id="search_item_data" />}
-              variant="outlined"
+              InputLabelProps={{shrink: false}}
               value={search}
+              placeholder='Cari Barang'
               onChange={(e) => setSearch(e.target.value)}
               className={classes.search}
+              sx={{ 
+                borderRadius: '20px',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  borderRadius: '20px',
+                }
+              }}
           />
           <TextField
             select
-            label="Category"
+            placeholder='Cari Kategori Barang'
             variant="outlined"
             value={category}
+            InputLabelProps={{shrink: false}}
             onChange={(e) => setCategory(e.target.value)}
             className={classes.status}
+            sx={{ 
+              borderRadius: '20px',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  borderRadius: '20px',
+                }
+             }}
             SelectProps={{
               MenuProps: {
                 PaperProps: {
                   sx: {
                     backgroundColor: themeSelect === 'light' ? '#fff' : '#4f4557', 
+                    borderRadius: '20px',
+                    marginTop: '5px'
                   },
                 },
               },
             }}
           >
-            <MenuItem value={''}>All</MenuItem>
+            <MenuItem value={0}>Semua</MenuItem>
             <MenuItem value={1}>Makanan</MenuItem>
             <MenuItem value={2}>Minuman</MenuItem>
             <MenuItem value={3}>Obat</MenuItem>
@@ -137,16 +175,16 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
         </Box>
         <Button variant="contained" color='primary' onClick={handleModalOpen} className={classes.addButton}><AddIcon /><FormattedMessage id="add_button" /></Button>
         <AddItemFormModal isOpen={isModalAddOpen} onClose={handleModalClose}/>
-        <TableContainer component={Paper} sx={{ marginTop: '1%' }}>
+        <TableContainer component={Paper} sx={{ marginTop: '1%', borderRadius: '20px' }}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow >
                       <StyledTableCell align="center"></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="id_table_row" /></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="name_table_row" /></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="price_table_row" /></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="discount_table_row" /></StyledTableCell>
-                      <StyledTableCell align="center"><FormattedMessage id="action_table_row" /></StyledTableCell>
+                      <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="id_table_row" /></StyledTableCell>
+                      <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="name_table_row" /></StyledTableCell>
+                      <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="price_table_row" /></StyledTableCell>
+                      <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="discount_table_row" /></StyledTableCell>
+                      <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="action_table_row" /></StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -164,7 +202,7 @@ const ItemData = (itemDataSelect, categoryData, themeSelect) => {
                                 </StyledTableCell>
                                 <StyledTableCell align="center">{item?.id}</StyledTableCell>
                                 <StyledTableCell align="center">{item?.name}</StyledTableCell>
-                                <StyledTableCell align="center">{item?.price}</StyledTableCell>
+                                <StyledTableCell align="center">{formattedPrice(item?.price)}</StyledTableCell>
                                 <StyledTableCell align="center">{item?.discount}%</StyledTableCell>
                                 <StyledTableCell align="center">
                                     <Button onClick={() => handleUpdateModalOpen(item?.id)}><EditIcon /></Button>

@@ -7,17 +7,20 @@ import { createStructuredSelector } from 'reselect';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import { updateItemData } from '../../actions';
 import { selectItemDetail } from '@pages/Detail Item/selectors';
+import { getCategoryData } from '@pages/Admin/Category Data/actions';
+import { selectCategoryData } from '@pages/Admin/Category Data/selectors';
 import { getItemDetail } from '@pages/Detail Item/actions';
-import { setItemDetail } from '@pages/Detail Item/actions';
+import { selectTheme } from '@containers/App/selectors';
 
 import classes from './style.module.scss';
 
-const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
+const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSelect }) => {
   const dispatch = useDispatch();
   const imgRef = useRef();
 
@@ -33,14 +36,15 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
   }, [id]);
 
   useEffect(() => {
-    if (isOpen === false) {
-      dispatch(setItemDetail({}));
-    };
-  }, [isOpen]);
+    if (isOpen) {
+      dispatch(getCategoryData());
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (isOpen && itemDataSelect) {
       setValue('name', itemDataSelect?.name);
+      setValue('category_id', itemDataSelect?.category_id);
       setValue('desc', itemDataSelect?.desc);
       setValue('price', itemDataSelect?.price);
       setValue('discount', itemDataSelect?.discount);
@@ -56,7 +60,7 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
 
   const onSubmit = (data) => {
     const updatedData = {
-      kategori_id: 1,
+      category_id: data.category_id || itemDataSelect?.data?.category_id,
       name: data.name || itemDataSelect?.data?.name, 
       desc: data.desc || itemDataSelect?.data?.desc, 
       price: data.price || itemDataSelect?.data?.price, 
@@ -74,7 +78,7 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box className={classes.modalContainer}>
-        <Typography variant="h5" align="center" gutterBottom>
+        <Typography variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bolder' }}>
           <FormattedMessage id="update_modal_title" />
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,7 +110,97 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                     value={field.value}                   
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    InputLabelProps={{shrink: false}}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
+                )}
+              />
+            </Box>
+            <Box className={classes.textUploader}>
+              <Typography variant="body1" color="initial" className={classes.label}>
+                <FormattedMessage id="category_modal_input" />
+              </Typography>
+              <Controller
+                name="category_id"
+                control={control}
+                rules={{ required: 'category is required' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    value={field.value}
+                    variant="outlined"
+                    InputLabelProps={{shrink: false}}
+                    className={classes.status}
+                    sx={{ 
+                      borderRadius: '20px',
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '20px',
+                          '& input[type=number]': {
+                            '-moz-appearance': 'textfield', 
+                            '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                              '-webkit-appearance': 'none',
+                              margin: 0,
+                            },
+                            '&::-webkit-outer-spin-button': {
+                              position: 'relative',
+                              float: 'right',
+                              visibility: 'hidden',
+                            },
+                          },
+                          '&:hover fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                          '& fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          },
+                        },
+                        '& .MuiInputBase-input': {
+                          borderRadius: '20px',
+                        }
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        PaperProps: {
+                          sx: {
+                            backgroundColor: theme === 'light' ? '#fff' : '#4f4557', 
+                            borderRadius: '20px'
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem key={0} value={0}>
+                      <FormattedMessage id="categorySelect_modal_input" />
+                    </MenuItem>
+                    {category && Array.isArray(category) && category?.map(category =>(
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))} 
+                </TextField>
                 )}
               />
             </Box>
@@ -126,6 +220,25 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                     value={field.value}
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -147,6 +260,37 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -168,6 +312,37 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -189,6 +364,37 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
                     margin="normal"
                     error={!!field.error}
                     helperText={field.error ? field.error.message : null}
+                    sx={{ 
+                      borderRadius: '20px',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '20px',
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield', 
+                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                          '&::-webkit-outer-spin-button': {
+                            position: 'relative',
+                            float: 'right',
+                            visibility: 'hidden',
+                          },
+                        },
+                        '&:hover fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '& fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        borderRadius: '20px',
+                      }
+                    }}
                   />
                 )}
               />
@@ -212,10 +418,14 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, itemDataSelect }) => {
 
 UpdateItemFormModal.propTypes = {
   itemDataSelect: PropTypes.object,
+  category: PropTypes.array,
+  theme: PropTypes.string
 };
 
 const mapStateToProps = createStructuredSelector({
   itemDataSelect: selectItemDetail,
+  category: selectCategoryData,
+  theme: selectTheme
 });
 
 export default connect(mapStateToProps)(UpdateItemFormModal);
