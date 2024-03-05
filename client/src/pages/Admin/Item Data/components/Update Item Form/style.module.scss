@@ -6,9 +6,14 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
+    height: 600px;
+    border-radius: 20px;
     background-color: var(--color-bg-secondary);
     box-shadow: 24px;
     padding: 40px;
+    overflow-y: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
 
     .uploaderContainer {
         @include directionY;
@@ -18,10 +23,11 @@
             @include directionY;
             justify-content: center;
             align-items: center;
-            border: 1px solid #a6a6a6;
-            border-radius: 5px;
+            border: 1px solid var(--color-bg);
+            border-radius: 20px;
             height: 100px;
             width: 100%;
+            padding: 10px;
     
             button {
                 width: fit-content;
@@ -52,6 +58,7 @@
         .updateButton {
           color: var(--color-text) !important;
           background-color: var(--color-bg) !important;
+          border-radius: 20px;
         }
     }
 }

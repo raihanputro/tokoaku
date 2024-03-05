@@ -27,6 +27,8 @@ import NightsStayIcon from '@mui/icons-material/NightsStay';
 import PeopleIcon from '@mui/icons-material/People';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import { setLogin, setToken, setUser } from '@containers/Client/actions';
 import { setLocale, setTheme } from '@containers/App/actions';
@@ -42,8 +44,7 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    marginLeft: 240,
-    width: `calc(100% - 240px)`,
+    width: '100%',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -55,19 +56,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   ({ theme, open }) => ({
     '& .MuiDrawer-paper': {
       position: 'relative',
+      height: '100%',
       whiteSpace: 'nowrap',
-      width: 240,
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
+      width: 260,
       boxSizing: 'border-box',
       ...(!open && {
         overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
+        height: '100%',
         width: theme.spacing(7),
         [theme.breakpoints.up('sm')]: {
           width: theme.spacing(9),
@@ -120,19 +115,7 @@ const NavbarAdmin = ({ title, locale, theme, children }) => {
   return (
       <Box sx={{ display: 'flex' }}>
         <AppBar position="absolute" open={open} className={classes.appBar}>
-          <Toolbar sx={{   pr: '24px',  }}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
+          <Toolbar sx={{  pr: '24px' }}>
             <Box className={classes.toolbar}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -202,19 +185,13 @@ const NavbarAdmin = ({ title, locale, theme, children }) => {
         </AppBar>
         <Drawer variant="permanent" open={open} >
           <Box className={classes.drawer}>
-            <Toolbar
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                px: [1],
-              }}
-            >
-              <IconButton onClick={toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </Toolbar>
-            <List component="nav" sx={{ mt: 4 }} className={classes.listContainer}>
+            <List component="nav" sx={{ paddingTop: open ? '55%' : '200%' }} className={classes.listContainer}>
+              <ListItemButton onClick={() => navigate('/admin/dashboard')}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <FormattedMessage id="drawer_dashboard" />
+              </ListItemButton>
               <ListItemButton onClick={() => navigate('/admin/user-data')}>
                 <ListItemIcon>
                   <PeopleIcon />
@@ -233,7 +210,25 @@ const NavbarAdmin = ({ title, locale, theme, children }) => {
                 </ListItemIcon>
                 <FormattedMessage id="drawer_category_data" />
               </ListItemButton>
+              <ListItemButton onClick={() => navigate('/admin/transaction-data')}>
+                <ListItemIcon>
+                  <ReceiptLongIcon />
+                </ListItemIcon>
+                <FormattedMessage id="drawer_transaction_data" />
+              </ListItemButton>
             </List> 
+            <Toolbar
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                px: [1],
+              }}
+            >
+              <IconButton onClick={toggleDrawer} sx={{ width: '100%'}}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
           </Box>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, overflow: 'auto' }}> 
