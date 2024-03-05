@@ -46,6 +46,7 @@ const CardItem = ({ itemData, wishlistData, login }) => {
 
   const handleWishlist = (event) => {
     event.stopPropagation();
+    
     if(login) {
       if (isWishlist === false) {
         dispatch(postWishlistData({item_id: id}));
@@ -60,12 +61,12 @@ const CardItem = ({ itemData, wishlistData, login }) => {
   };
   
   return (
-    <Card sx={{ minWidth: 300, minHeight: 300, position: 'relative' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} onClick={(() => {
-       login ? navigate(`../item/${id}`) : navigate('/login')
-      })}>  
+    <Card sx={{ width: '100%', maxWidth: '300px', height: '100%', maxHeight: '350px', position: 'relative', borderRadius: '20px' }} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} 
+    onClick={(() => navigate(`../item/${id}`))}>  
         <Box className={classes.cardContainer}>
           <CardActionArea className={classes.cardContainer}>
-            <CardMedia
+            
+             <CardMedia
               component="img"
               height="200"
               width="50"
@@ -73,6 +74,7 @@ const CardItem = ({ itemData, wishlistData, login }) => {
               alt={name}
               sx={{ objectFit: "contain" }}
             />
+           
             <CardContent>
               <Typography gutterBottom variant="h5" component="div" sx={{ fontSize: '20px'  }}>
                 {name}
@@ -85,7 +87,7 @@ const CardItem = ({ itemData, wishlistData, login }) => {
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: '15px', fontWeight: 'bolder', textDecoration: 'line-through'}}>
                     {formattedPrice(price)}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontSize: '15px', fontWeight: 'bolder', color: 'red'}}>
+                  <Typography variant="body2" sx={{ fontSize: '10px', fontWeight: 'bolder', color: '#B80000', backgroundColor: '#FF8989', width: 'fit-content', padding: '5px', borderRadius: '20px'}}>
                     {discount}%
                   </Typography>
                 </Box> 
@@ -103,7 +105,7 @@ const CardItem = ({ itemData, wishlistData, login }) => {
                   </IconButton> 
                 </Box>
               }
-            </CardContent>
+            </CardContent> 
           </CardActionArea>
         </Box>  
       </Card>
@@ -112,7 +114,7 @@ const CardItem = ({ itemData, wishlistData, login }) => {
 
 CardItem.propTypes = {
   itemData: PropTypes.object,
-  wishlistData: PropTypes.array,
+  wishlistData: PropTypes.any,
   login: PropTypes.bool,
 };
 

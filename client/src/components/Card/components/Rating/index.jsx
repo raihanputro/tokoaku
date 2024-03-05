@@ -25,7 +25,7 @@ const Rating = ({ rating }) => {
         for (let i = 0; i < remainingStars; i++) {
           stars.push(<StarBorderIcon sx={{ color: 'orange', fontSize: '25px' }} key={filledStars + (hasHalfStar ? 1 : 0) + i} />);
         }
-    
+        
         return stars;
       };
 
