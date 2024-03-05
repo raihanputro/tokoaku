@@ -23,7 +23,7 @@ function* doUpdateTransactionDetailData ({transactionData}) {
     }
 };
 
-function* doGetReviewData ({id}) {
+function* doGetReviewData ({ id }) {
     try {
         const res = yield call(getReviewByTrApi, id);
         yield put(setReviewDataByTr(res.data));
@@ -32,19 +32,19 @@ function* doGetReviewData ({id}) {
     }
 }
 
-function* doPostReviewData ({reviewData}) {
+function* doPostReviewData ({ reviewData }) {
     try {
-        const res = yield call(addReviewApi, reviewData);
+        yield call(addReviewApi, reviewData);
     } catch (error) {
-        yield put(showPopup(error));
+        console.log(error, 'ini error');
     }
 };
 
-function* doUpdateReviewData ({reviewData}) {
+function* doUpdateReviewData ({ reviewData }) {
     try {
-        const res = yield call(updateReviewApi, reviewData);
+        yield call(updateReviewApi, reviewData);
     } catch (error) {
-        yield put(showPopup(error));
+        console.log(error, 'ini error');
     }
 };
 

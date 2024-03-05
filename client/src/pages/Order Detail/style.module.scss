@@ -1,6 +1,21 @@
 @import '@styles/base';
 
 @include container {
+    @include apply-at-xs-size {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    @include apply-at-xs2-size {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    @include apply-at-md-size {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
+
     .pageTitle {
         font-size: 40px !important;
         font-weight: 700 !important ;
@@ -17,54 +32,81 @@
             padding: 20px;
             margin-bottom: 4%;
 
-            .statusPending {
-                background-color: orange;
-                padding: 5px;
-                width: 80px;
-                text-align: center;
-                color: white;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: bold;
+            .infoBilContainer {
+                @include directionX;
+                justify-content: space-between;
+
+                @media (max-width: 728px) {
+                    @include directionY;
+                }
+
+                .statusPending {
+                    background-color: orange;
+                    padding: 5px;
+                    width: 80px;
+                    text-align: center;
+                    color: white;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+    
+                .statusSucess {
+                    background-color: green;
+                    padding: 5px;
+                    color: white;
+                    width: 80px;
+                    text-align: center;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+    
+                .statusProcess {
+                    background-color: blue;
+                    padding: 5px;
+                    color: white;
+                    width: 80px;
+                    text-align: center;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+    
+                .statusFail {
+                    background-color: red;
+                    padding: 5px;
+                    color: white;
+                    width: 80px;
+                    text-align: center;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: bold;
+                }
             }
 
-            .statusSucess {
-                background-color: green;
-                padding: 5px;
-                color: white;
-                width: 80px;
-                text-align: center;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: bold;
-            }
+            .expiryContainer {
+                @include directionY;
+                gap: 30px;
+                
+                @media (max-width: 728px) {
+                    margin-top: 2%;
+                    align-items: flex-start;
+                }
 
-            .statusProcess {
-                background-color: blue;
-                padding: 5px;
-                color: white;
-                width: 80px;
-                text-align: center;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: bold;
-            }
+                .expiryInfo {
+                    align-items: flex-end;
 
-            .statusFail {
-                background-color: red;
-                padding: 5px;
-                color: white;
-                width: 80px;
-                text-align: center;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: bold;
+                    @media (max-width: 728px) {
+                        align-items: flex-start;
+                    }
+                }
             }
         }
 
         .buyButton {
             color: var(--color-text) !important;
-            background-color: var(--color-bg) !important;
+            background-color: var(--color-button) !important;
             border-radius: 20px;
         }
     }

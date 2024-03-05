@@ -34,12 +34,10 @@ const OrderDetail = ({ transaction }) => {
   const { id } = useParams();
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [selectedTrId, setSelectedTrId] = useState(null);
 
   console.log(transaction, 'ee')
 
-  const handleReviewModalOpen = (trId) => {
-    setSelectedTrId(trId);
+  const handleReviewModalOpen = () => {
     setReviewModalOpen(true);
   };
 
@@ -100,7 +98,7 @@ const OrderDetail = ({ transaction }) => {
                 {transaction?.id}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box className={classes.infoBilContainer}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <Typography variant='p' component='div'>
                   <FormattedMessage id="bill_order" />
@@ -132,8 +130,8 @@ const OrderDetail = ({ transaction }) => {
                   </Box>
                 )}
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+              <Box className={classes.expiryContainer}>
+                <Box className={classes.expiryInfo} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   <Typography variant='p' component='div'>
                     <FormattedMessage id="orderOn_order" />
                   </Typography>
@@ -141,7 +139,7 @@ const OrderDetail = ({ transaction }) => {
                     {moment(transaction?.orderAt).format('DD MMM HH:mm')}
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <Box className={classes.expiryInfo} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   <Typography variant='p' component='div'>
                     <FormattedMessage id="expiryOn_order" />
                   </Typography>
@@ -196,14 +194,14 @@ const OrderDetail = ({ transaction }) => {
             </TableContainer>
             {transaction?.status !== 'FAIL' && transaction?.status !== 'PROCESS' && 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant='contained' sx={{ mt: 3, ml: 1 }} className={classes.buyButton} onClick={() => transaction?.status === 'PENDING' ? onPressPay() : handleReviewModalOpen(transaction?.id)}>
+                <Button variant='contained' sx={{ mt: 3, ml: 1 }} className={classes.buyButton} onClick={() => transaction?.status === 'PENDING' ? onPressPay() : handleReviewModalOpen()}>
                   {  transaction?.status === 'PENDING' ? <FormattedMessage id="pay_button" /> : <FormattedMessage id="review_button" />  }
                 </Button> 
               </Box>
             }
           </Box>
-        </Card>
-        <ReviewOrder isOpen={reviewModalOpen} onClose={handleReviewModalClose} id={selectedTrId} existingReview={transaction?.review?.length > 0 ? true : false}/>
+        </Card> 
+        <ReviewOrder isOpen={reviewModalOpen} onClose={handleReviewModalClose} id={transaction?.id} existingReview={transaction?.review?.length > 0 ? true : false}/>
     </Box>
   )
 }
