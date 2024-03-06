@@ -133,8 +133,6 @@ const updateDataCart = async (dataObject) => {
             include: ['item']
         });
 
-        let totalQty;
-
         if (_.isEmpty(checkCart)) {
             return Promise.reject(Boom.notFound(`Cannot find cart withb id ${id}!`));
         } else {
@@ -170,20 +168,25 @@ const updateDataCart = async (dataObject) => {
     }
 };
 
-const deleteDataCart = async (id) => {
+const deleteDataCart = async (dataObject) => {
+    const { id, user_id } =dataObject;
+
     try {
         const checkCart = await db.cart.findOne({
             where: {
-                id: id
+                id: id,
             }
         });
 
         if(_.isEmpty(checkCart)) {
             return Promise.reject(Boom.notFound(`Cannot find cart with id ${id}!`));
+        } else if (checkCart.user_id !== user_id) {
+            return Promise.reject(Boom.unauthorized(`You cannot delete this cart!`));
         } else {
             await db.cart.destroy({
                 where: {
-                    id: id
+                    id: id,
+                    user_id: user_id
                 }
             });
         };

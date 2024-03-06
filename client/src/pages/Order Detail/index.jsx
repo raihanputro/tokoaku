@@ -35,8 +35,6 @@ const OrderDetail = ({ transaction }) => {
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
-  console.log(transaction, 'ee')
-
   const handleReviewModalOpen = () => {
     setReviewModalOpen(true);
   };

@@ -36,7 +36,7 @@ function* doPostReviewData ({ reviewData }) {
     try {
         yield call(addReviewApi, reviewData);
     } catch (error) {
-        console.log(error, 'ini error');
+        yield put(showPopup(error));
     }
 };
 
@@ -44,7 +44,7 @@ function* doUpdateReviewData ({ reviewData }) {
     try {
         yield call(updateReviewApi, reviewData);
     } catch (error) {
-        console.log(error, 'ini error');
+        yield put(showPopup(error));
     }
 };
 

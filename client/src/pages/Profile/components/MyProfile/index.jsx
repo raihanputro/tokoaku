@@ -1,5 +1,6 @@
   import React, { useState, useEffect, useRef } from 'react';
   import PropTypes from 'prop-types';
+  import { useNavigate } from 'react-router-dom';
   import { createStructuredSelector } from 'reselect';
   import { useDispatch, connect } from 'react-redux';
   import { FormattedMessage } from 'react-intl';
@@ -25,6 +26,7 @@
 
   const MyProfile = ({ profile, province, city }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const photoRef = useRef();
 
     const [photo, setPhoto] = useState(null);
@@ -113,6 +115,7 @@
         });
         setPhoto(null);
         dispatch(getUserProfile());
+        navigate(0);
       }, (err) => {
         toast(err, {
           style: {

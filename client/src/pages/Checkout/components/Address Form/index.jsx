@@ -140,7 +140,6 @@ const AddressForm = ({ onNext, province, city, shippingCost, profile, transactio
   };
 
   const onSubmit = (data) => {
-    console.log(data, 'tstdata')
     dispatch(setTransactionData({ 
       fullName: data.fullName, 
       address: data.address, 

@@ -85,9 +85,10 @@ const remove = async ( req, rep ) => {
     idValidation(req.params);
 
     const id = parseInt(req.params['id']);
-
     try {
-        const response = await CartHelper.deleteDataCart(id);
+        const user_id = req.body.user.id;
+
+        const response = await CartHelper.deleteDataCart({id, user_id});
 
         return rep.send(response);    
     } catch (error) {

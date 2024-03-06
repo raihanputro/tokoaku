@@ -7,7 +7,6 @@ import { setLoading, showPopup } from "@containers/App/actions";
 function* doGetItemSearch ({ name, category_id }) {
     try {
         const res = yield call(getItemBySearchApi, name, category_id);
-        console.log(res.data, 'auhy')
         yield put(setItemSearch(res.data));
     } catch (error) {
         yield put(showPopup());

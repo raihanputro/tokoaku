@@ -65,8 +65,6 @@ const UserData = ({users, theme}) => {
       dispatch(getuserData());
     }, [dispatch]);
 
-    console.log(users, 'tst');
-
     const filteredUser = users?.filter(user => {
       if(user?.username?.toLowerCase().includes(search.toLocaleLowerCase()) && (role == 'select' || user?.role === role)) {
         return true;
