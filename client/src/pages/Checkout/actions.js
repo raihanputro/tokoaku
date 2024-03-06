@@ -34,9 +34,10 @@ export const setTransactionData = (transactionData) => ({
     transactionData
 });
 
-export const createTransactionData = (transactionData) => ({
+export const createTransactionData = (transactionData, cbSuccess) => ({
     type: CREATE_TRANSACTION_DATA,
-    transactionData
+    transactionData,
+    cbSuccess
 });
 
 export const setStepCheckout = (step) => ({

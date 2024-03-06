@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { SET_LOCAL, SET_THEME, SET_POPUP, SET_LOADING } from '@containers/App/constants';
 
 export const initialState = {
-  locale: 'id',
+  locale: 'en',
   theme: 'light',
   popup: {
     open: false,

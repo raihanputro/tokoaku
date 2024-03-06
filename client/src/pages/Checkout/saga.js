@@ -35,10 +35,12 @@ function* doGetShippingCost ({ shippingData }) {
     yield put(setLoading(false));
 };
 
-function* doPostTransactionData ({ transactionData }) {
+function* doPostTransactionData ({ transactionData, cbSuccess }) {
     yield put(setLoading(true));
     try {
-        yield call(addTransactionApi, transactionData);
+        const res = yield call(addTransactionApi, transactionData);
+        console.log(res.data)
+        cbSuccess && cbSuccess(res.data);
         const resCart = yield call(getCartApi);
         yield put(setDataCart(resCart));
     } catch (error) {

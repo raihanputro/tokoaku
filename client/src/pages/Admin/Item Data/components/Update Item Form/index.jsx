@@ -8,8 +8,11 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { updateItemData } from '../../actions';
 import { selectItemDetail } from '@pages/Detail Item/selectors';
@@ -20,14 +23,43 @@ import { selectTheme } from '@containers/App/selectors';
 
 import classes from './style.module.scss';
 
+const schema = yup.object().shape({
+  name: yup
+    .string()
+    .required("Name item is a required field"),
+  category_id: yup
+    .number()
+    .required("Category is required!")
+    .test('is-not-select', 'Category is required!', function(value) {
+      return value !== '0';
+    }),
+  desc: yup
+    .string()
+    .required("Desc is required!"),
+  price: yup
+    .number()
+    .required("Desc is required!")
+    .min(0, "Stock must be greater than or equal to 0"),
+  stock: yup
+    .number()
+    .required("Stock is required!")
+    .min(0, "Stock must be greater than or equal to 0"),
+  discount: yup
+    .number()
+    .required("Discount is required!")
+    .min(0, "Stock must be greater than or equal to 1"),
+});
+
 const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSelect }) => {
   const dispatch = useDispatch();
   const imgRef = useRef();
 
   const [image, setImage] = useState(null);
   const [showImage, setShowImage] = useState(false);
+  const [categoryIdValue, setcategoryIdValue] = useState('');
 
-  const { handleSubmit, control, reset, setValue } = useForm();
+
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
 
   useEffect(() => {
     if(id) {
@@ -44,11 +76,12 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSel
   useEffect(() => {
     if (isOpen && itemDataSelect) {
       setValue('name', itemDataSelect?.name);
-      setValue('category_id', itemDataSelect?.category_id);
+      setcategoryIdValue(itemDataSelect?.category_id)
       setValue('desc', itemDataSelect?.desc);
       setValue('price', itemDataSelect?.price);
       setValue('discount', itemDataSelect?.discount);
       setValue('stock', itemDataSelect?.stock);
+
     }
   }, [isOpen, itemDataSelect]);
 
@@ -75,6 +108,10 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSel
     onClose();
   };
 
+  const handleCategoryChange = (categoryId) => {
+    setcategoryIdValue(categoryId);
+  };
+
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box className={classes.modalContainer}>
@@ -98,98 +135,49 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSel
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="name_modal_input" />
               </Typography>
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: 'Item Name is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    margin="normal"
-                    value={field.value}                   
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
-                    InputLabelProps={{shrink: false}}
-                    sx={{ 
-                      borderRadius: '20px',
+              <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '2%', marginBottom: '2%' }}>
+                <TextField
+                  {...register('name')}
+                  aria-invalid={errors.name ? "true" : "false"}
+                  placeholder='Enter name item'
+                  error={errors.name && true} 
+                  fullWidth
+                  focused={false}
+                  className={classes.inputText}
+                  sx={{ 
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '&:hover fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          borderRadius: '20px',
                         },
-                        '& fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        borderRadius: '20px',
-                      }
-                    }}
-                  />
-                )}
-              />
+                  }}
+                />
+                { errors.name && 
+                    <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                        {errors.name?.message}
+                    </Typography>
+                }
+              </Box>
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="category_modal_input" />
               </Typography>
-              <Controller
-                name="category_id"
-                control={control}
-                rules={{ required: 'category is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    select
-                    fullWidth
-                    value={field.value}
-                    variant="outlined"
-                    InputLabelProps={{shrink: false}}
-                    className={classes.status}
-                    sx={{ 
-                      borderRadius: '20px',
-                        '& .MuiOutlinedInput-root': {
-                          borderRadius: '20px',
-                          '& input[type=number]': {
-                            '-moz-appearance': 'textfield', 
-                            '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-                              '-webkit-appearance': 'none',
-                              margin: 0,
-                            },
-                            '&::-webkit-outer-spin-button': {
-                              position: 'relative',
-                              float: 'right',
-                              visibility: 'hidden',
-                            },
-                          },
-                          '&:hover fieldset': {
-                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                          },
-                          '& fieldset': {
-                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                          },
-                          '&.Mui-focused fieldset': {
-                            borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                          },
-                        },
-                        '& .MuiInputBase-input': {
-                          borderRadius: '20px',
-                        }
+                <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '2%', marginBottom: '2%' }}>
+                  <Select
+                    {...register('category_id')}
+                    name="category_id"
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    error={errors.category_id && true} 
+                    onChange={(e) => {
+                      handleCategoryChange(e.target.value); 
                     }}
-                    SelectProps={{
-                      MenuProps: {
-                        PaperProps: {
-                          sx: {
-                            backgroundColor: theme === 'light' ? '#fff' : '#4f4557', 
-                            borderRadius: '20px'
-                          },
-                        },
-                      },
+                    value={categoryIdValue ? categoryIdValue : '0'}
+                    fullWidth
+                    focused={false}
+                    sx={{ 
+                      width: '600px', 
+                      marginLeft: '7%',
+                      borderRadius: '20px',
                     }}
                   >
                     <MenuItem key={0} value={0}>
@@ -200,204 +188,120 @@ const UpdateItemFormModal = ({ isOpen, onClose, id, theme, category, itemDataSel
                         {category.name}
                       </MenuItem>
                     ))} 
-                </TextField>
-                )}
-              />
+                  </Select>
+                  { errors?.city_id && 
+                      <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                          {errors.city_id?.message}
+                      </Typography>
+                  }
+                </Box>
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="desc_modal_input" />
               </Typography>
-              <Controller
-                name="desc"
-                control={control}
-                rules={{ required: 'Item Description is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    margin="normal"
-                    value={field.value}
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
-                    sx={{ 
-                      borderRadius: '20px',
+              <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '2%', marginBottom: '2%' }}>
+                <TextField
+                  {...register('desc')}
+                  aria-invalid={errors.desc ? "true" : "false"}
+                  placeholder='Enter desc'
+                  error={errors.desc && true} 
+                  fullWidth
+                  focused={false}
+                  className={classes.inputText}
+                  sx={{ 
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '&:hover fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
+                          borderRadius: '20px',
                         },
-                        '& fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        borderRadius: '20px',
-                      }
-                    }}
-                  />
-                )}
-              />
+                  }}
+                />
+                { errors.desc && 
+                    <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                        {errors.desc?.message}
+                    </Typography>
+                }
+              </Box>
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="price_modal_input" />
               </Typography>
-              <Controller
-                name="price"
-                control={control}
-                rules={{ required: 'Item Price is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type='number'
-                    value={field.value}
-                    margin="normal"
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
-                    sx={{ 
-                      borderRadius: '20px',
+              <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '2%', marginBottom: '2%' }}>
+                <TextField
+                  {...register('price')}
+                  aria-invalid={errors.price ? "true" : "false"}
+                  placeholder='Enter price'
+                  error={errors.price && true} 
+                  fullWidth
+                  type='number'
+                  focused={false}
+                  className={classes.inputText}
+                  sx={{ 
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '& input[type=number]': {
-                          '-moz-appearance': 'textfield', 
-                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-                            '-webkit-appearance': 'none',
-                            margin: 0,
-                          },
-                          '&::-webkit-outer-spin-button': {
-                            position: 'relative',
-                            float: 'right',
-                            visibility: 'hidden',
-                          },
+                          borderRadius: '20px',
                         },
-                        '&:hover fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '& fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        borderRadius: '20px',
-                      }
-                    }}
-                  />
-                )}
-              />
+                  }}
+                />
+                { errors.price && 
+                    <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                        {errors.price?.message}
+                    </Typography>
+                }
+              </Box>
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="discount_modal_input" />
               </Typography>
-              <Controller
-                name="discount"
-                control={control}
-                rules={{ required: 'Item discount is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
+              <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '2%', marginBottom: '2%' }}>
+                <TextField
+                    {...register('discount')}
+                    aria-invalid={errors.discount ? "true" : "false"}
+                    placeholder='Enter discount'
+                    error={errors.price && true} 
                     fullWidth
                     type='number'
-                    value={field.value}
-                    margin="normal"
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
+                    focused={false}
+                    className={classes.inputText}
                     sx={{ 
-                      borderRadius: '20px',
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '& input[type=number]': {
-                          '-moz-appearance': 'textfield', 
-                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-                            '-webkit-appearance': 'none',
-                            margin: 0,
+                        '& .MuiOutlinedInput-root': {
+                            borderRadius: '20px',
                           },
-                          '&::-webkit-outer-spin-button': {
-                            position: 'relative',
-                            float: 'right',
-                            visibility: 'hidden',
-                          },
-                        },
-                        '&:hover fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '& fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        borderRadius: '20px',
-                      }
                     }}
                   />
-                )}
-              />
+                  { errors.discount && 
+                      <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                          {errors.discount?.message}
+                      </Typography>
+                  }
+              </Box>
             </Box>
             <Box className={classes.textUploader}>
               <Typography variant="body1" color="initial" className={classes.label}>
                 <FormattedMessage id="stock_modal_input" />
               </Typography>
-              <Controller
-                name="stock"
-                control={control}
-                rules={{ required: 'Item stock is required' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
+              <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '2%', marginBottom: '2%' }}>
+                <TextField
+                    {...register('stock')}
+                    aria-invalid={errors.stock ? "true" : "false"}
+                    placeholder='Enter stock'
+                    error={errors.stock && true} 
                     fullWidth
                     type='number'
-                    value={field.value}
-                    margin="normal"
-                    error={!!field.error}
-                    helperText={field.error ? field.error.message : null}
+                    focused={false}
+                    className={classes.inputText}
                     sx={{ 
-                      borderRadius: '20px',
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '20px',
-                        '& input[type=number]': {
-                          '-moz-appearance': 'textfield', 
-                          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
-                            '-webkit-appearance': 'none',
-                            margin: 0,
+                        '& .MuiOutlinedInput-root': {
+                            borderRadius: '20px',
                           },
-                          '&::-webkit-outer-spin-button': {
-                            position: 'relative',
-                            float: 'right',
-                            visibility: 'hidden',
-                          },
-                        },
-                        '&:hover fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '& fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme == 'light' ? '#fff' : '#474F7A',
-
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        borderRadius: '20px',
-                      }
                     }}
                   />
-                )}
-              />
+                  { errors.stock && 
+                      <Typography variant='body' component='div' sx={{ fontSize: '15px', marginTop: '1%', color: '#d82c2c'  }}>
+                          {errors.stock?.message}
+                      </Typography>
+                  }
+              </Box>
             </Box>
             <Button 
               type="submit"

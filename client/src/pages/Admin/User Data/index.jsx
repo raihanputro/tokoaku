@@ -29,8 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import AddUserForm from './components/Add User Form';
-import UpdateUserForm from './components/Update User Form';
-import DetailUser from './components/Detail User';
+
 
 import { selectTheme } from '@containers/App/selectors';
 import { selectUserDataAdmin } from './selectors';
@@ -167,7 +166,6 @@ const UserData = ({users, theme}) => {
                   <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="email_table_row" /></StyledTableCell>
                   <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="username_table_row" /></StyledTableCell>
                   <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="role_table_row" /></StyledTableCell>
-                  <StyledTableCell align="center" sx={{ fontWeight: 'bolder', fontSize: '20px' }}><FormattedMessage id="action_table_row" /></StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -193,9 +191,6 @@ const UserData = ({users, theme}) => {
                     <StyledTableCell align="center">{user?.email}</StyledTableCell>
                     <StyledTableCell align="center">{user?.username}</StyledTableCell>
                     <StyledTableCell align="center">{user?.role}</StyledTableCell>  
-                    <StyledTableCell align="center">
-                      <Button><InfoIcon /></Button>
-                    </StyledTableCell>  
                   </StyledTableRow>
 
                 )) : <StyledTableCell align="center" colSpan={6}><FormattedMessage id="table_empty" /></StyledTableCell>}

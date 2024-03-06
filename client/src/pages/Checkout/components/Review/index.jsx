@@ -1,6 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import Typography from '@mui/material/Typography';
@@ -15,9 +16,15 @@ import { formattedPrice } from '@utils/price';
 import { createTransactionData } from '@pages/Checkout/actions';
 import { selectCity, selectProvince, selectTransaction } from '@pages/Checkout/selectors';
 import { selectCart } from '@pages/Cart/selectors';
+import { setStepCheckout } from '@pages/Checkout/actions';
+
+import encryptPayload from '@utils/encryption';
+
+import classes from './style.module.scss';
 
 const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
@@ -67,8 +74,10 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
       status: 'PENDING',
       orderAt: currentDate,
       expiryAt: expiryDate,
+    }, (id) => {
+      navigate(`../order/${id}`);
+      dispatch(setStepCheckout(0));
     }));
-    onNext();
   }
 
   return (
@@ -110,10 +119,10 @@ const Review = ({ onNext, onBack, transaction, province, city, cart }) => {
         </Grid>
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={() => onBack()} sx={{ mt: 3, ml: 1 }}>
+          <Button variant='contained' className={classes.nextButton} onClick={() => onBack()} sx={{ mt: 3, ml: 5 }}>
             Kembali
           </Button> 
-          <Button type='submit' sx={{ mt: 3, ml: 1 }} onClick={() => onSubmit()}>
+          <Button variant='contained' className={classes.nextButton} type='submit' sx={{ mt: 3, ml: 1 }} onClick={() => onSubmit()}>
             Pesan
           </Button> 
         </Box>

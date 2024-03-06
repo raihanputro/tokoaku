@@ -213,7 +213,7 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect, items, profile 
                 {...params}
                 className={classes.searchBar}
                 InputLabelProps={{shrink: false}}
-                placeholder='Cari Barang'
+                placeholder='Find Item'
                 sx={{ 
                   width: '100%', 
                   minWidth: '500px',
@@ -248,10 +248,10 @@ const Navbar = ({ title, locale, theme, isLogin, cartDataSelect, items, profile 
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
-        { isLogin ? sideNavbarLogin : sideNavbar}
-        {/* <div className={classes.theme} onClick={handleTheme} data-testid="toggleTheme">
+        <div className={classes.theme} onClick={handleTheme} data-testid="toggleTheme">
           {theme === 'light' ? <NightsStayIcon /> : <LightModeIcon />}
-        </div> */}
+        </div>
+        { isLogin ? sideNavbarLogin : sideNavbar}
         {/* <div className={classes.toggle} onClick={handleClick}>
           <Avatar className={classes.avatar} src={locale === 'id' ? '/id.png' : '/en.png'} />
           <div className={classes.lang}>{locale}</div>

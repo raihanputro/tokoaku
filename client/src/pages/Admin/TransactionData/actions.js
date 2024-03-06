@@ -3,7 +3,8 @@ import {
     SET_TRANSACTION_DETAIL_DATA,
     GET_TRANSACTION_DATA,
     GET_TRANSACTION_DETAIL_DATA,
-    UPDATE_TRANSACTION_DATA
+    UPDATE_TRANSACTION_DATA,
+    UPDATE_TRANSACTION_ADMIN_DATA
 } from './constants';
 
 export const setTransactionData = (transactionData) => ({
@@ -29,4 +30,9 @@ export const updateTransactionData = (id, transactionData) => ({
     type: UPDATE_TRANSACTION_DATA,
     id,
     transactionData
+});
+
+export const updateTransactionAdminData = (id) => ({
+    type: UPDATE_TRANSACTION_ADMIN_DATA,
+    id,
 });

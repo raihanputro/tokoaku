@@ -20,7 +20,10 @@ const urls = {
   updateItem: 'item/update',
   deleteItem: 'item/remove',
   categoryList: 'category/list',
+  categoryDetail: 'category/detail',
   addCategory: 'category/add',
+  updateCategory: 'category/update',
+  deleteCategory: 'category/remove',
   addCart: 'cart/add',
   getCartByUser: 'cart/user-list',
   updateCart: 'cart/update',
@@ -36,6 +39,7 @@ const urls = {
   getTransactionByUser: 'transaction/user',
   getTransactionDetail: 'transaction/detail',
   updateTransactionStatus: 'transaction/notification',
+  updateTransactionStatusAdmin: 'transaction/status-admin',
   getReviewByTr: 'review/tr-list',
   addReview: 'review/add',
   updateReview: 'review/update',
@@ -77,7 +81,10 @@ export const addItemApi = (itemData) => callAPI(urls.addItem, 'POST', {'Content-
 export const updateItemApi = (id, itemData) => callAPI(`${urls.updateItem}/${id}`, 'PATCH', {'Content-Type': 'multipart/form-data; charset=UTF-8'}, {}, itemData);
 export const deleteItemApi = (id) => callAPI(`${urls.deleteItem}/${id}`, 'DELETE');
 export const getAllCategoryApi = () => callAPI(urls.categoryList, 'GET');
+export const getCategoryDetailApi = (id) => callAPI(`${urls.categoryDetail}/${id}`, 'GET');
 export const addCategoryApi = (categoryData) => callAPI(urls.addCategory, 'POST', {'Content-Type': 'multipart/form-data; charset=UTF-8'}, {}, categoryData);
+export const updateCategoryApi = (id, categoryData) => callAPI(`${urls.updateCategory}/${id}`, 'PATCH', {'Content-Type': 'multipart/form-data; charset=UTF-8'}, {}, categoryData);
+export const deleteCategoryApi = (id) => callAPI(`${urls.deleteCategory}/${id}`, 'DELETE');
 export const addCartApi = (cartData) => callAPI(urls.addCart, 'POST', {}, {}, cartData);
 export const getCartApi = () => callAPI(urls.getCartByUser, 'GET');
 export const updateCartApi = (id, dataCart) => callAPI(`${urls.updateCart}/${id}`, 'PUT', {}, {}, dataCart);
@@ -93,6 +100,7 @@ export const getAllTransactionApi = () => callAPI(urls.getAllTransaction, 'GET')
 export const getTransactionByUserApi = () => callAPI(urls.getTransactionByUser, 'GET');
 export const getTransactionDetailApi = (id) => callAPI(`${urls.getTransactionDetail}/${id}`, 'GET');
 export const updateTransactionStatusApi = (transactionData) => callAPI(urls.updateTransactionStatus, 'PUT', {}, {}, transactionData);
+export const updateTransactionStatusAdminApi = (id) => callAPI(`${urls.updateTransactionStatusAdmin}/${id}`, 'PATCH', {}, {});
 export const getReviewByTrApi = (id) => callAPI(`${urls.getReviewByTr}/${id}`, 'GET');
 export const addReviewApi = (reviewData) => callAPI(urls.addReview, 'POST', {}, {}, reviewData);
 export const updateReviewApi = (reviewData) => callAPI(urls.updateReview, 'PATCH', {}, {}, reviewData);

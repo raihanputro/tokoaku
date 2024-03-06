@@ -34,6 +34,7 @@ import { setLogin, setToken, setUser } from '@containers/Client/actions';
 import { setLocale, setTheme } from '@containers/App/actions';
 
 import classes from './style.module.scss';
+import { selectUser } from '@containers/Client/selectors';
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -72,7 +73,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const NavbarAdmin = ({ title, locale, theme, children }) => {
+const NavbarAdmin = ({ title, locale, theme, children, user }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -80,6 +81,12 @@ const NavbarAdmin = ({ title, locale, theme, children }) => {
   const [menuPosition, setMenuPosition] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const openLang = Boolean(menuPosition);
+
+  useEffect(() => {
+    if(user?.role !== 'Admin') {
+      navigate('/');
+    }
+  }, [])
 
   const handleClick = (event) => {
     setMenuPosition(event.currentTarget);
@@ -244,11 +251,11 @@ NavbarAdmin.propTypes = {
   title: PropTypes.string,
   locale: PropTypes.string.isRequired,
   theme: PropTypes.string,
+  user: PropTypes.object
 };
 
 const mapStateToProps = createStructuredSelector({
-  // isLogin: selectLogin,
-  // cartDataSelect: selectCart
+  user: selectUser
 })
 
 export default connect(mapStateToProps)(NavbarAdmin);

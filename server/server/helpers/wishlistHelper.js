@@ -23,7 +23,7 @@ const getWishlistByUser = async (id) => {
             where: {
                 user_id: id
             },
-            include: ['customer', 'item'],
+            include: ['item'],
         });
 
         return Promise.resolve({ 

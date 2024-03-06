@@ -21,8 +21,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 
 import AddCategoryForm from './components/Add Category Form';
+import UpdateCategoryForm from './components/Update Category Form';
 
-import { getCategoryData } from './actions';
+import { getCategoryData, deleteCategoryData } from './actions';
 import { selectCategoryData } from './selectors';
 
 import classes from './style.module.scss';
@@ -47,8 +48,10 @@ const CategoryData = (categoryDataSelect) => {
   const dispatch = useDispatch();
 
   const [categoryData, setCategoryData] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [search, setSearch] = useState('');
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getCategoryData());
@@ -71,6 +74,19 @@ const CategoryData = (categoryDataSelect) => {
 
   const handleAddModalClose = () => {
     setIsModalAddOpen(false);
+  };
+
+  const handleUpdateModalOpen = (itemId) => {
+    setSelectedCategoryId(itemId);
+    setIsModalUpdateOpen(true);
+  };
+
+  const handleUpdateModalClose = () => {
+    setIsModalUpdateOpen(false);
+  };
+
+  const deleteCategory = (categoryId) => {
+    dispatch(deleteCategoryData(categoryId));
   };
 
   return (
@@ -132,8 +148,8 @@ const CategoryData = (categoryDataSelect) => {
                                 <StyledTableCell align="center">{category?.id}</StyledTableCell>
                                 <StyledTableCell align="center">{category?.name}</StyledTableCell>
                                 <StyledTableCell align="center">
-                                    <Button ><EditIcon /></Button>
-                                    <Button  sx={{  color: 'red' }}><DeleteIcon /></Button>
+                                    <Button onClick={() => handleUpdateModalOpen(category?.id)}><EditIcon /></Button>
+                                    <Button  sx={{  color: 'red' }} onClick={() => deleteCategory(category?.id)}><DeleteIcon /></Button>
                                 </StyledTableCell>
                             </StyledTableRow>
                       )) : <StyledTableCell align="center" colSpan={4}><FormattedMessage id="table_empty" /></StyledTableCell>}
@@ -141,6 +157,8 @@ const CategoryData = (categoryDataSelect) => {
             </Table>
         </TableContainer>
         <AddCategoryForm isOpen={isModalAddOpen} onClose={handleAddModalClose} />
+        <UpdateCategoryForm isOpen={isModalUpdateOpen} onClose={handleUpdateModalClose} id={selectedCategoryId} />
+
     </>
   )
 }

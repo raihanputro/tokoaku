@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import moment from 'moment';
 
-import { getTransactionData } from './actions';
+import { getTransactionData, updateTransactionAdminData } from './actions';
 import { selectTransactionData } from './selectors';
 import { selectTheme } from '@containers/App/selectors';
 
@@ -57,6 +57,10 @@ const TransactionData = ({ theme, transactions }) => {
     }
     return false;
   });
+
+  const handleUpdate = (trId) => {
+
+  }
 
   return (
     <>
@@ -157,8 +161,10 @@ const TransactionData = ({ theme, transactions }) => {
                                   {tr?.status === 'PROCESS' && <Typography variant='p' component='div' className={classes.statusProcess}>{tr?.status}</Typography>}
                                   {tr?.status === 'FAIL' && <Typography variant='p' component='div' className={classes.statusFail}>{tr?.status}</Typography>}
                                 </StyledTableCell>
-                                <StyledTableCell c>
-                                    <Button onClick={() => handleUpdateModalOpen(tr?.id)}><EditIcon /></Button>
+                                <StyledTableCell align="center">
+                                  { tr?.status === 'PROCESS' &&
+                                    <Button onClick={() => dispatch(updateTransactionAdminData(tr?.id))}><EditIcon /></Button>
+                                  }
                                 </StyledTableCell>
                             </StyledTableRow>
                       )) : <StyledTableCell align="center" colSpan={5}><FormattedMessage id="table_empty" /></StyledTableCell>}

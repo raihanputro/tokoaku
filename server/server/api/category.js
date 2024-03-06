@@ -101,7 +101,7 @@ const remove = async ( req, rep ) => {
 };
 
 Router.get('/list', list);
-Router.get('/detail/:id', validateToken, roleAdmin, detail);
+Router.get('/detail/:id', validateToken, detail);
 Router.post('/add', uploadImg.fields([{name: 'icon', maxCount: 1}]), validateToken, roleAdmin, add);
 Router.patch('/update/:id', uploadImg.fields([{name: 'icon', maxCount: 1}]), validateToken, roleAdmin, update);
 Router.delete('/remove/:id', validateToken, roleAdmin, remove);

@@ -18,8 +18,6 @@ const getProvince = async () => {
             isErrorOptional: true
         });
 
-        console.log(_.isEmpty(provinceRedis))
-
         if (_.isEmpty(provinceRedis)) {
             const province = await axios.get(
                 'https://api.rajaongkir.com/starter/province',
@@ -241,6 +239,17 @@ const getTransactionDetail = async (dataObject) => {
             }
         });
 
+        await db.transaction.update({
+            status: 'FAIL'
+        }, {
+            where: {
+                expiryAt: {
+                    [Op.lt]: new Date() 
+                },
+                status: 'PENDING'
+            }
+        });
+
         if(_.isEmpty(transactionDetail)) {
             return Promise.reject(Boom.notFound(`Cannot find transaction with id ${id}!`));
         };
@@ -257,167 +266,199 @@ const getTransactionDetail = async (dataObject) => {
 };
 
 const createTransaction = async (dataObject) => {
-    const { 
-        user_id, 
-        fullName,
-        address,
-        phone,
-        province,
-        city,
-        service,
-        shippingCost,
-        subtotal,
-        total, 
-        status,
-        orderAt,
-        expiryAt
-    } = dataObject;
+        const { 
+            user_id, 
+            fullName,
+            address,
+            phone,
+            province,
+            city,
+            service,
+            shippingCost,
+            subtotal,
+            total, 
+            status,
+            orderAt,
+            expiryAt
+        } = dataObject;
 
-    try {
-        await db.sequelize.transaction( async t => {
-            const checkCustomer = await db.user.findOne({
-                where: {
-                    id: user_id
-                },
-                transaction: t
-            });
-    
-            if (_.isEmpty(checkCustomer)) {
-                return Promise.reject(Boom.notFound(`Cannot find user with id ${user_id}!`))
-            };
-    
-            const cart = await db.cart.findAll({
-                where: {
-                    user_id: user_id
-                },
-                include: [
-                    {
-                        model: db.item,
-                        as: 'item',
-                        attributes: ['name', 'price', 'stock'],
-                        required: false
-                    }
-                ],
-                transaction: t
-            });
-    
-            const transaction = await db.transaction.create({
-                user_id, 
-                fullName,
-                address,
-                phone,
-                province,
-                city,
-                service,
-                shippingCost,
-                subtotal,
-                total, 
-                status,
-                orderAt,
-                expiryAt,
-            }, {
-                transaction: t
-            });
-    
-            await Promise.all(cart.map(async (cartItem) => {
-                await db.order.create({
-                    transaction_id: transaction.id,
-                    item_id: cartItem.item_id,
-                    item_name: cartItem.item.name,
-                    qty: cartItem.qty,
-                    price: cartItem.item.price
+        try {
+            const result = await db.sequelize.transaction( async t => {
+                const checkCustomer = await db.user.findOne({
+                    where: {
+                        id: user_id
+                    },
+                    transaction: t
+                });
+        
+                if (_.isEmpty(checkCustomer)) {
+                    return Promise.reject(Boom.notFound(`Cannot find user with id ${user_id}!`))
+                };
+        
+                const cart = await db.cart.findAll({
+                    where: {
+                        user_id: user_id
+                    },
+                    include: [
+                        {
+                            model: db.item,
+                            as: 'item',
+                            attributes: ['name', 'price', 'stock'],
+                            required: false
+                        }
+                    ],
+                    transaction: t
+                });
+        
+                const transaction = await db.transaction.create({
+                    user_id, 
+                    fullName,
+                    address,
+                    phone,
+                    province,
+                    city,
+                    service,
+                    shippingCost,
+                    subtotal,
+                    total, 
+                    status,
+                    orderAt,
+                    expiryAt,
                 }, {
                     transaction: t
                 });
-    
-                await db.item.update({  
-                    stock: cartItem.item.stock - cartItem.qty
+        
+                await Promise.all(cart.map(async (cartItem) => {
+                    await db.order.create({
+                        transaction_id: transaction.id,
+                        item_id: cartItem.item_id,
+                        item_name: cartItem.item.name,
+                        qty: cartItem.qty,
+                        price: cartItem.item.price
+                    }, {
+                        transaction: t
+                    });
+        
+                    await db.item.update({  
+                        stock: cartItem.item.stock - cartItem.qty
+                    }, {
+                        where: {
+                            id: cartItem.item_id
+                        },
+                        transaction: t
+                    })
+                }));
+        
+                const shippingItem = {
+                    item_id: 0,     
+                    item: { name: 'Shipping Cost', price: shippingCost },
+                    qty: 1,
+                };
+        
+                cart.push(shippingItem);
+        
+                const payload = {
+                    transaction_details: {
+                        order_id: transaction.id,
+                        gross_amount: total
+                    },
+                    custom_expiry: {
+                        order_time: transaction.orderAt,
+                        expiry_duration: 24,
+                        unit: "hour"
+                    },
+                    item_details: cart.map((item) => ({
+                        id: item.item_id,
+                        price: item.item.price,
+                        quantity: item.qty,
+                        name: item.item.name
+                    })),
+                    customer_details: {
+                        first_name: transaction.fullName,
+                        email: checkCustomer.email,
+                        phone: transaction.phone,
+                        shipping_address: {
+                            first_name: transaction.fullName,
+                            phone: transaction.phone,
+                            address: transaction.address,
+                            city: transaction.city
+                        }
+                    }
+                };
+        
+                const authString = btoa(process.env.MIDTRANS_KEY_SERVER);
+        
+                const response = await fetch(`https://app.sandbox.midtrans.com/snap/v1/transactions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Basic ${authString}`
+                    },
+                    body: JSON.stringify(payload),
+                }); 
+            
+                const data = await response.json();
+        
+                await db.transaction.update({
+                    snap_token: data.token,
                 }, {
                     where: {
-                        id: cartItem.item_id
+                        id: transaction.id,
                     },
                     transaction: t
-                })
-            }));
-    
-            const shippingItem = {
-                item_id: 0,     
-                item: { name: 'Shipping Cost', price: shippingCost },
-                qty: 1,
-            };
-    
-            cart.push(shippingItem);
-    
-            const payload = {
-                transaction_details: {
-                    order_id: transaction.id,
-                    gross_amount: total
-                },
-                custom_expiry: {
-                    order_time: transaction.orderAt,
-                    expiry_duration: 24,
-                    unit: "hour"
-                },
-                item_details: cart.map((item) => ({
-                    id: item.item_id,
-                    price: item.item.price,
-                    quantity: item.qty,
-                    name: item.item.name
-                })),
-                customer_details: {
-                    first_name: transaction.fullName,
-                    email: checkCustomer.email,
-                    phone: transaction.phone,
-                    shipping_address: {
-                        first_name: transaction.fullName,
-                        phone: transaction.phone,
-                        address: transaction.address,
-                        city: transaction.city
-                    }
-                }
-            };
-    
-            const authString = btoa(process.env.MIDTRANS_KEY_SERVER);
-    
-            const response = await fetch(`https://app.sandbox.midtrans.com/snap/v1/transactions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Basic ${authString}`
-                },
-                body: JSON.stringify(payload),
-            }); 
+                });
         
-            const data = await response.json();
-    
-            await db.transaction.update({
-                snap_token: data.token,
-            }, {
-                where: {
-                    id: transaction.id,
-                },
-                transaction: t
+                await db.cart.destroy({
+                    where: {    
+                        user_id: user_id
+                    },
+                    transaction: t
+                });   
+
+                return transaction.id;
             });
-    
-            await db.cart.destroy({
-                where: {    
-                    user_id: user_id
-                },
-                transaction: t
-            }); 
-                
+
             return Promise.resolve({ 
                 statusCode: 201,
-                message: "Post transaction successfully!",
+                message: "Create transaction successfully!",
+                data: result
             }); 
-        });
-        
-    } catch (error) {
-        console.log([fileName, 'postTransaction', 'ERROR'], { info: `${error}` });
-        return Promise.reject(GeneralHelper.errorResponse(error));
-    };
+        } catch (error) {
+            console.log([fileName, 'createTransaction', 'ERROR'], { info: `${error}` });
+            return Promise.reject(GeneralHelper.errorResponse(error));
+        };
 };
+
+const updateStatusFromAdmin = async (id) => {
+    try {
+        const checkTr = await db.transaction.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (_.isEmpty(checkTr)) {
+            return Promise.reject(Boom.notFound(`Cannot find transaction with id ${id}!`));
+        } else {
+            await db.transaction.update({
+                status: 'SUCCESS'
+            }, {
+                where: {
+                    id: id
+                }
+            });
+
+            return Promise.resolve({ 
+                statusCode: 200,
+                message: "Update status transaction admin successfully!",
+            });  
+        }
+    } catch (error) {
+        console.log([fileName, 'updateStatusFromAdmin', 'ERROR'], { info: `${error}` });
+        return Promise.reject(GeneralHelper.errorResponse(error));
+    }
+}
 
 const updateStatusFromMidtrans = async (data) => {
     try {
@@ -450,15 +491,6 @@ const updateStatusFromMidtrans = async (data) => {
 
         if (transactionStatus == 'settlement'){
 
-            const mailOptions = {
-                from: 'tokoaku461@gmail.com',
-                to: findTransaction.customer.email,
-                subject: 'INVOICE tokoaku',
-                text: `test`
-            };
-
-            await mailer.transporter.sendMail(mailOptions);
-
             if (findTransaction.service === 'cod') {
                 await db.transaction.update({
                     status: 'SUCCESS',
@@ -477,15 +509,24 @@ const updateStatusFromMidtrans = async (data) => {
                 });
             };
 
-            findTransaction.order.map(async(item) => {
+            findTransaction.order.map(async(order) => {
                 await db.item.update({
-                    sold: item.item.sold + item.qty
+                    sold: order.item.sold + order.qty
                 }, {
                     where: {
-                        id: item.item_id
+                        id: order.item_id
                     }
                 });
             });
+
+            const mailOptions = {
+                from: 'tokoaku461@gmail.com',
+                to: findTransaction.customer.email,
+                subject: 'INVOICE tokoaku',
+                text: `Invoice masuk`
+            };
+
+            await mailer.transporter.sendMail(mailOptions);
 
         } else if (transactionStatus == 'deny' || transactionStatus == 'expire'){
 
@@ -537,5 +578,6 @@ module.exports = {
     getTransactionListByUser,
     getTransactionDetail,
     createTransaction,
+    updateStatusFromAdmin,
     updateStatusFromMidtrans
 }

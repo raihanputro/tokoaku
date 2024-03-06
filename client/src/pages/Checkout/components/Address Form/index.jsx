@@ -53,8 +53,6 @@ const schema = yup.object().shape({
 const AddressForm = ({ onNext, province, city, shippingCost, profile, transaction,  }) => {
   const dispatch = useDispatch();
 
-  console.log(transaction, 'test gg')
-
   const { handleSubmit, register, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) });
 
   const [formData, setFormData] = useState({
@@ -65,8 +63,6 @@ const AddressForm = ({ onNext, province, city, shippingCost, profile, transactio
     city_id: '',
     service: ''
   });
-
-  console.log(formData, 'tteste')
 
   useEffect(() => {
     dispatch(getUserProfile());
@@ -245,9 +241,6 @@ const AddressForm = ({ onNext, province, city, shippingCost, profile, transactio
             <Select
               {...register('province_id')}
               name="province_id"
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Role"
               error={errors.province_id && true} 
               onChange={(e) => {
                 handleProvinceChange(e.target.value);

@@ -46,12 +46,20 @@
             @include directionX;
             justify-content: space-between;
             align-items: center;
-            // gap: 50px;
             width: 100%;
 
             .label {
                 width: 140px;
                 color: var(--color-text);
+            }
+
+            .inputText {
+             width: 100%;
+             min-width: 600px;
+
+              @media (max-width: 548px) {
+                  max-width: 290px;
+              }
             }
         }
 

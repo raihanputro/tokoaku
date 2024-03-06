@@ -6,15 +6,21 @@ import { createStructuredSelector } from 'reselect';
 
 import { selectLogin, selectUser } from '@containers/Client/selectors';
 
-const Client = ({ login, user, children }) => {
+const Client = ({ role, login, user, children }) => {
   const navigate = useNavigate();
+ 
   useEffect(() => {
-    const expirationTime = ( user?.exp * 1000) - 6000;
-
-    if (!login || Date.now() >= expirationTime) {
+    if (!login) {
       navigate('/login');
     }
-  }, [login, user, navigate]);
+  }, [login, navigate]);
+
+  if (role == 1) {
+    if (user?.role != 'Admin') {
+      navigate('/');
+    }
+    return children;
+  }
 
   return children;
 };
@@ -23,6 +29,7 @@ Client.propTypes = {
   login: PropTypes.bool,
   user: PropTypes.object,
   children: PropTypes.element,
+  role: PropTypes.number
 };
 
 const mapStateToProps = createStructuredSelector({

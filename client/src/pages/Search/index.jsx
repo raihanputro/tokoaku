@@ -50,8 +50,8 @@
                     </Typography>
                     <nav>
                         <List>
-                            {category && Array.isArray(category) && category?.map(ctr =>(
-                            <ListItem onClick={() =>  navigate(`/search?item=${nameParam}&category=${ctr.id}`)} disablePadding>
+                            {category && Array.isArray(category) && category?.map((ctr, index) =>(
+                            <ListItem key={index} onClick={() =>  navigate(`/search?item=${nameParam}&category=${ctr.id}`)}     >
                                 <ListItemButton sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                                     <ListItemIcon>
                                         <CardMedia 
@@ -63,7 +63,7 @@
                                             sx={{ objectFit: "contain" }} 
                                         />
                                     </ListItemIcon>
-                                    <ListItemText className={categoryParam == ctr.id && classes.listActive}>{ctr.name}</ListItemText>
+                                    <ListItemText>{ctr.name}</ListItemText>
                                 </ListItemButton>
                                 </ListItem>
                             ))} 

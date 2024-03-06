@@ -6,14 +6,41 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
+    height: 430px;
+    border-radius: 20px;
     background-color: var(--color-bg-secondary);
-    color: var(--color-text);
     box-shadow: 24px;
     padding: 40px;
+    overflow-y: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
 
     .uploaderContainer {
         @include directionY;
         align-items: center;
+    
+        .imgUploader {
+            @include directionY;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--color-bg);
+            border-radius: 20px;
+            height: 100px;
+            width: 100%;
+            padding: 10px;
+    
+            button {
+                width: fit-content;
+              }
+        
+              img {
+                height: 120%;
+              }
+        
+              input {
+                display: none;
+              }
+        }
     
         .textUploader {
             @include directionX;
@@ -25,6 +52,21 @@
                 width: 140px;
                 color: var(--color-text);
             }
+
+            .inputText {
+             width: 100%;
+             min-width: 600px;
+
+              @media (max-width: 548px) {
+                  max-width: 290px;
+              }
+            }
+        }
+
+        .addButton {
+          color: var(--color-text) !important;
+          background-color: var(--color-bg) !important;
+          border-radius: 20px;
         }
     }
 }

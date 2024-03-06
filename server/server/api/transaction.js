@@ -3,6 +3,8 @@ const Router = require('express').Router();
 const TransactionHelper = require('../helpers/transactionHelper');
 const GeneralHelper = require('../helpers/generalHelper');
 const AuthMiddleware = require('../middlewares/authMiddleware');
+const { decryptTextPayload } = require('../utils/decrypt');
+
 
 const fileName = 'server/api/transaction.js';
 
@@ -99,6 +101,8 @@ const add = async ( req, rep ) => {
             orderAt,
             expiryAt
         } = req.body;
+
+
     
         const response = await TransactionHelper.createTransaction({
             user_id,
@@ -123,6 +127,20 @@ const add = async ( req, rep ) => {
     }
 };
 
+const updateStatusAdmin = async ( req, rep ) => {
+    try {
+        const id = parseInt(req.params['id']);
+
+        const response = await TransactionHelper.updateStatusFromAdmin(id);
+
+        return rep.send(response);
+    } catch (error) {
+        console.log([fileName, 'updateFromMidtrans', 'ERROR'], { info: `${error}` });
+        return rep.send(GeneralHelper.errorResponse(error));       
+    }
+};
+
+
 const updateFromMidtrans = async ( req, rep ) => {
     try {
         const data = req.body;
@@ -144,6 +162,7 @@ Router.get('/user', AuthMiddleware.validateToken, listByCustomer);
 Router.get('/detail/:id', AuthMiddleware.validateToken, detail);
 Router.post('/shipping-cost', AuthMiddleware.validateToken, shippingCost);
 Router.post('/add', AuthMiddleware.validateToken, add);
+Router.patch('/status-admin/:id', AuthMiddleware.validateToken, updateStatusAdmin);
 Router.put('/notification', updateFromMidtrans);
 
 module.exports = Router; 

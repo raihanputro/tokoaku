@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 
 import AddressForm from './components/Address Form';
 import Review from './components/Review';
-import OrderCreated from './components/Order Created';
 
 import classes from './style.module.scss';
 import { selectStep } from './selectors';
@@ -43,8 +42,6 @@ const Checkout = (step) => {
         return <AddressForm onNext={handleNext} />;
       case 1:
         return <Review onNext={handleNext} onBack={handleBack} />
-      case 2: 
-      return <OrderCreated />
     }
   } 
 

@@ -67,8 +67,6 @@ const add = async ( req, rep ) => {
         
         const { category_id, name, desc, price, stock, discount } = req.body;
 
-        ValidationHelper.itemDataValidation({ category_id, name, desc, price, stock, discount, author_id });
-
         const imgFile = req.files.img[0];
 
         const fileName = imgFile.originalname;
@@ -88,15 +86,11 @@ const update = async ( req, rep ) => {
     try {
         const id = parseInt(req.params['id']);
 
-        validateToken.idValidation(id);
-
         const url = req.protocol + '://' + req.get('host');
 
         const author_id = req.body.user.id;
 
         const { name, category_id, desc, price, discount, stock  } = req.body;
-
-        ValidationHelper.itemDataValidation({ category_id, name, desc, price, stock, discount, author_id });
 
         const imgFile = req.files?.img?.[0];
 
@@ -116,8 +110,6 @@ const update = async ( req, rep ) => {
 const remove = async ( req, rep ) => {
     try {
         const id = parseInt(req.params['id']);
-
-        validateToken.idValidation(id);
 
         const response = await itemHelper.deleteDataItem(id);
 

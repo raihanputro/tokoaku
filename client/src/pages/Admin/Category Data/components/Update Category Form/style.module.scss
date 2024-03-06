@@ -1,0 +1,62 @@
+@import '@styles/base';
+
+.modalContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    border-radius: 20px;
+    background-color: var(--color-bg-secondary);
+    box-shadow: 24px;
+    padding: 40px;
+    overflow-y: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+
+    .uploaderContainer {
+        @include directionY;
+        align-items: center;
+    
+        .imgUploader {
+            @include directionY;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--color-bg);
+            border-radius: 5px;
+            height: 100px;
+            width: 100%;
+    
+            button {
+                width: fit-content;
+              }
+        
+              img {
+                height: 120%;
+              }
+        
+              input {
+                display: none;
+              }
+        }
+    
+        .textUploader {
+            @include directionX;
+            justify-content: space-between;
+            align-items: center;
+            // gap: 50px;
+            width: 100%;
+
+            .label {
+                width: 140px;
+                color: var(--color-text);
+            }
+        }
+
+        .addButton {
+          color: var(--color-text) !important;
+          background-color: var(--color-bg) !important;
+          border-radius: 20px;
+        }
+    }
+}

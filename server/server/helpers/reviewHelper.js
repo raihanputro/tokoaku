@@ -70,7 +70,7 @@ const postReviewData = async ( dataObject ) => {
         });
 
         order.map(async (item) => {
-            const newRating = (item.item.rating + rating) / (item.item.review.length + 1);
+
             
             await db.review.create({
                 user_id,
@@ -81,7 +81,7 @@ const postReviewData = async ( dataObject ) => {
             });
 
             await db.item.update({
-                rating: newRating,
+                rating: rating,
             }, {
                 where: {
                     id: item.item.id
