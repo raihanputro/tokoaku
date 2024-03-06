@@ -1,6 +1,27 @@
 # tokoaku
 tokoAku adalah platform e-commerce yang menawarkan pengalaman berbelanja online yang lengkap dan memuaskan bagi para pelanggan. Dengan koleksi barang yang beragam dan layanan yang terpercaya, tokoaku memungkinkan pengguna untuk menemukan dan membeli berbagai macam barang dengan mudah dan nyaman.
 
+## Setup
+Berikut merupakan tech stack yang digunakan dalam final project tokoaku:
+### Client
+> - npm install
+> - npm start
+
+### Server
+> - npm install
+> - npx sequelize-cli db:create
+> - npx sequelize-cli db:migrate
+> - npm start
+
+## Tech Stack
+Berikut merupakan tech stack yang digunakan dalam final project tokoaku:
+* Front-end - ReactJs, Redux, dan Material UI
+* Back-end - NodeJs, ExpressJs, dan Midtrans
+* Database - MySql, Sequelize, dan Redis
+
+![tokoaku](https://github.com/raihanputro/tokoaku/assets/87045526/e6dd0e8d-5c4a-4f3c-9ec6-581079b21991)
+###
+
 ## Pages
 ### HOME
 Pada halaman home, pelanggan dapat melihat list dari barang dan juga kategori barang. Pelanggan juga dapat mencari barang melalui button kategori ataupun search bar di navbar.
