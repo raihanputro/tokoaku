@@ -34,9 +34,8 @@ Pada halaman cart, pelanggan dapat mengatur jumlah barang yang ingin dibeli.
 ### Checkout
 Pada halaman checkout, pelanggan dapat mengisi alamat dan layanan pengiriman. Lalu selanjutnya pelanggan melihat review total harga belanjaan yang dibeli. dan Yang terakhir akan ada informasi bahwa pesanan berhasil dibuat.
 ###
-![image](https://github.com/raihanputro/tokoaku/assets/87045526/b16aeeb8-65b1-4cc3-be32-ee798ecfb755)
+![image](https://github.com/raihanputro/tokoaku/assets/87045526/e6e50417-303b-47e1-a9ae-6b8360837813)
 ![image](https://github.com/raihanputro/tokoaku/assets/87045526/404be507-5816-420a-bc66-364031b7254d)
-![image](https://github.com/raihanputro/tokoaku/assets/87045526/b6abf7de-a8d9-49e3-af7d-f873dff16787)
 ### Order
 Pada halaman order, pelanggan dapat melihat daftar dari pesanan yang pelanggan lakukan.
 ###
