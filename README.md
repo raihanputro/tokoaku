@@ -73,10 +73,6 @@ Setelah pelanggan mengklik tombol bayar, maka akan muncul pop up dari midtrans u
 Setelah pembayaran berhasil, pelanggan dapat melakukan review dari transaksi tersebut
 ###
 ![image](https://github.com/raihanputro/tokoaku/assets/87045526/0039e0b4-b688-433f-a786-b2aaa3c0d244)
-### Review
-Setelah pembayaran berhasil, pelanggan dapat melakukan review dari transaksi tersebut
-###
-![image](https://github.com/raihanputro/tokoaku/assets/87045526/0039e0b4-b688-433f-a786-b2aaa3c0d244)
 ### My Profile
 Pada halaman my profile, pelanggan dapat mengatur biodata pelanggan.
 ###
